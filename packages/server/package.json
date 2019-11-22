@@ -1,0 +1,35 @@
+{
+  "name": "@krypto-rates/server",
+  "version": "1.0.0",
+  "description": "Krypto Rates Server",
+  "author": {
+    "name": "Raptor Systems SpA",
+    "email": "raptor@raptorsystems.cl"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "ts-node -r tsconfig-paths/register --transpile-only src/server",
+    "dev": "ts-node-dev -r tsconfig-paths/register --inspect --no-notify --respawn --transpile-only src/server",
+    "generate": "yarn generate:prisma && yarn generate:nexus",
+    "generate:prisma": "prisma2 generate",
+    "generate:nexus": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register --transpile-only src/schema",
+    "studio": "prisma2 studio",
+    "lint": "eslint --ext .ts src",
+    "lint:fix": "eslint --fix --ext .ts src"
+  },
+  "dependencies": {
+    "@krypto-rates/common": "1.0.0",
+    "@krypto-rates/sources": "1.0.0",
+    "apollo-server": "^2.9.11",
+    "chalk": "^3.0.0",
+    "graphql": "^14.5.8",
+    "graphql-iso-date": "^3.6.1",
+    "moment": "^2.24.0",
+    "moment-range": "^4.0.2",
+    "nexus": "^0.12.0-rc.5",
+    "nexus-prisma": "^0.5.3-next.2",
+    "ts-node": "^8.5.2",
+    "tsconfig-paths": "^3.9.0"
+  }
+}

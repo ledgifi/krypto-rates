@@ -1,0 +1,6 @@
+lib
+dist
+generated
+.yoga
+.nuxt
+sw.*

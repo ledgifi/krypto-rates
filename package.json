@@ -1,0 +1,43 @@
+{
+  "name": "krypto-rates",
+  "author": {
+    "name": "Raptor Systems SpA",
+    "email": "raptor@raptorsystems.cl"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "packages/clients/*"
+  ],
+  "scripts": {
+    "dev": "lerna run dev --parallel",
+    "start": "lerna run start --parallel",
+    "generate": "lerna run generate --parallel",
+    "build": "lerna run build",
+    "clean": "lerna run clean --parallel",
+    "lint": "lerna run lint",
+    "lint:fix": "lerna run lint:fix",
+    "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check"
+  },
+  "devDependencies": {
+    "@prisma/sdk": "^0.0.55",
+    "@types/crypto-js": "^3.1.43",
+    "@types/graphql-iso-date": "^3.3.3",
+    "@types/node": "^12.12.11",
+    "@types/ws": "^6.0.3",
+    "@typescript-eslint/eslint-plugin": "^2.8.1-alpha.6",
+    "@typescript-eslint/parser": "^2.8.1-alpha.6",
+    "cross-env": "^6.0.3",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "find-yarn-workspace-root": "^1.2.1",
+    "lerna": "^3.19.0",
+    "prettier": "^1.19.1",
+    "prisma2": "^2.0.0-preview016.2",
+    "rimraf": "^3.0.0",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "~3.7.2"
+  }
+}

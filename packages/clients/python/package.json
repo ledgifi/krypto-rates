@@ -1,0 +1,13 @@
+{
+  "name": "@krypto-rates/client-python",
+  "version": "1.0.0",
+  "description": "Krypto Rates Python Client",
+  "author": {
+    "name": "Raptor Systems SpA",
+    "email": "raptor@raptorsystems.cl"
+  },
+  "license": "MIT",
+  "scripts": {
+    "publish": "pipenv upload"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@krypto-rates/common",
+  "version": "1.0.0",
+  "description": "Krypto Rates Common TypeScript Library",
+  "author": {
+    "name": "Raptor Systems SpA",
+    "email": "raptor@raptorsystems.cl"
+  },
+  "license": "MIT",
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "yarn run clean && yarn run compile",
+    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
+    "compile": "tsc --build",
+    "lint": "eslint --ext .ts src",
+    "lint:fix": "eslint --fix --ext .ts src"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0"
+  }
+}

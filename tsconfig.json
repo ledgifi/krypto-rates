@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es2018",  // Node.js 10
+    "module": "commonjs",
+    "lib": [
+      "es2018"
+    ],
+    "sourceMap": true,
+    "declaration": true,
+    "skipLibCheck": true,
+
+    /* Strict Type-Checking Options */
+    "strict": true,
+
+    /* Module Resolution Options */
+    "moduleResolution": "node",
+    "baseUrl": "packages",
+    "paths": {
+      "@krypto-rates/common/*": [
+        "common/src/*"
+      ],
+      "@krypto-rates/server/*": [
+        "server/src/*"
+      ],
+      "@krypto-rates/sources/*": [
+        "sources/src/*"
+      ]
+    },
+    "esModuleInterop": true,
+
+    /* Experimental Options */
+    "experimentalDecorators": true
+  }
+}

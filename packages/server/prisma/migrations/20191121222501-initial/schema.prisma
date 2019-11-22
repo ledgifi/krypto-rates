@@ -1,0 +1,20 @@
+generator photon {
+  provider = "photonjs"
+  output   = "../../../node_modules/@generated/photon"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = "***"
+}
+
+model Rate {
+  id         String   @default(cuid()) @id
+  createdAt  DateTime @default(now())
+  source     String
+  // TODO: JSON type unsupported
+  // sourceData Json
+  market     String
+  timestamp  DateTime
+  value      Float
+}
