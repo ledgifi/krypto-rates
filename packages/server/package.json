@@ -21,7 +21,7 @@
   "dependencies": {
     "@krypto-rates/common": "1.0.0",
     "@krypto-rates/sources": "1.0.0",
-    "apollo-server": "^2.9.11",
+    "apollo-server": "^2.9.12",
     "chalk": "^3.0.0",
     "graphql": "^14.5.8",
     "graphql-iso-date": "^3.6.1",
