@@ -1,7 +1,7 @@
 import { Currency, ParsedRates, Timeframe } from './types'
 
 export abstract class RateSource {
-  public abstract name: string
+  public static id: string
 
   public abstract async fetchLive(
     base: Currency,

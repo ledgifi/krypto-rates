@@ -7,7 +7,7 @@ import { parseMarket } from '../utils'
 import { createClient } from './client'
 
 export class CoinlayerSource implements RateSource {
-  public name = 'coinlayer.com'
+  public static id = 'coinlayer.com'
 
   public get client(): AxiosInstance {
     const client = createClient({
@@ -93,7 +93,7 @@ export class CoinlayerSource implements RateSource {
   ): ParsedRate {
     const { market, inverse } = parseMarket(marketCode, base)
     return {
-      source: this.name,
+      source: CoinlayerSource.id,
       sourceData: { [market.code]: value },
       market,
       timestamp: moment.utc(timestamp).toDate(),

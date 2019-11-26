@@ -5,8 +5,6 @@ import { Currency, MarketsByKey, ParsedRates, Timeframe } from './types'
 import { buildMarketsByKey, expandMarkets, parseMarket } from './utils'
 
 export class UnifiedSource extends RateSource {
-  public name = 'unified'
-
   public async fetchLive(
     base: Currency,
     currencies: Currency[],

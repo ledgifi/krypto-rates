@@ -84,7 +84,7 @@ export class BitcoinAverageAPI {
 }
 
 export class BitcoinAverageSource implements RateSource {
-  public name = 'bitcoinaverage.com'
+  public static id = 'bitcoinaverage.com'
 
   public get api(): BitcoinAverageAPI {
     return new BitcoinAverageAPI()
@@ -207,7 +207,7 @@ export class BitcoinAverageSource implements RateSource {
     const { market: parsedMarket, inverse } = parseMarket(market, base)
     if (inverse) value **= -1
     return {
-      source: this.name,
+      source: BitcoinAverageSource.id,
       market: parsedMarket,
       timestamp: moment.utc(timestamp).toDate(),
       value,
