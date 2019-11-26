@@ -130,7 +130,7 @@ class API(Client):
             """
             + RATES_FRAGMENT,
             {
-                "market": markets,
+                "markets": markets,
                 "timeframe": {
                     "start": serialize_date(timeframe["start"]),
                     "end": serialize_date(timeframe["end"]),
