@@ -24,6 +24,7 @@
     "@prisma/sdk": "^0.0.55",
     "@types/crypto-js": "^3.1.43",
     "@types/graphql-iso-date": "^3.3.3",
+    "@types/js-yaml": "^3.12.1",
     "@types/node": "^12.12.12",
     "@types/ws": "^6.0.3",
     "@typescript-eslint/eslint-plugin": "^2.9.0",
