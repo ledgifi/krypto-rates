@@ -1,5 +1,5 @@
 import { Market } from '@krypto-rates/common/market'
-import { RateSourceByMarket } from './mapping'
+import { RateSourceById, RateSourceByMarket } from './mapping'
 import { RateSource } from './models'
 import { Currency, MarketsByKey, ParsedRates, Timeframe } from './types'
 import { buildMarketsByKey, expandMarkets, parseMarket } from './utils'
@@ -35,6 +35,12 @@ export class UnifiedSource extends RateSource {
       (source, base, currencies) =>
         source.fetchTimeframe(base, currencies, timeframe),
     )
+  }
+
+  public setSource(sourceId: string): RateSource {
+    const source = RateSourceById.get(sourceId)
+    if (!source) throw `RateSource '${sourceId}' is not supported`
+    return new source()
   }
 
   private getSource(market: Market): RateSource {
