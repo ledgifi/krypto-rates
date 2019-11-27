@@ -27,7 +27,7 @@ migration ..20191121222501-initial
 @@ -1,0 +1,20 @@
 +generator photon {
 +  provider = "photonjs"
-+  output   = "../../../node_modules/@generated/photon"
++  output   = "../../../node_modules/@prisma/photon"
 +}
 +
 +datasource db {
@@ -53,7 +53,7 @@ You can use a specific Photon built for this migration (20191121222501-initial)
 in your `before` or `after` migration script like this:
 
 ```ts
-import Photon from '@generated/photon/20191121222501-initial'
+import Photon from '@prisma/photon/20191121222501-initial'
 
 const photon = new Photon()
 

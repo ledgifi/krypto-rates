@@ -1,4 +1,3 @@
-import { Rate as PrismaRate } from '@generated/photon'
 import { Market } from '@krypto-rates/common/market'
 import {
   MarketArg,
@@ -7,6 +6,7 @@ import {
   ParsedRates,
   Timeframe,
 } from '@krypto-rates/common/types'
+import { Rate as PrismaRate } from '@prisma/photon'
 import { Context } from './context'
 import {
   consecutiveTimeframes,

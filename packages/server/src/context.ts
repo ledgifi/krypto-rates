@@ -1,6 +1,6 @@
-import { Photon } from '@generated/photon'
 import { RateSource } from '@krypto-rates/sources/models'
 import { UnifiedSource } from '@krypto-rates/sources/unified'
+import { Photon } from '@prisma/photon'
 
 const photon = new Photon()
 const ratesSource = new UnifiedSource()

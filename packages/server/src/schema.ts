@@ -9,7 +9,7 @@ export const schema = makeSchema({
   plugins: [
     nexusPrismaPlugin({
       inputs: {
-        photon: path.join(workspaceRoot, 'node_modules/@generated/photon'),
+        photon: path.join(workspaceRoot, 'node_modules/@prisma/photon'),
       },
     }),
   ],
@@ -31,7 +31,7 @@ export const schema = makeSchema({
     },
     sources: [
       {
-        source: '@generated/photon',
+        source: '@prisma/photon',
         alias: 'photon',
       },
       {

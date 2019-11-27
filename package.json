@@ -21,12 +21,12 @@
     "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check"
   },
   "devDependencies": {
-    "@prisma/sdk": "^0.0.55",
+    "@prisma/sdk": "^0.0.68",
     "@types/crypto-js": "^3.1.43",
     "@types/graphql-iso-date": "^3.3.3",
     "@types/js-yaml": "^3.12.1",
-    "@types/node": "^12.12.12",
-    "@types/ws": "^6.0.3",
+    "@types/node": "^12.12.14",
+    "@types/ws": "^6.0.4",
     "@typescript-eslint/eslint-plugin": "^2.9.0",
     "@typescript-eslint/parser": "^2.9.0",
     "cross-env": "^6.0.3",
@@ -36,7 +36,7 @@
     "find-yarn-workspace-root": "^1.2.1",
     "lerna": "^3.19.0",
     "prettier": "^1.19.1",
-    "prisma2": "^2.0.0-preview016.2",
+    "prisma2": "^2.0.0-preview017.1",
     "rimraf": "^3.0.0",
     "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "~3.7.2"

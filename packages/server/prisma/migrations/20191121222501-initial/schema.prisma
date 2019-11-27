@@ -1,6 +1,6 @@
 generator photon {
   provider = "photonjs"
-  output   = "../../../node_modules/@generated/photon"
+  output   = "../../../node_modules/@prisma/photon"
 }
 
 datasource db {

@@ -1,15 +1,15 @@
 export * from '@krypto-rates/common/utils'
 import {
-  Rate as PrismaRate,
-  RateCreateInput as PrismaRateCreateInput,
-} from '@generated/photon'
-import {
   Currency,
   Rate,
   Timeframe,
   ParsedRate,
 } from '@krypto-rates/common/types'
 import { parseMarket } from '@krypto-rates/common/utils'
+import {
+  Rate as PrismaRate,
+  RateCreateInput as PrismaRateCreateInput,
+} from '@prisma/photon'
 import * as Moment from 'moment'
 import { extendMoment } from 'moment-range'
 import { Market } from '@krypto-rates/common/market'
