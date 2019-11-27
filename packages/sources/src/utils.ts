@@ -1,6 +1,7 @@
-import { Market } from '@krypto-rates/common/market'
+import { Market } from '@raptorsystems/krypto-rates-common/market'
 import { MarketsByKey, QuotesByBaseCurrency } from './types'
-export * from '@krypto-rates/common/utils'
+
+export * from '@raptorsystems/krypto-rates-common/utils'
 
 export async function buildMarketsByKey<T>(
   markets: Market[],

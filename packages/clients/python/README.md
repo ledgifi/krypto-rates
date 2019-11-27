@@ -1,3 +1,3 @@
-# @krypto-rates/client-python
+# @raptorsystems/krypto-rates-python
 
 > Krypto Rates Python Client

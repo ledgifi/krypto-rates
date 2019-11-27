@@ -1,9 +1,9 @@
-import { Market } from '@krypto-rates/common/market'
+import { Market } from '@raptorsystems/krypto-rates-common/market'
 import { AxiosInstance } from 'axios'
 import crypto from 'crypto-js'
 import moment from 'moment'
 import { RateSource } from '../models'
-import { Currency, Timeframe, ParsedRate, ParsedRates } from '../types'
+import { Currency, ParsedRate, ParsedRates, Timeframe } from '../types'
 import { buildMarketsByKey, expandMarkets, parseMarket } from '../utils'
 import { createClient } from './client'
 

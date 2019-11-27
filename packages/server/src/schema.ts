@@ -1,4 +1,4 @@
-import { workspaceRoot } from '@krypto-rates/common/paths'
+import { workspaceRoot } from '@raptorsystems/krypto-rates-common/paths'
 import { makeSchema } from 'nexus'
 import { nexusPrismaPlugin } from 'nexus-prisma'
 import path from 'path'
@@ -35,7 +35,7 @@ export const schema = makeSchema({
         alias: 'photon',
       },
       {
-        source: '@krypto-rates/common/types',
+        source: '@raptorsystems/krypto-rates-common/types',
         alias: 'types',
       },
       {

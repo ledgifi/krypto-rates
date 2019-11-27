@@ -1,3 +1,3 @@
-# @krypto-rates/client-js
+# @raptorsystems/krypto-rates-client
 
 > Krypto Rates JS Client

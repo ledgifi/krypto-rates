@@ -1,5 +1,5 @@
 {
-  "name": "@krypto-rates/server",
+  "name": "@raptorsystems/krypto-rates-server",
   "version": "1.0.0",
   "description": "Krypto Rates Server",
   "author": {
@@ -19,8 +19,8 @@
     "lint:fix": "eslint --fix --ext .ts src"
   },
   "dependencies": {
-    "@krypto-rates/common": "1.0.0",
-    "@krypto-rates/sources": "1.0.0",
+    "@raptorsystems/krypto-rates-common": "1.0.0",
+    "@raptorsystems/krypto-rates-sources": "1.0.0",
     "@prisma/photon": "^2.0.0-preview017.1",
     "apollo-server": "^2.9.12",
     "chalk": "^3.0.0",

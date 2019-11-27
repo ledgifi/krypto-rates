@@ -1,4 +1,4 @@
-import { dotenv } from '@krypto-rates/common/dotenv'
+import { dotenv } from '@raptorsystems/krypto-rates-common/dotenv'
 dotenv.config()
 
 import { ApolloServer } from 'apollo-server'

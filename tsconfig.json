@@ -17,13 +17,13 @@
     "moduleResolution": "node",
     "baseUrl": "packages",
     "paths": {
-      "@krypto-rates/common/*": [
+      "@raptorsystems/krypto-rates-common/*": [
         "common/src/*"
       ],
-      "@krypto-rates/server/*": [
+      "@raptorsystems/krypto-rates-server/*": [
         "server/src/*"
       ],
-      "@krypto-rates/sources/*": [
+      "@raptorsystems/krypto-rates-sources/*": [
         "sources/src/*"
       ]
     },

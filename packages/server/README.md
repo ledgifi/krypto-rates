@@ -1,3 +1,3 @@
-# @krypto-rates/server
+# @raptorsystems/krypto-rates-server
 
 > Krypto Rates Server

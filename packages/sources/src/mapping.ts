@@ -1,4 +1,4 @@
-import { workspaceRoot } from '@krypto-rates/common/paths'
+import { workspaceRoot } from '@raptorsystems/krypto-rates-common/paths'
 import fs from 'fs'
 import yaml from 'js-yaml'
 import path from 'path'

@@ -1,18 +1,19 @@
-export * from '@krypto-rates/common/utils'
-import { Market } from '@krypto-rates/common/market'
+import {
+  Rate as PrismaRate,
+  RateCreateInput as PrismaRateCreateInput,
+} from '@prisma/photon'
+import { Market } from '@raptorsystems/krypto-rates-common/market'
 import {
   Currency,
   ParsedRate,
   Rate,
   Timeframe,
-} from '@krypto-rates/common/types'
-import { parseMarket } from '@krypto-rates/common/utils'
-import {
-  Rate as PrismaRate,
-  RateCreateInput as PrismaRateCreateInput,
-} from '@prisma/photon'
+} from '@raptorsystems/krypto-rates-common/types'
+import { parseMarket } from '@raptorsystems/krypto-rates-common/utils'
 import * as Moment from 'moment'
 import { extendMoment } from 'moment-range'
+
+export * from '@raptorsystems/krypto-rates-common/utils'
 
 const moment = Moment.default
 

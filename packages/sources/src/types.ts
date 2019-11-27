@@ -1,6 +1,7 @@
-export * from '@krypto-rates/common/types'
-import { Market } from '@krypto-rates/common/market'
-import { Currency } from '@krypto-rates/common/types'
+import { Market } from '@raptorsystems/krypto-rates-common/market'
+import { Currency } from '@raptorsystems/krypto-rates-common/types'
+
+export * from '@raptorsystems/krypto-rates-common/types'
 
 export type QuotesByBaseCurrency = Map<Currency, Currency[]>
 

@@ -1,4 +1,4 @@
-import { Market } from '@krypto-rates/common/market'
+import { Market } from '@raptorsystems/krypto-rates-common/market'
 import { RateSourceById, RateSourceByMarket } from './mapping'
 import { RateSource } from './models'
 import { Currency, MarketsByKey, ParsedRates, Timeframe } from './types'
