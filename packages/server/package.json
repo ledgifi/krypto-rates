@@ -6,7 +6,7 @@
     "name": "Raptor Systems SpA",
     "email": "raptor@raptorsystems.cl"
   },
-  "license": "UNLICENSED",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "start": "ts-node -r tsconfig-paths/register --transpile-only src/server",

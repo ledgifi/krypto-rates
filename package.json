@@ -4,7 +4,7 @@
     "name": "Raptor Systems SpA",
     "email": "raptor@raptorsystems.cl"
   },
-  "license": "UNLICENSED",
+  "license": "MIT",
   "private": true,
   "workspaces": [
     "packages/*",
