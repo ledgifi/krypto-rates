@@ -1,9 +1,10 @@
 export * from '@krypto-rates/common/utils'
+import { Market } from '@krypto-rates/common/market'
 import {
   Currency,
+  ParsedRate,
   Rate,
   Timeframe,
-  ParsedRate,
 } from '@krypto-rates/common/types'
 import { parseMarket } from '@krypto-rates/common/utils'
 import {
@@ -12,7 +13,6 @@ import {
 } from '@prisma/photon'
 import * as Moment from 'moment'
 import { extendMoment } from 'moment-range'
-import { Market } from '@krypto-rates/common/market'
 
 const moment = Moment.default
 
