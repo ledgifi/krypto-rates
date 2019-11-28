@@ -1,6 +1,6 @@
 {
   "name": "@raptorsystems/krypto-rates-server",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Krypto Rates Server",
   "author": {
     "name": "Raptor Systems SpA",
@@ -20,8 +20,8 @@
   },
   "dependencies": {
     "@prisma/photon": "^2.0.0-preview017.2",
-    "@raptorsystems/krypto-rates-common": "^1.0.1",
-    "@raptorsystems/krypto-rates-sources": "^1.0.1",
+    "@raptorsystems/krypto-rates-common": "^1.0.2",
+    "@raptorsystems/krypto-rates-sources": "^1.0.2",
     "apollo-server": "^2.9.12",
     "chalk": "^3.0.0",
     "graphql": "^14.5.8",
