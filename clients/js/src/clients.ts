@@ -133,4 +133,50 @@ export class KryptoRates extends Client {
       : await this.api.fetchLiveRate(market)
     return parseMoney(rate, inverse)
   }
+
+  public async fetchRatesFor({
+    currency,
+    to,
+    date,
+    inverse,
+  }: {
+    currency: Currency
+    to: Currency[]
+    date?: Date | string
+    inverse?: boolean
+  }): Promise<Map<Currency, Money>> {
+    const markets: Markets = { base: currency, quotes: to }
+    const rates = date
+      ? await this.api.fetchHistoricalRates(markets, date)
+      : await this.api.fetchLiveRates(markets)
+    return new Map(
+      rates
+        .map(rate => parseMoney(rate, inverse))
+        .map(money => [money.currency, money]),
+    )
+  }
+
+  public async fetchRateTimeframeFor({
+    currency,
+    to,
+    start,
+    end,
+    inverse,
+  }: {
+    currency: Currency
+    to: Currency
+    start: Date | string
+    end: Date | string
+    inverse?: boolean
+  }): Promise<Map<string, Money>> {
+    const markets: Markets = { base: currency, quotes: [to] }
+    const timeframe = { start, end }
+    const rates = await this.api.fetchTimeframeRates(markets, timeframe)
+    return new Map(
+      rates.map(rate => [
+        rate.timestamp.toISOString().split('T')[0],
+        parseMoney(rate, inverse),
+      ]),
+    )
+  }
 }

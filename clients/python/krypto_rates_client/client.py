@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Dict, Iterable
 
 from requests import Session
 from requests_toolbelt import user_agent as ua
@@ -157,3 +157,30 @@ class KryptoRates(Client):
             else self.api.fetch_live_rate(market)
         )
         return parse_money(rate, inverse)
+
+    def fetch_rates_for(
+        self, currency: str, to: Iterable[str], date: Date = None, inverse: bool = False
+    ) -> Dict[str, Money]:
+        markets = Markets(base=currency, quotes=to)
+        rates = (
+            self.api.fetch_historical_rates(markets, date)
+            if date
+            else self.api.fetch_live_rates(markets)
+        )
+        return {
+            money["currency"]: money
+            for money in (parse_money(rate, inverse) for rate in rates)
+        }
+
+    def fetch_rate_timeframe_for(
+        self,
+        currency: str,
+        to: str,
+        start: Date,
+        end: Date = None,
+        inverse: bool = False,
+    ) -> Dict[str, Money]:
+        markets = Markets(base=currency, quotes=[to])
+        timeframe = dict(start=start, end=end)
+        rates = self.api.fetch_timeframe_rates(markets, timeframe)
+        return {rate["timestamp"][:10]: parse_money(rate, inverse) for rate in rates}
