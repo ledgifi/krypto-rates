@@ -16,9 +16,9 @@
     "access": "public"
   },
   "scripts": {
-    "build": "yarn run clean && yarn run compile",
-    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
-    "compile": "tsc --build",
+    "build": "tsc --build",
+    "prebuild": "yarn clean",
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --fix --ext .ts src"
   },
