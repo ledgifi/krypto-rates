@@ -9,7 +9,7 @@ import {
   Rates,
   Timeframe,
 } from './types'
-import { parseRate } from './utils'
+import { parseMoney } from './utils'
 
 const RATE_FRAGMENT = gql`
   fragment rate on Rate {
@@ -131,6 +131,6 @@ export class KryptoRates extends Client {
     const rate = date
       ? await this.api.fetchHistoricalRate(market, date)
       : await this.api.fetchLiveRate(market)
-    return parseRate(rate.value, currency, to, inverse)
+    return parseMoney(rate, inverse)
   }
 }

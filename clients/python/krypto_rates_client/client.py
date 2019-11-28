@@ -5,7 +5,7 @@ from requests_toolbelt import user_agent as ua
 
 from .__version__ import __version__
 from .types import Money, Timeframe, Market, Markets, Rate, Rates, Date
-from .utils import serialize_date, parse_rate
+from .utils import serialize_date, parse_money
 
 __all__ = ["KryptoRates"]
 
@@ -156,4 +156,4 @@ class KryptoRates(Client):
             if date
             else self.api.fetch_live_rate(market)
         )
-        return parse_rate(rate["value"], currency, to, inverse)
+        return parse_money(rate, inverse)

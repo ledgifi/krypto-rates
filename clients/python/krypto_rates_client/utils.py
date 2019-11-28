@@ -1,4 +1,4 @@
-from .types import Currency, Date, Money
+from .types import Date, Money, Rate
 
 
 def serialize_date(value: Date) -> str:
@@ -7,9 +7,11 @@ def serialize_date(value: Date) -> str:
     return value.isoformat()
 
 
-def parse_rate(amount: float, base: Currency, quote: Currency, inverse: bool) -> Money:
-    currency = quote
+def parse_money(rate: Rate, inverse: bool) -> Money:
+    market = rate["market"]
+    amount = rate["value"]
+    currency = market["quote"]
     if inverse:
         amount = 1 / amount
-        currency = base
+        currency = market["base"]
     return Money(amount=amount, currency=currency)
