@@ -8,7 +8,7 @@
   "private": true,
   "workspaces": [
     "packages/*",
-    "packages/clients/*"
+    "clients/*"
   ],
   "scripts": {
     "dev": "lerna run dev --parallel",
