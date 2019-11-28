@@ -9,6 +9,9 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "publish": "pipenv upload"
+    "clean": "rimraf dist build *.egg-info",
+    "prebuild": "yarn clean",
+    "build": "pipenv run setup.py --quiet sdist bdist_wheel --universal",
+    "upload": "pipenv run twine upload dist/*"
   }
 }
