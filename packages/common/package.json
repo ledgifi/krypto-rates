@@ -1,6 +1,6 @@
 {
   "name": "@raptorsystems/krypto-rates-common",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Krypto Rates Common TypeScript Library",
   "author": {
     "name": "Raptor Systems SpA",
