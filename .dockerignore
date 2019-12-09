@@ -1,0 +1,16 @@
+*
+!**/*.json
+!**/*.lock
+
+# config
+!./config
+
+# common
+!./packages/common/src
+
+# server
+!./packages/server/src
+!./packages/server/prisma
+
+# sources
+!./packages/sources/src
