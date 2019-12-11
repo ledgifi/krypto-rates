@@ -24,24 +24,24 @@
     "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check"
   },
   "devDependencies": {
-    "@prisma/sdk": "^0.0.71",
+    "@prisma/sdk": "^0.0.93",
     "@types/crypto-js": "^3.1.43",
     "@types/graphql-iso-date": "^3.3.3",
     "@types/js-yaml": "^3.12.1",
-    "@types/node": "^12.12.14",
+    "@types/node": "^12.12.17",
     "@types/ws": "^6.0.4",
-    "@typescript-eslint/eslint-plugin": "^2.9.0",
-    "@typescript-eslint/parser": "^2.9.0",
+    "@typescript-eslint/eslint-plugin": "^2.11.0",
+    "@typescript-eslint/parser": "^2.11.0",
     "cross-env": "^6.0.3",
-    "eslint": "^6.7.1",
+    "eslint": "^6.7.2",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-prettier": "^3.1.1",
     "find-yarn-workspace-root": "^1.2.1",
     "lerna": "^3.19.0",
     "prettier": "^1.19.1",
-    "prisma2": "^2.0.0-preview017.2",
+    "prisma2": "^2.0.0-preview018.1",
     "rimraf": "^3.0.0",
     "ts-node-dev": "^1.0.0-pre.44",
-    "typescript": "~3.7.2"
+    "typescript": "~3.7.3"
   }
 }
