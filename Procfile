@@ -1,1 +1,1 @@
-web: yarn start --scope @raptorsystems/krypto-rates-server
+web: cd packages/server && yarn start
