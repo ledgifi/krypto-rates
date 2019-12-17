@@ -1,5 +1,4 @@
 import { GraphQLClient } from 'graphql-request'
-import gql from 'graphql-tag'
 import {
   Currency,
   Market,
@@ -11,7 +10,7 @@ import {
 } from './types'
 import { parseMoney } from './utils'
 
-const RATE_FRAGMENT = gql`
+const RATE_FRAGMENT = /* GraphQL */ `
   fragment rate on Rate {
     source
     timestamp
@@ -28,7 +27,7 @@ const Client = GraphQLClient
 class API extends Client {
   public fetchLiveRate(market: Market): Promise<Rate> {
     return this.request<Rate>(
-      gql`
+      /* GraphQL */ `
         query($market: MarketInput!) {
           liveRate(market: $market) {
             ...rate
@@ -42,7 +41,7 @@ class API extends Client {
 
   public fetchLiveRates(markets: Markets): Promise<Rates> {
     return this.request<Rates>(
-      gql`
+      /* GraphQL */ `
         query($markets: MarketsInput!) {
           liveRates(markets: $markets) {
             ...rate
@@ -59,7 +58,7 @@ class API extends Client {
     date: string | Date,
   ): Promise<Rate> {
     return this.request<Rate>(
-      gql`
+      /* GraphQL */ `
         query($market: MarketInput!, $date: Date!) {
           historicalRate(market: $market, date: $date) {
             ...rate
@@ -76,7 +75,7 @@ class API extends Client {
     date: string | Date,
   ): Promise<Rates> {
     return this.request<Rates>(
-      gql`
+      /* GraphQL */ `
         query($markets: MarketsInput!, $date: Date!) {
           historicalRates(markets: $markets, date: $date) {
             ...rate
@@ -93,7 +92,7 @@ class API extends Client {
     timeframe: Timeframe,
   ): Promise<Rates> {
     return this.request<Rates>(
-      gql`
+      /* GraphQL */ `
         query($markets: MarketsInput!, $timeframe: TimeframeInput!) {
           timeframeRates(markets: $markets, timeframe: $timeframe) {
             ...rate
