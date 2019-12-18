@@ -1,3 +1,7 @@
+import {
+  Currencies,
+  Markets,
+} from '@raptorsystems/krypto-rates-sources/mapping'
 import { GraphQLString } from 'graphql'
 import { GraphQLDate } from 'graphql-iso-date'
 import moment from 'moment'
@@ -83,6 +87,17 @@ export const RateObject = objectType({
 // Querys
 export const Query = queryType({
   definition(t) {
+    t.field('markets', {
+      type: MarketObject,
+      list: true,
+      resolve: () => Markets,
+    })
+
+    t.string('currencies', {
+      list: true,
+      resolve: () => Currencies,
+    })
+
     t.field('liveRate', {
       type: RateObject,
       nullable: true,
