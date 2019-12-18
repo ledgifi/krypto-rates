@@ -103,11 +103,14 @@ export const Query = queryType({
       nullable: true,
       args: {
         market: arg({ type: MarketInput }),
+        since: dateArg({ required: false }),
       },
-      resolve: (_root, { market }, ctx) => {
-        const date = moment()
-          .subtract(5, 'minutes')
-          .toDate()
+      resolve: (_root, { market, since }, ctx) => {
+        const date =
+          since ??
+          moment()
+            .subtract(5, 'minutes')
+            .toDate()
         return fetchRate({
           ctx,
           market,
@@ -127,11 +130,14 @@ export const Query = queryType({
       list: true,
       args: {
         markets: arg({ type: MarketsInput }),
+        since: dateArg({ required: false }),
       },
-      resolve: async (_root, { markets }, ctx) => {
-        const date = moment()
-          .subtract(5, 'minutes')
-          .toDate()
+      resolve: async (_root, { markets, since }, ctx) => {
+        const date =
+          since ??
+          moment()
+            .subtract(5, 'minutes')
+            .toDate()
         return fetchRates({
           ctx,
           markets,
