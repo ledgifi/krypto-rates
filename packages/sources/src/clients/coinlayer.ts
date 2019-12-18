@@ -28,17 +28,26 @@ export class CoinlayerSource implements RateSource {
     base: Currency,
     currencies: Currency[],
   ): Promise<ParsedRates> {
-    const {
-      data: { rates, timestamp },
-    } = await this.client.get<CoinlayerLive>('live', {
-      params: {
-        target: base,
-        symbols: currencies.join(','),
-      },
-    })
-    return Object.entries(rates).map(([market, value]) =>
-      this.parseRate(market, base, timestamp * 1000, value),
-    )
+    const parse = (data: CoinlayerLive, quote: Currency): ParsedRates =>
+      Object.entries(data.rates).map(([symbol, value]) =>
+        this.parseRate(symbol + quote, base, data.timestamp * 1000, value),
+      )
+
+    const fetch = async (
+      target: string,
+      symbols: string[],
+    ): Promise<ParsedRates> => {
+      const { data } = await this.client.get<CoinlayerLive>('live', {
+        params: { target, symbols: symbols.join(',') },
+      })
+      return parse(data, target)
+    }
+
+    if (currencies.length === 1) {
+      return fetch(currencies[0], [base])
+    } else {
+      return fetch(base, currencies)
+    }
   }
 
   public async fetchHistorical(
@@ -46,20 +55,27 @@ export class CoinlayerSource implements RateSource {
     currencies: Currency[],
     date: Date,
   ): Promise<ParsedRates> {
-    const {
-      data: { rates },
-    } = await this.client.get<CoinlayerHistorical>(
-      date.toISOString().slice(0, 10),
-      {
-        params: {
-          target: base,
-          symbols: currencies.join(','),
-        },
-      },
-    )
-    return Object.entries(rates).map(([market, value]) =>
-      this.parseRate(market, base, date, value),
-    )
+    const parse = (data: CoinlayerHistorical, quote: Currency): ParsedRates =>
+      Object.entries(data.rates).map(([symbol, value]) =>
+        this.parseRate(symbol + quote, base, date, value),
+      )
+
+    const fetch = async (
+      target: string,
+      symbols: string[],
+    ): Promise<ParsedRates> => {
+      const { data } = await this.client.get<CoinlayerHistorical>(
+        date.toISOString().slice(0, 10),
+        { params: { target, symbols: symbols.join(',') } },
+      )
+      return parse(data, target)
+    }
+
+    if (currencies.length === 1) {
+      return fetch(currencies[0], [base])
+    } else {
+      return fetch(base, currencies)
+    }
   }
 
   public async fetchTimeframe(
@@ -67,22 +83,33 @@ export class CoinlayerSource implements RateSource {
     currencies: Currency[],
     { start, end }: Timeframe<Date>,
   ): Promise<ParsedRates> {
-    const {
-      data: { rates },
-    } = await this.client.get<CoinlayerTimeframe>('timeframe', {
-      params: {
-        target: base,
-        symbols: currencies.join(','),
-        start_date: start.toISOString().slice(0, 10),
-        end_date: end.toISOString().slice(0, 10),
-      },
-    })
-    const result = Object.entries(rates).flatMap(([date, rates]) =>
-      Object.entries(rates).map(([market, value]) =>
-        this.parseRate(market, base, date, value),
-      ),
-    )
-    return result
+    const parse = (data: CoinlayerTimeframe, quote: Currency): ParsedRates =>
+      Object.entries(data.rates).flatMap(([date, rates]) =>
+        Object.entries(rates).map(([symbol, value]) =>
+          this.parseRate(symbol + quote, base, date, value),
+        ),
+      )
+
+    const fetch = async (
+      target: string,
+      symbols: string[],
+    ): Promise<ParsedRates> => {
+      const { data } = await this.client.get<CoinlayerTimeframe>('timeframe', {
+        params: {
+          target,
+          symbols: symbols.join(','),
+          start_date: start.toISOString().slice(0, 10),
+          end_date: end.toISOString().slice(0, 10),
+        },
+      })
+      return parse(data, target)
+    }
+
+    if (currencies.length === 1) {
+      return fetch(currencies[0], [base])
+    } else {
+      return fetch(base, currencies)
+    }
   }
 
   private parseRate(
@@ -109,13 +136,15 @@ interface CoinlayerError {
   info: string
 }
 
+type CoinlayerRates = { [symbol: string]: number }
+
 interface CoinlayerLive {
   success: boolean
   terms: string
   privacy: string
   timestamp: number
   target: string
-  rates: { [key: string]: number }
+  rates: CoinlayerRates
   error?: CoinlayerError
 }
 
@@ -127,7 +156,7 @@ interface CoinlayerHistorical {
   date: string
   timestamp: number
   target: string
-  rates: { [key: string]: number }
+  rates: CoinlayerRates
   error?: CoinlayerError
 }
 
@@ -139,6 +168,6 @@ interface CoinlayerTimeframe {
   start_date: string
   end_date: string
   target: string
-  rates: { [key: string]: { [key: string]: number } }
+  rates: { [date: string]: CoinlayerRates }
   error?: CoinlayerError
 }
