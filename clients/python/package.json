@@ -11,7 +11,7 @@
   "scripts": {
     "clean": "rimraf dist build *.egg-info",
     "prebuild": "yarn clean",
-    "build:python": "pipenv run setup.py --quiet sdist bdist_wheel --universal",
+    "build:python": "pipenv run python setup.py --quiet sdist bdist_wheel --universal",
     "upload": "pipenv run twine upload dist/*"
   }
 }
