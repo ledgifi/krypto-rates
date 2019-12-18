@@ -9,6 +9,7 @@ import {
 } from '@raptorsystems/krypto-rates-common/types'
 import { Context } from './context'
 import {
+  buildPrismaRate,
   consecutiveTimeframes,
   dailyFilter,
   generateDateRange,
@@ -32,14 +33,16 @@ export async function fetchRate({
   const market = new Market(base, quote)
 
   // Fetch rates from DB and map them to Rate instance
-  const rates = (await fetchDB(market.id)).map(rate => parseRate(base, rate))
+  const rates = (await fetchDB(market.id)).map(rate =>
+    parsePrismaRate(base, rate),
+  )
 
   let rate: ParsedRate | undefined = rates[0]
 
   if (!rate) {
     // If rate is missing, fetch inverse market from DB
     const missingRates = (await fetchDB(market.inverse.id)).map(rate =>
-      parseRate(base, rate),
+      parsePrismaRate(base, rate),
     )
 
     rate = missingRates[0]
@@ -53,7 +56,7 @@ export async function fetchRate({
       if (rate) {
         // Write missing rate on DB
         const data = await photon.rates.create({
-          data: parsePrismaRate(rate),
+          data: buildPrismaRate(rate),
         })
         logCreate(data)
       }
@@ -61,7 +64,7 @@ export async function fetchRate({
   }
 
   // Return requested rate
-  return rate
+  return parseRate(rate)
 }
 
 export async function fetchRates({
@@ -80,7 +83,7 @@ export async function fetchRates({
 
   // Fetch rates from Prisma DB and map them to Rate instances
   let rates = (await fetchDB(markets.map(m => m.id))).map(rate =>
-    parseRate(base, rate),
+    parsePrismaRate(base, rate),
   )
 
   // Filter for missing markets in DB response
@@ -93,7 +96,7 @@ export async function fetchRates({
   if (missingMarkets.length) {
     const missingRates = (
       await fetchDB(markets.map(m => m.inverse.id))
-    ).map(rate => parseRate(base, rate))
+    ).map(rate => parsePrismaRate(base, rate))
     rates = [...rates, ...missingRates]
     missingMarkets = markets.filter(
       market => !rates.map(r => r.market.id).includes(market.id),
@@ -112,13 +115,13 @@ export async function fetchRates({
   // Write missing rates on Prisma DB
   const data = await Promise.all(
     missingRates.map(rate =>
-      photon.rates.create({ data: parsePrismaRate(rate) }),
+      photon.rates.create({ data: buildPrismaRate(rate) }),
     ),
   )
   data.map(item => logCreate(item))
 
   // Return all requested rates
-  return [...rates, ...missingRates]
+  return [...rates, ...missingRates].map(rate => parseRate(rate))
 }
 
 export async function fetchRatesTimeframe({
@@ -156,7 +159,7 @@ export async function fetchRatesTimeframe({
     )
   )
     .filter(dailyFilter)
-    .map(rate => parseRate(base, rate))
+    .map(rate => parsePrismaRate(base, rate))
 
   // Filter missing market-dates in DB response
   let missingMarketDates = marketDates.filter(
@@ -179,7 +182,7 @@ export async function fetchRatesTimeframe({
       missingTimeframes.map(timeframe => fetchDB(missingQuotes, timeframe)),
     )
     const missingRates = missingRateGroups.flatMap(ratesGroup =>
-      ratesGroup.filter(dailyFilter).map(rate => parseRate(base, rate)),
+      ratesGroup.filter(dailyFilter).map(rate => parsePrismaRate(base, rate)),
     )
     rates = [...rates, ...missingRates]
     missingMarketDates = marketDates.filter(
@@ -213,11 +216,11 @@ export async function fetchRatesTimeframe({
   // Write missing rates on Prisma DB
   const data = await Promise.all(
     missingRates.map(rate =>
-      photon.rates.create({ data: parsePrismaRate(rate) }),
+      photon.rates.create({ data: buildPrismaRate(rate) }),
     ),
   )
   data.map(item => logCreate(item))
 
   // Return all requested rates
-  return [...rates, ...missingRates]
+  return [...rates, ...missingRates].map(rate => parseRate(rate))
 }

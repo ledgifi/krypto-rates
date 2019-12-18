@@ -60,19 +60,21 @@ export function dailyFilter({ timestamp }: { timestamp: Date }): boolean {
   return date.isSame(date.startOf('day'))
 }
 
-export function parseRate(base: Currency, rate: PrismaRate): Rate<Market> {
-  let { value } = rate
+export function parsePrismaRate(
+  base: Currency,
+  rate: PrismaRate,
+): Rate<Market> {
   const {
+    value,
     timestamp,
     source,
     // sourceData,
     market,
   } = rate
   const { market: parsedMarket, inverse } = parseMarket(market, base)
-  if (inverse) value **= -1
   return {
-    timestamp,
     value,
+    timestamp,
     source,
     // sourceData,
     market: parsedMarket,
@@ -80,7 +82,7 @@ export function parseRate(base: Currency, rate: PrismaRate): Rate<Market> {
   }
 }
 
-export const parsePrismaRate = ({
+export const buildPrismaRate = ({
   timestamp,
   value,
   source,
@@ -88,10 +90,7 @@ export const parsePrismaRate = ({
   market,
   inverse,
 }: ParsedRate): PrismaRateCreateInput => {
-  if (inverse) {
-    market = market.inverse
-    value **= -1
-  }
+  if (inverse) market = market.inverse
   return {
     timestamp,
     value,
@@ -99,6 +98,14 @@ export const parsePrismaRate = ({
     // sourceData,
     market: market.id,
   }
+}
+
+export const parseRate = (rate: ParsedRate): ParsedRate => {
+  if (rate.inverse) {
+    rate.value **= -1
+    rate.inverse = false
+  }
+  return rate
 }
 
 export function logCreate(data: PrismaRate): void {
