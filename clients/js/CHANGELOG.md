@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.3](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-client@1.1.2...@raptorsystems/krypto-rates-client@1.1.3) (2019-12-18)
+
+
+### Bug Fixes
+
+* **js-client:** return correct response object from requests ([4b5d42d](https://github.com/raptorsystems/krypto-rates/commit/4b5d42d3840f8d9cbf9b0e1b44ff9850e339942f))
+
+
+
+
+
 ## [1.1.2](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-client@1.1.1...@raptorsystems/krypto-rates-client@1.1.2) (2019-12-17)
 
 **Note:** Version bump only for package @raptorsystems/krypto-rates-client
