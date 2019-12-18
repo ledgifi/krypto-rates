@@ -13,13 +13,19 @@ export const RateSourceById = new Map<string, { new (): RateSource }>([
   [CurrencyLayerSource.id, CurrencyLayerSource],
 ])
 
+const loadMarketsConfig = (): { [market: string]: string } =>
+  yaml.safeLoad(
+    fs.readFileSync(path.join(workspaceRoot, 'config/markets.yml'), 'utf8'),
+  )
+
+export const marketsConfig = loadMarketsConfig()
+
 export const RateSourceByMarket = new Map<
   string,
   { new (): RateSource } | undefined
 >(
-  Object.entries<string>(
-    yaml.safeLoad(
-      fs.readFileSync(path.join(workspaceRoot, 'config/markets.yml'), 'utf8'),
-    ),
-  ).map(([market, name]) => [market, RateSourceById.get(name)]),
+  Object.entries(marketsConfig).map(([market, name]) => [
+    market,
+    RateSourceById.get(name),
+  ]),
 )
