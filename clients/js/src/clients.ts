@@ -25,8 +25,8 @@ const RATE_FRAGMENT = /* GraphQL */ `
 const Client = GraphQLClient
 
 class API extends Client {
-  public fetchLiveRate(market: Market): Promise<Rate> {
-    return this.request<Rate>(
+  public async fetchLiveRate(market: Market): Promise<Rate> {
+    const response = await this.request<{ liveRate: Rate }>(
       /* GraphQL */ `
         query($market: MarketInput!) {
           liveRate(market: $market) {
@@ -37,10 +37,11 @@ class API extends Client {
       `,
       { market },
     )
+    return response.liveRate
   }
 
-  public fetchLiveRates(markets: Markets): Promise<Rates> {
-    return this.request<Rates>(
+  public async fetchLiveRates(markets: Markets): Promise<Rates> {
+    const response = await this.request<{ liveRates: Rates }>(
       /* GraphQL */ `
         query($markets: MarketsInput!) {
           liveRates(markets: $markets) {
@@ -51,13 +52,14 @@ class API extends Client {
       `,
       { markets },
     )
+    return response.liveRates
   }
 
-  public fetchHistoricalRate(
+  public async fetchHistoricalRate(
     market: Market,
     date: string | Date,
   ): Promise<Rate> {
-    return this.request<Rate>(
+    const response = await this.request<{ historicalRate: Rate }>(
       /* GraphQL */ `
         query($market: MarketInput!, $date: Date!) {
           historicalRate(market: $market, date: $date) {
@@ -68,13 +70,14 @@ class API extends Client {
       `,
       { market, date },
     )
+    return response.historicalRate
   }
 
-  public fetchHistoricalRates(
+  public async fetchHistoricalRates(
     markets: Markets,
     date: string | Date,
   ): Promise<Rates> {
-    return this.request<Rates>(
+    const response = await this.request<{ historicalRates: Rates }>(
       /* GraphQL */ `
         query($markets: MarketsInput!, $date: Date!) {
           historicalRates(markets: $markets, date: $date) {
@@ -85,13 +88,14 @@ class API extends Client {
       `,
       { markets, date },
     )
+    return response.historicalRates
   }
 
-  public fetchTimeframeRates(
+  public async fetchTimeframeRates(
     markets: Markets,
     timeframe: Timeframe,
   ): Promise<Rates> {
-    return this.request<Rates>(
+    const response = await this.request<{ timeframeRates: Rates }>(
       /* GraphQL */ `
         query($markets: MarketsInput!, $timeframe: TimeframeInput!) {
           timeframeRates(markets: $markets, timeframe: $timeframe) {
@@ -102,6 +106,7 @@ class API extends Client {
       `,
       { markets, timeframe },
     )
+    return response.timeframeRates
   }
 }
 
