@@ -8,8 +8,15 @@ export class RateSourceError extends ApolloError {
   }
 }
 
-export const createClient = (config: AxiosRequestConfig): AxiosInstance => {
+export const createClient = (
+  name: string,
+  config: AxiosRequestConfig,
+): AxiosInstance => {
   const client = axios.create(config)
+  client.interceptors.request.use(request => {
+    console.log(`Fetching rate from ${name}`)
+    return request
+  })
   client.interceptors.response.use(
     response => response,
     ({ message, response }: AxiosError) => {

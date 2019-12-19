@@ -10,8 +10,8 @@ export class CoinlayerSource implements RateSource {
   public static id = 'coinlayer.com'
 
   public get client(): AxiosInstance {
-    const client = createClient({
-      baseURL: 'https://api.coinlayer.com/',
+    const client = createClient(CoinlayerSource.id, {
+      baseURL: 'http://api.coinlayer.com/',
       timeout: 10000,
     })
     client.interceptors.request.use(config => ({

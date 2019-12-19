@@ -10,7 +10,7 @@ export class CurrencyLayerSource implements RateSource {
   public static id = 'currencylayer.com'
 
   public get client(): AxiosInstance {
-    const client = createClient({
+    const client = createClient(CurrencyLayerSource.id, {
       baseURL: 'https://apilayer.net/api/',
       timeout: 10000,
     })

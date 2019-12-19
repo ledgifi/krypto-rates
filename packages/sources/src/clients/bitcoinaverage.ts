@@ -13,7 +13,7 @@ export class BitcoinAverageAPI {
       process.env.BAVG_PUBLIC_KEY as string,
       process.env.BAVG_SECRET_KEY as string,
     )
-    return createClient({
+    return createClient('bitcoinaverage.com', {
       baseURL: 'https://apiv2.bitcoinaverage.com/',
       timeout: 10000,
       headers: { 'X-Signature': signature },
