@@ -25,6 +25,12 @@
       ],
       "@raptorsystems/krypto-rates-sources/*": [
         "sources/src/*"
+      ],
+      "@raptorsystems/krypto-rates-utils": [
+        "utils/src/"
+      ],
+      "@raptorsystems/krypto-rates-utils/*": [
+        "utils/src/*"
       ]
     },
     "esModuleInterop": true,

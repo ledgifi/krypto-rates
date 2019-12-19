@@ -22,6 +22,7 @@
     "@prisma/photon": "^2.0.0-preview018.2",
     "@raptorsystems/krypto-rates-common": "^1.0.3",
     "@raptorsystems/krypto-rates-sources": "^1.0.3",
+    "@raptorsystems/krypto-rates-utils": "^1.0.0",
     "apollo-server": "^2.9.14",
     "chalk": "^3.0.0",
     "graphql": "^14.5.8",

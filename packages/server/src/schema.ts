@@ -1,4 +1,4 @@
-import { workspaceRoot } from '@raptorsystems/krypto-rates-common/paths'
+import { workspaceRoot } from '@raptorsystems/krypto-rates-utils/paths'
 import { makeSchema } from 'nexus'
 import { nexusPrismaPlugin } from 'nexus-prisma'
 import path from 'path'

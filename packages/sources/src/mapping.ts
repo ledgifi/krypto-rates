@@ -1,5 +1,5 @@
 import { Market } from '@raptorsystems/krypto-rates-common/market'
-import { workspaceRoot } from '@raptorsystems/krypto-rates-common/paths'
+import { workspaceRoot } from '@raptorsystems/krypto-rates-utils/paths'
 import { parseMarket } from './utils'
 import fs from 'fs'
 import yaml from 'js-yaml'

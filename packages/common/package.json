@@ -21,9 +21,5 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --fix --ext .ts src"
-  },
-  "dependencies": {
-    "dotenv": "^8.2.0",
-    "find-yarn-workspace-root": "^1.2.1"
   }
 }
