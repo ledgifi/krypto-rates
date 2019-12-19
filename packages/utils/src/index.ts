@@ -92,3 +92,14 @@ export function dailyFilter({ timestamp }: { timestamp: Date }): boolean {
   const date = moment(timestamp)
   return date.isSame(date.startOf('day'))
 }
+
+// https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_chunk
+export const chunk = <T>(input: T[], size: number): T[][] =>
+  input.reduce<T[][]>((arr, item, idx) => {
+    return idx % size === 0
+      ? [...arr, [item]]
+      : [...arr.slice(0, -1), [...arr.slice(-1)[0], item]]
+  }, [])
+
+export const chunkDateRange = (timeframe: Timeframe, size: number): Date[][] =>
+  chunk(generateDateRange(timeframe), size)

@@ -3,7 +3,7 @@ import { AxiosInstance } from 'axios'
 import moment from 'moment'
 import { RateSource } from '../models'
 import { Currency, ParsedRate, ParsedRates, Timeframe } from '../types'
-import { parseMarket } from '../utils'
+import { chunkDateRange, parseMarket } from '../utils'
 import { createClient } from './client'
 
 export class CurrencyLayerSource implements RateSource {
@@ -63,24 +63,35 @@ export class CurrencyLayerSource implements RateSource {
   public async fetchTimeframe(
     base: Currency,
     currencies: Currency[],
-    { start, end }: Timeframe<Date>,
+    timeframe: Timeframe<Date>,
   ): Promise<ParsedRates> {
-    const {
-      data: { quotes = {} },
-    } = await this.client.get<CurrencyLayerTimeframe>('timeframe', {
-      params: {
-        source: base,
-        currencies: currencies.join(','),
-        start_date: start.toISOString().slice(0, 10),
-        end_date: end.toISOString().slice(0, 10),
-      },
-    })
-    const result = Object.entries(quotes).flatMap(([date, rates]) =>
-      Object.entries(rates).map(([market, value]) =>
-        this.parseRate(market, base, date, value),
+    const fetch = async (start: Date, end: Date): Promise<ParsedRates> => {
+      const {
+        data: { quotes = {} },
+      } = await this.client.get<CurrencyLayerTimeframe>('timeframe', {
+        params: {
+          source: base,
+          currencies: currencies.join(','),
+          start_date: start.toISOString().slice(0, 10),
+          end_date: end.toISOString().slice(0, 10),
+        },
+      })
+      const result = Object.entries(quotes).flatMap(([date, rates]) =>
+        Object.entries(rates).map(([market, value]) =>
+          this.parseRate(market, base, date, value),
+        ),
+      )
+      return result
+    }
+    // currencylayer timeframe endpoint maximum range is 365 days
+    const MAX_RANGE = 365
+
+    const result = await Promise.all(
+      chunkDateRange(timeframe, MAX_RANGE).map(range =>
+        fetch(range[0], range[range.length - 1]),
       ),
     )
-    return result
+    return result.flat()
   }
 
   private parseRate(

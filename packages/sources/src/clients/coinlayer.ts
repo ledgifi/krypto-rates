@@ -3,7 +3,7 @@ import { AxiosInstance } from 'axios'
 import moment from 'moment'
 import { RateSource } from '../models'
 import { Currency, ParsedRate, ParsedRates, Timeframe } from '../types'
-import { parseMarket } from '../utils'
+import { chunkDateRange, parseMarket } from '../utils'
 import { createClient } from './client'
 
 export class CoinlayerSource implements RateSource {
@@ -81,7 +81,7 @@ export class CoinlayerSource implements RateSource {
   public async fetchTimeframe(
     base: Currency,
     currencies: Currency[],
-    { start, end }: Timeframe<Date>,
+    timeframe: Timeframe<Date>,
   ): Promise<ParsedRates> {
     const parse = (data: CoinlayerTimeframe, quote: Currency): ParsedRates =>
       Object.entries(data.rates).flatMap(([date, rates]) =>
@@ -93,6 +93,8 @@ export class CoinlayerSource implements RateSource {
     const fetch = async (
       target: string,
       symbols: string[],
+      start: Date,
+      end: Date,
     ): Promise<ParsedRates> => {
       const { data } = await this.client.get<CoinlayerTimeframe>('timeframe', {
         params: {
@@ -105,10 +107,25 @@ export class CoinlayerSource implements RateSource {
       return parse(data, target)
     }
 
+    // coinlayer timeframe endpoint maximum range is 365 days
+    const MAX_RANGE = 365
+
+    const fetchAll = async (
+      target: string,
+      symbols: string[],
+    ): Promise<ParsedRates> => {
+      const result = await Promise.all(
+        chunkDateRange(timeframe, MAX_RANGE).map(range =>
+          fetch(target, symbols, range[0], range[range.length - 1]),
+        ),
+      )
+      return result.flat()
+    }
+
     if (currencies.length === 1) {
-      return fetch(currencies[0], [base])
+      return fetchAll(currencies[0], [base])
     } else {
-      return fetch(base, currencies)
+      return fetchAll(base, currencies)
     }
   }
 
