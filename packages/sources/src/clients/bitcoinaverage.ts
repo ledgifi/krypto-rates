@@ -205,7 +205,6 @@ export class BitcoinAverageSource implements RateSource {
     sourceData: any,
   ): ParsedRate {
     const { market: parsedMarket, inverse } = parseMarket(market, base)
-    if (inverse) value **= -1
     return {
       source: BitcoinAverageSource.id,
       market: parsedMarket,
