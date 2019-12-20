@@ -19,7 +19,7 @@
     "lint:fix": "eslint --fix --ext .ts src"
   },
   "dependencies": {
-    "@prisma/photon": "^2.0.0-preview018.2",
+    "@prisma/photon": "^2.0.0-preview019",
     "@raptorsystems/krypto-rates-common": "^1.0.3",
     "@raptorsystems/krypto-rates-sources": "^1.0.3",
     "@raptorsystems/krypto-rates-utils": "^1.0.0",
