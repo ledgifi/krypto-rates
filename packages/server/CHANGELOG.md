@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-server@1.1.3...@raptorsystems/krypto-rates-server@1.2.0) (2019-12-23)
+
+
+### Bug Fixes
+
+* **api:** fix rate parse when rate is inverse ([1c9bf8a](https://github.com/raptorsystems/krypto-rates/commit/1c9bf8aee373cb3cf4f7c490cd2ab252bbe23e0e))
+
+
+### Features
+
+* **api:** add markets and currencies resolvers ([154484a](https://github.com/raptorsystems/krypto-rates/commit/154484a8095027bf0d66e31c745fc7c1ab562d49))
+* **resolvers:** add optional `since` arg on liveRate resolvers ([6ad9205](https://github.com/raptorsystems/krypto-rates/commit/6ad9205a8940c9e76b6cf8c0ce12ad65dede3fdc))
+
+
+
+
+
 ## [1.1.3](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-server@1.1.2...@raptorsystems/krypto-rates-server@1.1.3) (2019-12-18)
 
 **Note:** Version bump only for package @raptorsystems/krypto-rates-server

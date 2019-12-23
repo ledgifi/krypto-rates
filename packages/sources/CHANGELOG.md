@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-sources@1.0.3...@raptorsystems/krypto-rates-sources@1.1.0) (2019-12-23)
+
+
+### Bug Fixes
+
+* **coinlayer:** fix implementation ([020582a](https://github.com/raptorsystems/krypto-rates/commit/020582a0f19abcb79758515a28123906a09d39e6))
+* **sources:** don't invert value on bitcoinaverage on inv market ([9c0b249](https://github.com/raptorsystems/krypto-rates/commit/9c0b249cbed6493c15642d7ff08a65d7c11b182e))
+* **sources:** handle max timeframe for coinlayer & currencylayer ([2e42bd2](https://github.com/raptorsystems/krypto-rates/commit/2e42bd2af5938c8f83830d6939c35863daeba22c))
+
+
+### Features
+
+* **api:** add markets and currencies resolvers ([154484a](https://github.com/raptorsystems/krypto-rates/commit/154484a8095027bf0d66e31c745fc7c1ab562d49))
+
+
+
+
+
 ## [1.0.3](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-sources@1.0.2...@raptorsystems/krypto-rates-sources@1.0.3) (2019-12-17)
 
 **Note:** Version bump only for package @raptorsystems/krypto-rates-sources

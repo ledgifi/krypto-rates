@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.4](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-python@1.1.3...@raptorsystems/krypto-rates-python@1.1.4) (2019-12-23)
+
+**Note:** Version bump only for package @raptorsystems/krypto-rates-python
+
+
+
+
+
 ## [1.1.3](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-python@1.1.2...@raptorsystems/krypto-rates-python@1.1.3) (2019-12-18)
 
 **Note:** Version bump only for package @raptorsystems/krypto-rates-python

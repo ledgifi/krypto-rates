@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.4](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-client@1.1.3...@raptorsystems/krypto-rates-client@1.1.4) (2019-12-23)
+
+
+### Bug Fixes
+
+* **js-client:** `rate.timestamp` is already a string on timeframe ([d97c0bf](https://github.com/raptorsystems/krypto-rates/commit/d97c0bf7f425f915a303e5a5b449e3ae6cd4969e))
+* **js-client:** use correct Rate and Rates api return types ([d40a990](https://github.com/raptorsystems/krypto-rates/commit/d40a9903487a0e0111d6ab3f465b0af3fcd564f7))
+
+
+
+
+
 ## [1.1.3](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-client@1.1.2...@raptorsystems/krypto-rates-client@1.1.3) (2019-12-18)
 
 
