@@ -181,8 +181,8 @@ export async function fetchRatesTimeframe({
     const missingRateGroups = await Promise.all(
       missingTimeframes.map(timeframe => fetchDB(missingQuotes, timeframe)),
     )
-    const missingRates = missingRateGroups.flatMap(ratesGroup =>
-      ratesGroup.filter(dailyFilter).map(rate => parsePrismaRate(base, rate)),
+    const missingRates = missingRateGroups.flatMap(rates =>
+      rates.filter(dailyFilter).map(rate => parsePrismaRate(base, rate)),
     )
     rates = [...rates, ...missingRates]
     missingMarketDates = marketDates.filter(
