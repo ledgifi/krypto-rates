@@ -90,7 +90,8 @@ export function consecutiveTimeframes(iterable: Date[]): Timeframe<Date>[] {
 
 export function dailyFilter({ timestamp }: { timestamp: Date }): boolean {
   const date = moment(timestamp)
-  return date.isSame(date.startOf('day'))
+  const startOfDate = moment(timestamp).startOf('day')
+  return date.isSame(startOfDate)
 }
 
 // https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_chunk
