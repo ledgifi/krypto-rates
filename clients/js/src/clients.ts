@@ -178,7 +178,7 @@ export class KryptoRates extends Client {
     const rates = await this.api.fetchTimeframeRates(markets, timeframe)
     return new Map(
       rates.map(rate => [
-        rate.timestamp.toISOString().split('T')[0],
+        rate.timestamp.split('T')[0],
         parseMoney(rate, inverse),
       ]),
     )
