@@ -9,9 +9,6 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "tsc --build",
-    "prebuild": "yarn clean",
-    "clean": "rimraf dist tsconfig.tsbuildinfo",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --fix --ext .ts src"
   },
