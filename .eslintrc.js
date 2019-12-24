@@ -4,6 +4,8 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2019,
     sourceType: 'module',
+    tsconfigRootDir: __dirname,
+    project: ['./packages/*/tsconfig.json', './clients/*/tsconfig.json'],
   },
   extends: [
     // Base ESLint recommended rules
@@ -15,7 +17,6 @@ module.exports = {
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     // Prettier, provided by 'eslint-config-prettier'.
     // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#usage-with-prettier
-    'prettier',
     'prettier/@typescript-eslint',
     'plugin:prettier/recommended',
   ],
@@ -23,9 +24,5 @@ module.exports = {
     // Required to apply rules which need type information
     '@typescript-eslint'
   ],
-  rules: {
-  //   'require-atomic-updates': 'off',
-  //   '@typescript-eslint/explicit-function-return-type': 'off',
-    // '@typescript-eslint/camelcase': 'off',
-  },
+  rules: {},
 }
