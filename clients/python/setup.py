@@ -17,7 +17,7 @@ DESCRIPTION = "Krypto Rates Python Client"
 URL = "https://github.com/snake575/krypto-rates"
 EMAIL = "raptor@raptorsystems.cl"
 AUTHOR = "Raptor Systems SpA"
-REQUIRES_PYTHON = ">=3.8.0"
+REQUIRES_PYTHON = ">=3.7.0"
 VERSION = None
 
 # What packages are required for this module to be executed?
@@ -80,6 +80,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",

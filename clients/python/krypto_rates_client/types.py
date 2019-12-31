@@ -1,5 +1,7 @@
 from datetime import datetime
-from typing import Iterable, List, TypedDict, Union
+from typing import Iterable, List, Union
+
+from typing_extensions import TypedDict
 
 __all__ = [
     "Currency",
