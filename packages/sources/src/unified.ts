@@ -43,19 +43,16 @@ export class UnifiedSource extends RateSource {
     return new source()
   }
 
-  private getSource(market: Market): RateSource {
-    let source = RateSourceByMarket.get(market.id)
-    if (!source) source = RateSourceByMarket.get(market.inverse.id)
-    if (!source) throw `Market ${market.code} is not supported`
-    return new source()
+  private getSource(market: Market): RateSource | undefined {
+    const source = RateSourceByMarket.get(market.id)
+    if (source) return new source()
   }
 
   private buildResponse(base: Currency, rates: ParsedRates): ParsedRates {
     return rates.map(rate => {
       const { market: parsedMarket, inverse } = parseMarket(rate.market, base)
-      if (parsedMarket !== rate.market) {
+      if (inverse) {
         rate.market = parsedMarket
-        rate.inverse = inverse
         rate.value **= -1
       }
       return rate
