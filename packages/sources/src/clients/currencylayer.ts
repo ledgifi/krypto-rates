@@ -6,11 +6,11 @@ import { Currency, ParsedRate, ParsedRates, Timeframe } from '../types'
 import { chunkDateRange, parseMarket } from '../utils'
 import { createClient } from './client'
 
-export class CurrencyLayerSource implements RateSource {
+export class CurrencylayerSource implements RateSource {
   public static id = 'currencylayer.com'
 
   public get client(): AxiosInstance {
-    const client = createClient(CurrencyLayerSource.id, {
+    const client = createClient(CurrencylayerSource.id, {
       baseURL: 'https://apilayer.net/api/',
       timeout: 10000,
     })
@@ -30,7 +30,7 @@ export class CurrencyLayerSource implements RateSource {
   ): Promise<ParsedRates> {
     const {
       data: { quotes = {}, timestamp },
-    } = await this.client.get<CurrencyLayerLive>('live', {
+    } = await this.client.get<CurrencylayerLive>('live', {
       params: {
         source: base,
         currencies: currencies.join(','),
@@ -48,7 +48,7 @@ export class CurrencyLayerSource implements RateSource {
   ): Promise<ParsedRates> {
     const {
       data: { quotes = {} },
-    } = await this.client.get<CurrencyLayerHistorical>('historical', {
+    } = await this.client.get<CurrencylayerHistorical>('historical', {
       params: {
         source: base,
         currencies: currencies.join(','),
@@ -68,7 +68,7 @@ export class CurrencyLayerSource implements RateSource {
     const fetch = async (start: Date, end: Date): Promise<ParsedRates> => {
       const {
         data: { quotes = {} },
-      } = await this.client.get<CurrencyLayerTimeframe>('timeframe', {
+      } = await this.client.get<CurrencylayerTimeframe>('timeframe', {
         params: {
           source: base,
           currencies: currencies.join(','),
@@ -102,7 +102,7 @@ export class CurrencyLayerSource implements RateSource {
   ): ParsedRate {
     const { market, inverse } = parseMarket(marketCode, base)
     return {
-      source: CurrencyLayerSource.id,
+      source: CurrencylayerSource.id,
       sourceData: { [market.code]: value },
       market,
       timestamp: moment.utc(timestamp).toDate(),
@@ -112,25 +112,25 @@ export class CurrencyLayerSource implements RateSource {
   }
 }
 
-interface CurrencyLayerError {
+interface CurrencylayerError {
   code: number
   type: string
   info?: string
 }
 
-type CurrencyLayerRates = { [market: string]: number }
+type CurrencylayerRates = { [market: string]: number }
 
-interface CurrencyLayerLive {
+interface CurrencylayerLive {
   success: boolean
   terms: string
   privacy: string
   timestamp: number
   source: string
-  quotes: CurrencyLayerRates
-  error?: CurrencyLayerError
+  quotes: CurrencylayerRates
+  error?: CurrencylayerError
 }
 
-interface CurrencyLayerHistorical {
+interface CurrencylayerHistorical {
   success: boolean
   terms: string
   privacy: string
@@ -138,11 +138,11 @@ interface CurrencyLayerHistorical {
   date: string
   timestamp: number
   source: string
-  quotes: CurrencyLayerRates
-  error?: CurrencyLayerError
+  quotes: CurrencylayerRates
+  error?: CurrencylayerError
 }
 
-interface CurrencyLayerTimeframe {
+interface CurrencylayerTimeframe {
   success: boolean
   terms: string
   privacy: string
@@ -150,6 +150,6 @@ interface CurrencyLayerTimeframe {
   start_date: string
   end_date: string
   source: string
-  quotes: { [date: string]: CurrencyLayerRates }
-  error?: CurrencyLayerError
+  quotes: { [date: string]: CurrencylayerRates }
+  error?: CurrencylayerError
 }

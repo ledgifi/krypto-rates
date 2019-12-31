@@ -6,14 +6,14 @@ import yaml from 'js-yaml'
 import path from 'path'
 import { BitcoinAverageSource } from './clients/bitcoinaverage'
 import { CoinlayerSource } from './clients/coinlayer'
-import { CurrencyLayerSource } from './clients/currencylayer'
+import { CurrencylayerSource } from './clients/currencylayer'
 import { RateSource } from './models'
 import { Currency } from './types'
 
 export const RateSourceById = new Map<string, { new (): RateSource }>([
   [BitcoinAverageSource.id, BitcoinAverageSource],
   [CoinlayerSource.id, CoinlayerSource],
-  [CurrencyLayerSource.id, CurrencyLayerSource],
+  [CurrencylayerSource.id, CurrencylayerSource],
 ])
 
 const loadMarketsConfig = (): { [market: string]: string } =>
