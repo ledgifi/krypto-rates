@@ -1,6 +1,6 @@
 {
   "name": "@raptorsystems/krypto-rates-utils",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Krypto Rates Utils Library",
   "author": {
     "name": "Raptor Systems SpA",
@@ -13,7 +13,7 @@
     "lint:fix": "eslint --fix --ext .ts src"
   },
   "dependencies": {
-    "@raptorsystems/krypto-rates-common": "^1.0.4",
+    "@raptorsystems/krypto-rates-common": "^1.0.5",
     "dotenv": "^8.2.0",
     "find-yarn-workspace-root": "^1.2.1",
     "lodash": "^4.17.15",

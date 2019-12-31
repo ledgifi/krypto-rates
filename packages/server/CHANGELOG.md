@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-server@1.2.0...@raptorsystems/krypto-rates-server@1.2.1) (2019-12-31)
+
+
+### Bug Fixes
+
+* **api:** check for undefined rate before parse on fetchers ([feb60b5](https://github.com/raptorsystems/krypto-rates/commit/feb60b5f4c938c60dc35d0d80e3e28a03bc19614))
+
+
+
+
+
 # [1.2.0](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-server@1.1.3...@raptorsystems/krypto-rates-server@1.2.0) (2019-12-23)
 
 

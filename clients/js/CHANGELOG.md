@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.5](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-client@1.1.4...@raptorsystems/krypto-rates-client@1.1.5) (2019-12-31)
+
+**Note:** Version bump only for package @raptorsystems/krypto-rates-client
+
+
+
+
+
 ## [1.1.4](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-client@1.1.3...@raptorsystems/krypto-rates-client@1.1.4) (2019-12-23)
 
 

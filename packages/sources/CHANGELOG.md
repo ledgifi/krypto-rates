@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.1](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-sources@1.1.0...@raptorsystems/krypto-rates-sources@1.1.1) (2019-12-31)
+
+
+### Bug Fixes
+
+* **coinlayer:** dont flip base and currencies for single currency ([94bc03d](https://github.com/raptorsystems/krypto-rates/commit/94bc03dc9156a47914ddd1ca10c06fe5630ed232))
+* **sources:** use configured market on fetch ([7f98496](https://github.com/raptorsystems/krypto-rates/commit/7f9849614311b80658d293c1946da4336ebd1390))
+
+
+
+
+
 # [1.1.0](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-sources@1.0.3...@raptorsystems/krypto-rates-sources@1.1.0) (2019-12-23)
 
 
