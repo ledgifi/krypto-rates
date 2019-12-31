@@ -115,8 +115,10 @@ export class CurrencyLayerSource implements RateSource {
 interface CurrencyLayerError {
   code: number
   type: string
-  info: string
+  info?: string
 }
+
+type CurrencyLayerRates = { [market: string]: number }
 
 interface CurrencyLayerLive {
   success: boolean
@@ -124,7 +126,7 @@ interface CurrencyLayerLive {
   privacy: string
   timestamp: number
   source: string
-  quotes: { [key: string]: number }
+  quotes: CurrencyLayerRates
   error?: CurrencyLayerError
 }
 
@@ -136,7 +138,7 @@ interface CurrencyLayerHistorical {
   date: string
   timestamp: number
   source: string
-  quotes: { [key: string]: number }
+  quotes: CurrencyLayerRates
   error?: CurrencyLayerError
 }
 
@@ -148,6 +150,6 @@ interface CurrencyLayerTimeframe {
   start_date: string
   end_date: string
   source: string
-  quotes: { [key: string]: { [key: string]: number } }
+  quotes: { [date: string]: CurrencyLayerRates }
   error?: CurrencyLayerError
 }
