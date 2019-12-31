@@ -64,7 +64,7 @@ export async function fetchRate({
   }
 
   // Return requested rate
-  return parseRate(rate)
+  return rate && parseRate(rate)
 }
 
 export async function fetchRates({
@@ -121,7 +121,7 @@ export async function fetchRates({
   data.map(item => logCreate(item))
 
   // Return all requested rates
-  return [...rates, ...missingRates].map(rate => parseRate(rate))
+  return [...rates, ...missingRates].map(rate => rate && parseRate(rate))
 }
 
 export async function fetchRatesTimeframe({
@@ -222,5 +222,5 @@ export async function fetchRatesTimeframe({
   data.map(item => logCreate(item))
 
   // Return all requested rates
-  return [...rates, ...missingRates].map(rate => parseRate(rate))
+  return [...rates, ...missingRates].map(rate => rate && parseRate(rate))
 }
