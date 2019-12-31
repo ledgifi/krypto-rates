@@ -43,11 +43,7 @@ export class CoinlayerSource implements RateSource {
       return parse(data, target)
     }
 
-    if (currencies.length === 1) {
-      return fetch(currencies[0], [base])
-    } else {
-      return fetch(base, currencies)
-    }
+    return fetch(base, currencies)
   }
 
   public async fetchHistorical(
@@ -71,11 +67,7 @@ export class CoinlayerSource implements RateSource {
       return parse(data, target)
     }
 
-    if (currencies.length === 1) {
-      return fetch(currencies[0], [base])
-    } else {
-      return fetch(base, currencies)
-    }
+    return fetch(base, currencies)
   }
 
   public async fetchTimeframe(
@@ -122,11 +114,7 @@ export class CoinlayerSource implements RateSource {
       return result.flat()
     }
 
-    if (currencies.length === 1) {
-      return fetchAll(currencies[0], [base])
-    } else {
-      return fetchAll(base, currencies)
-    }
+    return fetchAll(base, currencies)
   }
 
   private parseRate(
@@ -150,7 +138,7 @@ export class CoinlayerSource implements RateSource {
 interface CoinlayerError {
   code: number
   type: string
-  info: string
+  info?: string
 }
 
 type CoinlayerRates = { [symbol: string]: number }
