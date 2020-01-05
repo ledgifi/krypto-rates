@@ -43,7 +43,10 @@ export class CoinlayerSource implements RateSource {
       return parse(data, target)
     }
 
-    return fetch(base, currencies)
+    const rates = await Promise.all(
+      currencies.map(quote => fetch(quote, [base])),
+    )
+    return rates.flat()
   }
 
   public async fetchHistorical(
@@ -67,7 +70,10 @@ export class CoinlayerSource implements RateSource {
       return parse(data, target)
     }
 
-    return fetch(base, currencies)
+    const rates = await Promise.all(
+      currencies.map(quote => fetch(quote, [base])),
+    )
+    return rates.flat()
   }
 
   public async fetchTimeframe(
@@ -114,7 +120,10 @@ export class CoinlayerSource implements RateSource {
       return result.flat()
     }
 
-    return fetchAll(base, currencies)
+    const rates = await Promise.all(
+      currencies.map(quote => fetchAll(quote, [base])),
+    )
+    return rates.flat()
   }
 
   private parseRate(
