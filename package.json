@@ -29,19 +29,19 @@
     "@types/crypto-js": "^3.1.43",
     "@types/graphql-iso-date": "^3.3.3",
     "@types/js-yaml": "^3.12.1",
-    "@types/node": "^12.12.21",
+    "@types/node": "^12.12.24",
     "@types/ws": "^6.0.4",
-    "@typescript-eslint/eslint-plugin": "^2.12.0",
-    "@typescript-eslint/parser": "^2.12.0",
+    "@typescript-eslint/eslint-plugin": "^2.15.0",
+    "@typescript-eslint/parser": "^2.15.0",
     "cross-env": "^6.0.3",
-    "eslint": "^6.7.2",
-    "eslint-config-prettier": "^6.7.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-prettier": "^3.1.2",
-    "lerna": "^3.19.0",
+    "lerna": "^3.20.2",
     "prettier": "^1.19.1",
     "prisma2": "^2.0.0-preview019",
     "rimraf": "^3.0.0",
     "ts-node-dev": "^1.0.0-pre.44",
-    "typescript": "~3.7.3"
+    "typescript": "~3.7.4"
   }
 }
