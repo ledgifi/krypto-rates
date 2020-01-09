@@ -1,4 +1,4 @@
-import { ApolloError } from 'apollo-server'
+import { ApolloError } from 'apollo-server-core'
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios'
 
 export class RateSourceError extends ApolloError {
