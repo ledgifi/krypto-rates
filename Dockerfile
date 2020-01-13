@@ -6,6 +6,7 @@ COPY package.json lerna.json yarn.lock ./
 COPY packages/common/package.json packages/common/
 COPY packages/server/package.json packages/server/
 COPY packages/sources/package.json packages/sources/
+COPY packages/utils/package.json packages/utils/
 
 RUN yarn install
 
