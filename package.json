@@ -25,14 +25,14 @@
     "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check"
   },
   "devDependencies": {
-    "@prisma/sdk": "^0.0.105",
+    "@prisma/sdk": "^0.0.133",
     "@types/crypto-js": "^3.1.43",
     "@types/graphql-iso-date": "^3.3.3",
     "@types/js-yaml": "^3.12.1",
     "@types/node": "^12.12.24",
     "@types/ws": "^6.0.4",
-    "@typescript-eslint/eslint-plugin": "^2.15.0",
-    "@typescript-eslint/parser": "^2.15.0",
+    "@typescript-eslint/eslint-plugin": "^2.16.0",
+    "@typescript-eslint/parser": "^2.16.0",
     "cross-env": "^6.0.3",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
