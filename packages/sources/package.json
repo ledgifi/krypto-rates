@@ -16,7 +16,7 @@
     "@raptorsystems/krypto-rates-common": "^1.0.5",
     "@raptorsystems/krypto-rates-utils": "^1.0.2",
     "apollo-server-core": "^2.9.16",
-    "axios": "^0.19.1",
+    "axios": "^0.19.2",
     "crypto-js": "^3.1.9-1",
     "js-yaml": "^3.13.1",
     "moment": "^2.24.0"
