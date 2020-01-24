@@ -1,18 +1,18 @@
-import { Photon } from '@prisma/photon'
+import { PrismaClient } from '@prisma/client'
 import { RateSource } from '@raptorsystems/krypto-rates-sources/models'
 import { UnifiedSource } from '@raptorsystems/krypto-rates-sources/unified'
 
-const photon = new Photon()
+const prisma = new PrismaClient()
 const ratesSource = new UnifiedSource()
 
 export interface Context {
-  photon: Photon
+  prisma: PrismaClient
   ratesSource: RateSource
 }
 
 export function createContext(): Context {
   return {
-    photon,
+    prisma,
     ratesSource,
   }
 }

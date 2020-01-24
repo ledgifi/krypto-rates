@@ -115,7 +115,7 @@ export const Query = queryType({
           ctx,
           market,
           fetchDB: market =>
-            ctx.photon.rates.findMany({
+            ctx.prisma.rates.findMany({
               where: { market, timestamp: { gte: date } },
             }),
           fetchSource: (base, quotes) =>
@@ -142,7 +142,7 @@ export const Query = queryType({
           ctx,
           markets,
           fetchDB: markets =>
-            ctx.photon.rates.findMany({
+            ctx.prisma.rates.findMany({
               where: { market: { in: markets }, timestamp: { gte: date } },
             }),
           fetchSource: (base, quotes) =>
@@ -163,7 +163,7 @@ export const Query = queryType({
           ctx,
           market,
           fetchDB: market =>
-            ctx.photon.rates.findMany({
+            ctx.prisma.rates.findMany({
               where: { market, timestamp: date },
             }),
           fetchSource: (base, quotes) =>
@@ -184,7 +184,7 @@ export const Query = queryType({
           ctx,
           markets,
           fetchDB: markets =>
-            ctx.photon.rates.findMany({
+            ctx.prisma.rates.findMany({
               where: { market: { in: markets }, timestamp: date },
             }),
           fetchSource: (base, quotes) =>
@@ -206,7 +206,7 @@ export const Query = queryType({
           markets,
           timeframe,
           fetchDB: (markets, { start, end }) =>
-            ctx.photon.rates.findMany({
+            ctx.prisma.rates.findMany({
               where: {
                 market: { in: markets },
                 timestamp: { gte: start, lte: end },

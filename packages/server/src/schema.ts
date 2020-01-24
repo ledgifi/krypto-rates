@@ -9,7 +9,7 @@ export const schema = makeSchema({
   plugins: [
     nexusPrismaPlugin({
       inputs: {
-        photon: path.join(workspaceRoot, 'node_modules/@prisma/photon'),
+        prismaClient: path.join(workspaceRoot, 'node_modules/@prisma/client'),
       },
     }),
   ],
@@ -31,8 +31,8 @@ export const schema = makeSchema({
     },
     sources: [
       {
-        source: '@prisma/photon',
-        alias: 'photon',
+        source: '@prisma/client',
+        alias: 'prisma',
       },
       {
         source: '@raptorsystems/krypto-rates-common/types',

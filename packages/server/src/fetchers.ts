@@ -1,4 +1,4 @@
-import { Rate as PrismaRate } from '@prisma/photon'
+import { Rate as PrismaRate } from '@prisma/client'
 import { Market } from '@raptorsystems/krypto-rates-common/market'
 import {
   MarketArg,
@@ -19,7 +19,7 @@ import {
 } from './utils'
 
 export async function fetchRate({
-  ctx: { photon },
+  ctx: { prisma },
   market: { base, quote },
   fetchDB,
   fetchSource,
@@ -55,7 +55,7 @@ export async function fetchRate({
 
       if (rate) {
         // Write missing rate on DB
-        const data = await photon.rates.create({
+        const data = await prisma.rates.create({
           data: buildPrismaRate(rate),
         })
         logCreate(data)
@@ -68,7 +68,7 @@ export async function fetchRate({
 }
 
 export async function fetchRates({
-  ctx: { photon },
+  ctx: { prisma },
   markets: { base, quotes },
   fetchDB,
   fetchSource,
@@ -115,7 +115,7 @@ export async function fetchRates({
   // Write missing rates on Prisma DB
   const data = await Promise.all(
     missingRates.map(rate =>
-      photon.rates.create({ data: buildPrismaRate(rate) }),
+      prisma.rates.create({ data: buildPrismaRate(rate) }),
     ),
   )
   data.map(item => logCreate(item))
@@ -125,7 +125,7 @@ export async function fetchRates({
 }
 
 export async function fetchRatesTimeframe({
-  ctx: { photon },
+  ctx: { prisma },
   markets: { base, quotes },
   timeframe,
   fetchDB,
@@ -216,7 +216,7 @@ export async function fetchRatesTimeframe({
   // Write missing rates on Prisma DB
   const data = await Promise.all(
     missingRates.map(rate =>
-      photon.rates.create({ data: buildPrismaRate(rate) }),
+      prisma.rates.create({ data: buildPrismaRate(rate) }),
     ),
   )
   data.map(item => logCreate(item))

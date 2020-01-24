@@ -1,7 +1,7 @@
 import {
   Rate as PrismaRate,
   RateCreateInput as PrismaRateCreateInput,
-} from '@prisma/photon'
+} from '@prisma/client'
 import { Market } from '@raptorsystems/krypto-rates-common/market'
 import {
   Currency,
