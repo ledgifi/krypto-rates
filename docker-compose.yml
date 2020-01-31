@@ -1,0 +1,28 @@
+version: '3'
+
+volumes:
+  redis-data:
+
+services:
+  server:
+    build: .
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    ports:
+      - ${PORT:-4000}:${PORT:-4000}
+
+  redis:
+    image: redis:alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    hostname: redis
+    restart: always
+    volumes:
+      - redis-data:/data
+    ports:
+      - ${REDIS_PORT:-6379}:6379
