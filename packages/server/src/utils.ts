@@ -1,53 +1,50 @@
-import {
-  Rate as PrismaRate,
-  RateCreateInput as PrismaRateCreateInput,
-} from '@prisma/client'
 import { Market } from '@raptorsystems/krypto-rates-common/market'
 import {
   Currency,
   ParsedRate,
+  RedisRate,
   Rate,
 } from '@raptorsystems/krypto-rates-common/types'
 import { parseMarket } from '@raptorsystems/krypto-rates-utils'
 
 export * from '@raptorsystems/krypto-rates-utils'
 
-export function parsePrismaRate(
+export function parseRedisRate(
   base: Currency,
-  rate: PrismaRate,
-): Rate<Market> {
-  const {
-    value,
-    timestamp,
-    source,
-    // sourceData,
-    market,
-  } = rate
+  rate: string | null,
+): Rate<Market> | null {
+  if (!rate) return null
+  const { value, date, timestamp, source, sourceData, market } = JSON.parse(
+    rate,
+  ) as RedisRate
   const { market: parsedMarket, inverse } = parseMarket(market, base)
   return {
     value,
+    date,
     timestamp,
     source,
-    // sourceData,
+    sourceData,
     market: parsedMarket,
     inverse,
   }
 }
 
-export const buildPrismaRate = ({
+export const buildRedisRate = ({
+  date,
   timestamp,
   value,
   source,
-  // sourceData,
+  sourceData,
   market,
   inverse,
-}: ParsedRate): PrismaRateCreateInput => {
+}: ParsedRate): RedisRate => {
   if (inverse) market = market.inverse
   return {
+    date,
     timestamp,
     value,
     source,
-    // sourceData,
+    sourceData,
     market: market.id,
   }
 }
@@ -60,8 +57,12 @@ export const parseRate = (rate: ParsedRate): ParsedRate => {
   return rate
 }
 
-export function logCreate(data: PrismaRate): void {
-  console.log(`Rate created on Prisma\n${JSON.stringify(data, undefined, 2)}`)
+export function notEmpty<T>(value: T | null | undefined): value is T {
+  return value !== null && value !== undefined
+}
+
+export function logCreate(data: RedisRate): void {
+  console.log(`Rate set on Redis\n${JSON.stringify(data, undefined, 2)}`)
 }
 
 export function logFetch(data: Rate): void {

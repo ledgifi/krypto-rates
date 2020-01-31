@@ -1,18 +1,15 @@
-import { PrismaClient } from '@prisma/client'
 import { RateSource } from '@raptorsystems/krypto-rates-sources/models'
 import { UnifiedSource } from '@raptorsystems/krypto-rates-sources/unified'
+import { RedisClient } from '@raptorsystems/krypto-rates-common/redis'
 
-const prisma = new PrismaClient()
-const ratesSource = new UnifiedSource()
+const redis = new RedisClient()
+const rates = new UnifiedSource()
 
 export interface Context {
-  prisma: PrismaClient
-  ratesSource: RateSource
+  redis: RedisClient
+  rates: RateSource
 }
 
 export function createContext(): Context {
-  return {
-    prisma,
-    ratesSource,
-  }
+  return { redis, rates }
 }

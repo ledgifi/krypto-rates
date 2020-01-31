@@ -11,15 +11,12 @@
   "scripts": {
     "start": "ts-node -r tsconfig-paths/register --transpile-only src/server",
     "dev": "ts-node-dev -r tsconfig-paths/register --inspect --no-notify --respawn --transpile-only src/server",
-    "generate": "yarn generate:prisma && yarn generate:nexus",
-    "generate:prisma": "prisma2 generate",
+    "generate": "yarn generate:nexus",
     "generate:nexus": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register --transpile-only src/schema",
-    "studio": "prisma2 studio",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --fix --ext .ts src"
   },
   "dependencies": {
-    "@prisma/client": "^2.0.0-preview020.3",
     "@raptorsystems/krypto-rates-common": "^1.0.5",
     "@raptorsystems/krypto-rates-sources": "^1.1.1",
     "@raptorsystems/krypto-rates-utils": "^1.0.2",
@@ -27,9 +24,9 @@
     "chalk": "^3.0.0",
     "graphql": "^14.6.0",
     "graphql-iso-date": "^3.6.1",
+    "ioredis": "^4.14.1",
     "moment": "^2.24.0",
     "nexus": "^0.12.0-rc.9",
-    "nexus-prisma": "^0.8.0",
     "ts-node": "^8.6.2",
     "tsconfig-paths": "^3.9.0"
   }

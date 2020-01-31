@@ -30,7 +30,13 @@ export class CoinlayerSource implements RateSource {
   ): Promise<ParsedRates> {
     const parse = (data: CoinlayerLive, quote: Currency): ParsedRates =>
       Object.entries(data.rates).map(([symbol, value]) =>
-        this.parseRate(symbol + quote, base, data.timestamp * 1000, value),
+        this.parseRate(
+          symbol + quote,
+          base,
+          data.timestamp,
+          data.timestamp,
+          value,
+        ),
       )
 
     const fetch = async (
@@ -56,7 +62,13 @@ export class CoinlayerSource implements RateSource {
   ): Promise<ParsedRates> {
     const parse = (data: CoinlayerHistorical, quote: Currency): ParsedRates =>
       Object.entries(data.rates).map(([symbol, value]) =>
-        this.parseRate(symbol + quote, base, date, value),
+        this.parseRate(
+          symbol + quote,
+          base,
+          date.toISOString(),
+          data.timestamp,
+          value,
+        ),
       )
 
     const fetch = async (
@@ -84,7 +96,7 @@ export class CoinlayerSource implements RateSource {
     const parse = (data: CoinlayerTimeframe, quote: Currency): ParsedRates =>
       Object.entries(data.rates).flatMap(([date, rates]) =>
         Object.entries(rates).map(([symbol, value]) =>
-          this.parseRate(symbol + quote, base, date, value),
+          this.parseRate(symbol + quote, base, date, date, value),
         ),
       )
 
@@ -129,15 +141,26 @@ export class CoinlayerSource implements RateSource {
   private parseRate(
     marketCode: string,
     base: Currency,
-    timestamp: string | number | Date,
+    date: number | string,
+    timestamp: number | string,
     value: number,
   ): ParsedRate {
     const { market, inverse } = parseMarket(marketCode, base)
+    if (typeof date === 'number') {
+      date = moment.unix(date).toISOString()
+    }
+    if (typeof date === 'string') {
+      date = date.slice(0, 10)
+    }
+    if (typeof timestamp === 'string') {
+      timestamp = moment.utc(timestamp).unix()
+    }
     return {
       source: CoinlayerSource.id,
       sourceData: { [market.code]: value },
       market,
-      timestamp: moment.utc(timestamp).toDate(),
+      date,
+      timestamp,
       value,
       inverse,
     }

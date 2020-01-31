@@ -17,7 +17,8 @@ export interface Rate<M = MarketArg> {
   source: string
   sourceData?: any
   value: number
-  timestamp: Date
+  date: string
+  timestamp: number
   inverse: boolean
 }
 
@@ -31,6 +32,15 @@ export interface ParsedMarket {
 export type ParsedRate = Rate<Market>
 
 export type ParsedRates = Rates<Market>
+
+export interface RedisRate {
+  market: string
+  source: string
+  sourceData?: any
+  value: number
+  date: string
+  timestamp: number
+}
 
 export interface Timeframe<T = Date | string> {
   start: T

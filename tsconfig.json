@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
     /* Basic Options */
-    "target": "es2018",  // Node.js 10
+    "target": "es2019",  // Node.js 10
     "module": "commonjs",
     "lib": [
-      "es2018"
+      "es2019"
     ],
     "sourceMap": true,
     "declaration": true,

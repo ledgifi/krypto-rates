@@ -1,24 +1,14 @@
 import { workspaceRoot } from '@raptorsystems/krypto-rates-utils/paths'
 import { makeSchema } from 'nexus'
-import { nexusPrismaPlugin } from 'nexus-prisma'
 import path from 'path'
 import * as types from './resolvers'
 
 export const schema = makeSchema({
   types,
-  plugins: [
-    nexusPrismaPlugin({
-      inputs: {
-        prismaClient: path.join(workspaceRoot, 'node_modules/@prisma/client'),
-      },
-    }),
-  ],
   outputs: {
-    typegen: path.join(
-      workspaceRoot,
-      'node_modules/@types/nexus-prisma-typegen/index.d.ts',
-    ),
+    typegen: path.join(__dirname, '../generated/nexusTypes.gen.ts'),
   },
+  prettierConfig: path.join(workspaceRoot, '.prettierrc'),
   nonNullDefaults: {
     input: true,
     output: true,
@@ -30,10 +20,6 @@ export const schema = makeSchema({
       Date: 'Date',
     },
     sources: [
-      {
-        source: '@prisma/client',
-        alias: 'prisma',
-      },
       {
         source: '@raptorsystems/krypto-rates-common/types',
         alias: 'types',

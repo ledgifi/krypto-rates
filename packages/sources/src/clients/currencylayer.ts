@@ -37,7 +37,7 @@ export class CurrencylayerSource implements RateSource {
       },
     })
     return Object.entries(quotes).map(([market, value]) =>
-      this.parseRate(market, base, timestamp * 1000, value),
+      this.parseRate(market, base, timestamp, timestamp, value),
     )
   }
 
@@ -47,7 +47,7 @@ export class CurrencylayerSource implements RateSource {
     date: Date,
   ): Promise<ParsedRates> {
     const {
-      data: { quotes = {} },
+      data: { quotes = {}, timestamp },
     } = await this.client.get<CurrencylayerHistorical>('historical', {
       params: {
         source: base,
@@ -56,7 +56,7 @@ export class CurrencylayerSource implements RateSource {
       },
     })
     return Object.entries(quotes).map(([market, value]) =>
-      this.parseRate(market, base, date, value),
+      this.parseRate(market, base, date.toISOString(), timestamp, value),
     )
   }
 
@@ -78,7 +78,7 @@ export class CurrencylayerSource implements RateSource {
       })
       const result = Object.entries(quotes).flatMap(([date, rates]) =>
         Object.entries(rates).map(([market, value]) =>
-          this.parseRate(market, base, date, value),
+          this.parseRate(market, base, date, date, value),
         ),
       )
       return result
@@ -97,15 +97,26 @@ export class CurrencylayerSource implements RateSource {
   private parseRate(
     marketCode: string,
     base: Currency,
-    timestamp: string | number | Date,
+    date: number | string,
+    timestamp: number | string,
     value: number,
   ): ParsedRate {
     const { market, inverse } = parseMarket(marketCode, base)
+    if (typeof date === 'number') {
+      date = moment.unix(date).toISOString()
+    }
+    if (typeof date === 'string') {
+      date = date.slice(0, 10)
+    }
+    if (typeof timestamp === 'string') {
+      timestamp = moment.utc(timestamp).unix()
+    }
     return {
       source: CurrencylayerSource.id,
       sourceData: { [market.code]: value },
       market,
-      timestamp: moment.utc(timestamp).toDate(),
+      date,
+      timestamp,
       value,
       inverse,
     }

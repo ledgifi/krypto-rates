@@ -1,51 +1,45 @@
-import { Rate as PrismaRate } from '@prisma/client'
 import { Market } from '@raptorsystems/krypto-rates-common/market'
 import {
   MarketArg,
   MarketsArg,
   ParsedRate,
   ParsedRates,
+  RedisRate,
   Timeframe,
 } from '@raptorsystems/krypto-rates-common/types'
+import moment from 'moment'
 import { Context } from './context'
 import {
-  buildPrismaRate,
+  buildRedisRate,
   consecutiveTimeframes,
-  dailyFilter,
   generateDateRange,
   logCreate,
-  parsePrismaRate,
+  notEmpty,
   parseRate,
+  parseRedisRate,
 } from './utils'
 
 export async function fetchRate({
-  ctx: { prisma },
   market: { base, quote },
   fetchDB,
+  writeDB,
   fetchSource,
 }: {
   market: MarketArg
   ctx: Context
-  fetchDB: (marketId: string) => Promise<PrismaRate[]>
+  fetchDB: (marketId: string) => Promise<string | null>
+  writeDB: (rate: RedisRate) => Promise<any>
   fetchSource: (base: string, quotes: string[]) => Promise<ParsedRates>
 }): Promise<ParsedRate> {
   // Build requested market
   const market = new Market(base, quote)
 
   // Fetch rates from DB and map them to Rate instance
-  const rates = (await fetchDB(market.id)).map(rate =>
-    parsePrismaRate(base, rate),
-  )
-
-  let rate: ParsedRate | undefined = rates[0]
+  let rate = parseRedisRate(base, await fetchDB(market.id))
 
   if (!rate) {
     // If rate is missing, fetch inverse market from DB
-    const missingRates = (await fetchDB(market.inverse.id)).map(rate =>
-      parsePrismaRate(base, rate),
-    )
-
-    rate = missingRates[0]
+    rate = parseRedisRate(base, await fetchDB(market.inverse.id))
 
     if (!rate) {
       // Fetch missing rate from RatesSource
@@ -55,10 +49,9 @@ export async function fetchRate({
 
       if (rate) {
         // Write missing rate on DB
-        const data = await prisma.rates.create({
-          data: buildPrismaRate(rate),
-        })
-        logCreate(data)
+        const redisRate = buildRedisRate(rate)
+        await writeDB(redisRate)
+        logCreate(redisRate)
       }
     }
   }
@@ -68,43 +61,44 @@ export async function fetchRate({
 }
 
 export async function fetchRates({
-  ctx: { prisma },
   markets: { base, quotes },
   fetchDB,
+  writeDB,
   fetchSource,
 }: {
   ctx: Context
   markets: MarketsArg
-  fetchDB: (markets: string[]) => Promise<PrismaRate[]>
+  fetchDB: (markets: string[]) => Promise<(string | null)[]>
+  writeDB: (rates: RedisRate[]) => Promise<any>
   fetchSource: (base: string, quotes: string[]) => Promise<ParsedRates>
 }): Promise<ParsedRates> {
   // Build requested markets
   const markets = quotes.map(quote => new Market(base, quote))
 
-  // Fetch rates from Prisma DB and map them to Rate instances
+  // Fetch rates from Redis DB and map them to Rate instances
   let rates = (await fetchDB(markets.map(m => m.id))).map(rate =>
-    parsePrismaRate(base, rate),
+    parseRedisRate(base, rate),
   )
 
   // Filter for missing markets in DB response
   let missingMarkets = markets.filter(
-    market => !rates.map(r => r.market.id).includes(market.id),
+    market => !rates.map(r => r?.market.id).includes(market.id),
   )
 
   // If there are missing markets, fetch the missing rates from
-  // inverse markets on Prisma DB
+  // inverse markets on Redis DB
   if (missingMarkets.length) {
     const missingRates = (
       await fetchDB(markets.map(m => m.inverse.id))
-    ).map(rate => parsePrismaRate(base, rate))
+    ).map(rate => parseRedisRate(base, rate))
     rates = [...rates, ...missingRates]
     missingMarkets = markets.filter(
-      market => !rates.map(r => r.market.id).includes(market.id),
+      market => !rates.map(r => r?.market.id).includes(market.id),
     )
   }
 
   // Return if no missing markets found
-  if (!missingMarkets.length) return rates
+  if (!missingMarkets.length) return rates.filter(notEmpty)
 
   // Fetch remaining missing markets from RatesSource
   const missingRates = await fetchSource(
@@ -112,23 +106,22 @@ export async function fetchRates({
     missingMarkets.map(market => market.quote),
   )
 
-  // Write missing rates on Prisma DB
-  const data = await Promise.all(
-    missingRates.map(rate =>
-      prisma.rates.create({ data: buildPrismaRate(rate) }),
-    ),
-  )
-  data.map(item => logCreate(item))
+  // Write missing rates on Redis DB
+  const redisRates = missingRates.map(rate => buildRedisRate(rate))
+  await writeDB(redisRates)
+  redisRates.map(item => logCreate(item))
 
   // Return all requested rates
-  return [...rates, ...missingRates].map(rate => rate && parseRate(rate))
+  return [...rates, ...missingRates]
+    .filter(notEmpty)
+    .map(rate => rate && parseRate(rate))
 }
 
 export async function fetchRatesTimeframe({
-  ctx: { prisma },
   markets: { base, quotes },
   timeframe,
   fetchDB,
+  writeDB,
   fetchSource,
 }: {
   ctx: Context
@@ -137,7 +130,8 @@ export async function fetchRatesTimeframe({
   fetchDB: (
     markets: string[],
     timeframe: Timeframe<Date>,
-  ) => Promise<PrismaRate[]>
+  ) => Promise<(string | null)[]>
+  writeDB: (rates: RedisRate[]) => Promise<any>
   fetchSource: (
     base: string,
     quotes: string[],
@@ -151,26 +145,27 @@ export async function fetchRatesTimeframe({
     dates.map(date => ({ market, date })),
   )
 
-  // Fetch rates from Prisma DB and map them to Rate instances
+  // Fetch rates from Redis DB and map them to Rate instances
   let rates = (
     await fetchDB(
       markets.map(m => m.id),
       timeframe,
     )
-  )
-    .filter(dailyFilter)
-    .map(rate => parsePrismaRate(base, rate))
+  ).map(rate => parseRedisRate(base, rate))
 
   // Filter missing market-dates in DB response
   let missingMarketDates = marketDates.filter(
     ({ market, date }) =>
       !rates
-        .map(({ market, timestamp }) => market.code + timestamp)
+        .filter(notEmpty)
+        .map(
+          ({ market, date }) => market.code + moment(date).format('YYYYMMDD'),
+        )
         .includes(market.code + date),
   )
 
   // If there are missing market-dates, fetch the missing rates from
-  // inverse markets on Prisma DB
+  // inverse markets on Redis DB
   if (missingMarketDates.length) {
     const missingTimeframes = consecutiveTimeframes(
       missingMarketDates.map(({ date }) => date),
@@ -182,19 +177,22 @@ export async function fetchRatesTimeframe({
       missingTimeframes.map(timeframe => fetchDB(missingQuotes, timeframe)),
     )
     const missingRates = missingRateGroups.flatMap(rates =>
-      rates.filter(dailyFilter).map(rate => parsePrismaRate(base, rate)),
+      rates.map(rate => parseRedisRate(base, rate)),
     )
     rates = [...rates, ...missingRates]
     missingMarketDates = marketDates.filter(
       ({ market, date }) =>
         !rates
-          .map(({ market, timestamp }) => market.code + timestamp)
+          .filter(notEmpty)
+          .map(
+            ({ market, date }) => market.code + moment(date).format('YYYYMMDD'),
+          )
           .includes(market.code + date),
     )
   }
 
   // Return if no missing market-dates were found
-  if (!missingMarketDates.length) return rates
+  if (!missingMarketDates.length) return rates.filter(notEmpty)
 
   // Fetch missing rates from RatesSource
   const missingQuotes = Array.from(
@@ -209,18 +207,15 @@ export async function fetchRatesTimeframe({
         fetchSource(base, missingQuotes, timeframe),
       ),
     )
-  )
-    .flat()
-    .filter(dailyFilter)
+  ).flat()
 
-  // Write missing rates on Prisma DB
-  const data = await Promise.all(
-    missingRates.map(rate =>
-      prisma.rates.create({ data: buildPrismaRate(rate) }),
-    ),
-  )
-  data.map(item => logCreate(item))
+  // Write missing rates on Redis DB
+  const redisRates = missingRates.map(rate => buildRedisRate(rate))
+  await writeDB(redisRates)
+  redisRates.map(item => logCreate(item))
 
   // Return all requested rates
-  return [...rates, ...missingRates].map(rate => rate && parseRate(rate))
+  return [...rates, ...missingRates]
+    .filter(notEmpty)
+    .map(rate => rate && parseRate(rate))
 }

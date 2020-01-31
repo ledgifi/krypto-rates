@@ -1,10 +1,13 @@
 import { Market } from '@raptorsystems/krypto-rates-common/market'
-import { RateSourceById, RateSourceByMarket } from './mapping'
+import { RedisClient } from '@raptorsystems/krypto-rates-common/redis'
+import { RateSourceById } from './mapping'
 import { RateSource } from './models'
 import { Currency, MarketsByKey, ParsedRates, Timeframe } from './types'
 import { buildMarketsByKey, expandMarkets, parseMarket } from './utils'
 
 export class UnifiedSource extends RateSource {
+  private redis = new RedisClient()
+
   public async fetchLive(
     base: Currency,
     currencies: Currency[],
@@ -43,9 +46,12 @@ export class UnifiedSource extends RateSource {
     return new source()
   }
 
-  private getSource(market: Market): RateSource | undefined {
-    const source = RateSourceByMarket.get(market.id)
-    if (source) return new source()
+  private async getSource(market: Market): Promise<RateSource | undefined> {
+    const sourceId = await this.redis.get(`config:sources:${market.id}`)
+    if (sourceId) {
+      const source = RateSourceById.get(sourceId)
+      if (source) return new source()
+    }
   }
 
   private buildResponse(base: Currency, rates: ParsedRates): ParsedRates {

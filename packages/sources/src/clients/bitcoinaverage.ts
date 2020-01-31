@@ -127,7 +127,8 @@ export class BitcoinAverageSource implements RateSource {
           market,
           base,
           ticker.last,
-          ticker.timestamp * 1000,
+          ticker.timestamp,
+          ticker.timestamp,
           ticker,
         ),
       ),
@@ -158,7 +159,14 @@ export class BitcoinAverageSource implements RateSource {
     )
 
     return responses.map(([market, data]) =>
-      this.parseRate(market, base, data.average, data.time, data),
+      this.parseRate(
+        market,
+        base,
+        data.average,
+        date.toISOString(),
+        data.time,
+        data,
+      ),
     )
   }
 
@@ -192,7 +200,7 @@ export class BitcoinAverageSource implements RateSource {
 
     return responses.flatMap(([market, data]) =>
       data.map(item =>
-        this.parseRate(market, base, item.average, item.time, item),
+        this.parseRate(market, base, item.average, item.time, item.time, item),
       ),
     )
   }
@@ -201,16 +209,27 @@ export class BitcoinAverageSource implements RateSource {
     market: string | Market,
     base: Currency,
     value: number,
+    date: string | number,
     timestamp: string | number,
     sourceData: any,
   ): ParsedRate {
     const { market: parsedMarket, inverse } = parseMarket(market, base)
+    if (typeof date === 'number') {
+      date = moment.unix(date).toISOString()
+    }
+    if (typeof date === 'string') {
+      date = date.slice(0, 10)
+    }
+    if (typeof timestamp === 'string') {
+      timestamp = moment.utc(timestamp).unix()
+    }
     return {
       source: BitcoinAverageSource.id,
-      market: parsedMarket,
-      timestamp: moment.utc(timestamp).toDate(),
-      value,
       sourceData,
+      market: parsedMarket,
+      date,
+      timestamp,
+      value,
       inverse,
     }
   }
