@@ -16,7 +16,6 @@
     "generate": "lerna run generate --parallel",
     "build": "lerna run build",
     "clean": "lerna run clean --parallel",
-    "postinstall": "yarn generate",
     "lerna:version": "lerna version --conventional-commits",
     "lerna:publish": "lerna publish --conventional-commits",
     "prelerna:publish": "yarn build",
