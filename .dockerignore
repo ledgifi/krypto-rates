@@ -1,6 +1,7 @@
 *
 !**/*.json
 !**/*.lock
+!.prettierrc
 
 # config
 !./config
@@ -8,9 +9,12 @@
 # common
 !./packages/common/src
 
+# scripts
+!./packages/scripts/src
+
 # server
 !./packages/server/src
-!./packages/server/prisma
+!./packages/server/generated
 
 # sources
 !./packages/sources/src
