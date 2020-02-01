@@ -3,7 +3,7 @@
  * Do not make changes to this file directly
  */
 
-import * as Context from '../src/context'
+import * as Context from '../context'
 import * as types from '@raptorsystems/krypto-rates-common/types'
 import { core } from 'nexus'
 declare global {
