@@ -8,7 +8,6 @@ import {
   Timeframe,
 } from '@raptorsystems/krypto-rates-common/types'
 import moment from 'moment'
-import { Context } from './context'
 import {
   buildRedisRate,
   consecutiveTimeframes,
@@ -26,7 +25,6 @@ export async function fetchRate({
   fetchSource,
 }: {
   market: MarketArg
-  ctx: Context
   fetchDB: (marketId: string) => Promise<string | null>
   writeDB: (rate: RedisRate) => Promise<any>
   fetchSource: (base: string, quotes: string[]) => Promise<ParsedRates>
@@ -66,7 +64,6 @@ export async function fetchRates({
   writeDB,
   fetchSource,
 }: {
-  ctx: Context
   markets: MarketsArg
   fetchDB: (markets: string[]) => Promise<(string | null)[]>
   writeDB: (rates: RedisRate[]) => Promise<any>
@@ -124,7 +121,6 @@ export async function fetchRatesTimeframe({
   writeDB,
   fetchSource,
 }: {
-  ctx: Context
   markets: MarketsArg
   timeframe: Timeframe<Date>
   fetchDB: (

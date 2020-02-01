@@ -102,7 +102,6 @@ export const Query = queryType({
       },
       resolve: (_root, { market, ttl }, ctx) =>
         fetchRate({
-          ctx,
           market,
           fetchDB: market => ctx.redis.get(`rates:${market}:LIVE`),
           writeDB: rate =>
@@ -125,7 +124,6 @@ export const Query = queryType({
       },
       resolve: async (_root, { markets, ttl }, ctx) =>
         fetchRates({
-          ctx,
           markets,
           fetchDB: markets =>
             ctx.redis.mget(...markets.map(market => `rates:${market}:LIVE`)),
@@ -153,7 +151,6 @@ export const Query = queryType({
       },
       resolve: (_root, { market, date }, ctx) =>
         fetchRate({
-          ctx,
           market,
           fetchDB: market =>
             ctx.redis.get(`rates:${market}:${date.toISOString().slice(0, 10)}`),
@@ -177,7 +174,6 @@ export const Query = queryType({
       },
       resolve: async (_root, { markets, date }, ctx) =>
         fetchRates({
-          ctx,
           markets,
           fetchDB: markets =>
             ctx.redis.mget(
@@ -209,7 +205,6 @@ export const Query = queryType({
       },
       resolve: async (_root, { markets, timeframe }, ctx) =>
         fetchRatesTimeframe({
-          ctx,
           markets,
           timeframe,
           fetchDB: (markets, timeframe) =>
