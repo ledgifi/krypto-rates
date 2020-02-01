@@ -8,7 +8,10 @@ export const schema = makeSchema({
   outputs: {
     typegen: path.join(__dirname, 'generated/nexusTypes.gen.ts'),
   },
-  prettierConfig: path.join(workspaceRoot, '.prettierrc'),
+  prettierConfig:
+    process.env.NODE_ENV === 'development'
+      ? path.join(workspaceRoot, '.prettierrc')
+      : undefined,
   nonNullDefaults: {
     input: true,
     output: true,
