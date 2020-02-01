@@ -3,14 +3,8 @@ dotenv.config()
 
 import { ApolloServer } from 'apollo-server'
 import chalk from 'chalk'
-import { createContext } from './context'
-import { schema } from './schema'
+import { config } from './config'
 
-new ApolloServer({
-  schema,
-  context: createContext,
-  playground: true,
-  introspection: true,
-})
+new ApolloServer(config)
   .listen({ port: process.env.PORT || 4000 })
   .then(({ url }) => console.log(`Server ready at ${chalk.cyan(url)}`))
