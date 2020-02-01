@@ -20,6 +20,9 @@
       "@raptorsystems/krypto-rates-common/*": [
         "common/src/*"
       ],
+      "@raptorsystems/krypto-rates-core/*": [
+        "core/src/*"
+      ],
       "@raptorsystems/krypto-rates-server/*": [
         "server/src/*"
       ],

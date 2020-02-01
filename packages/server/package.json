@@ -9,24 +9,16 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "ts-node -r tsconfig-paths/register --transpile-only src/server",
-    "dev": "ts-node-dev -r tsconfig-paths/register --inspect --no-notify --respawn --transpile-only src/server",
-    "generate": "yarn generate:nexus",
-    "generate:nexus": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register --transpile-only src/schema",
+    "start": "ts-node -r tsconfig-paths/register --transpile-only main",
+    "dev": "ts-node-dev -r tsconfig-paths/register --inspect --no-notify --respawn --transpile-only main",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --fix --ext .ts src"
   },
   "dependencies": {
-    "@raptorsystems/krypto-rates-common": "^1.0.5",
-    "@raptorsystems/krypto-rates-sources": "^1.1.1",
+    "@raptorsystems/krypto-rates-core": "^1.0.0",
     "@raptorsystems/krypto-rates-utils": "^1.0.2",
     "apollo-server": "^2.9.16",
     "chalk": "^3.0.0",
-    "graphql": "^14.6.0",
-    "graphql-iso-date": "^3.6.1",
-    "ioredis": "^4.14.1",
-    "moment": "^2.24.0",
-    "nexus": "^0.12.0-rc.9",
     "ts-node": "^8.6.2",
     "tsconfig-paths": "^3.9.0"
   }
