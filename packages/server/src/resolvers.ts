@@ -123,8 +123,8 @@ export const Query = queryType({
         markets: arg({ type: MarketsInput }),
         ttl: intArg({ required: false, default: 300 }),
       },
-      resolve: async (_root, { markets, ttl }, ctx) => {
-        return fetchRates({
+      resolve: async (_root, { markets, ttl }, ctx) =>
+        fetchRates({
           ctx,
           markets,
           fetchDB: markets =>
@@ -141,8 +141,7 @@ export const Query = queryType({
             return pipeline.exec()
           },
           fetchSource: (base, quotes) => ctx.rates.fetchLive(base, quotes),
-        })
-      },
+        }),
     })
 
     t.field('historicalRate', {
