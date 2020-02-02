@@ -5,7 +5,11 @@ import {
   ParsedRates,
   Timeframe,
 } from '@raptorsystems/krypto-rates-common/types'
-import { chunkDateRange, parseMarket } from '@raptorsystems/krypto-rates-utils'
+import {
+  chunkDateRange,
+  generateDateRange,
+  parseMarket,
+} from '@raptorsystems/krypto-rates-utils'
 import { AxiosInstance } from 'axios'
 import moment from 'moment'
 import { createClient, RateSourceError } from '../utils'
@@ -101,11 +105,17 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
     // currencylayer timeframe endpoint maximum range is 365 days
     const MAX_RANGE = 365
 
-    const result = await Promise.all(
-      chunkDateRange(timeframe, MAX_RANGE).map(range =>
-        fetch(range[0], range[range.length - 1]),
-      ),
-    )
+    const result = process.env.CURRENCYLAYER_TIMEFRAME
+      ? await Promise.all(
+          chunkDateRange(timeframe, MAX_RANGE).map(range =>
+            fetch(range[0], range[range.length - 1]),
+          ),
+        )
+      : await Promise.all(
+          generateDateRange(timeframe).map(date =>
+            this.fetchHistorical(base, currencies, date),
+          ),
+        )
     return result.flat()
   }
 

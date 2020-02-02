@@ -5,7 +5,11 @@ import {
   ParsedRates,
   Timeframe,
 } from '@raptorsystems/krypto-rates-common/types'
-import { chunkDateRange, parseMarket } from '@raptorsystems/krypto-rates-utils'
+import {
+  chunkDateRange,
+  generateDateRange,
+  parseMarket,
+} from '@raptorsystems/krypto-rates-utils'
 import { AxiosInstance } from 'axios'
 import moment from 'moment'
 import { createClient, RateSourceError } from '../utils'
@@ -153,9 +157,13 @@ export class CoinlayerSource implements RatesSource<CoinlayerRates> {
       return result.flat()
     }
 
-    const rates = await Promise.all(
-      currencies.map(quote => fetchAll(quote, [base])),
-    )
+    const rates = process.env.COINLAYER_TIMEFRAME
+      ? await Promise.all(currencies.map(quote => fetchAll(quote, [base])))
+      : await Promise.all(
+          generateDateRange(timeframe).map(date =>
+            this.fetchHistorical(base, currencies, date),
+          ),
+        )
     return rates.flat()
   }
 

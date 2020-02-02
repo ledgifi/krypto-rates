@@ -176,20 +176,8 @@ export const Query = queryType({
           fetchDB: (markets, timeframe) =>
             ctx.db.fetchRatesTimeframe({ markets, timeframe }),
           writeDB: rates => ctx.db.writeRatesTimeframe({ rates }),
-
-          // TODO: use fetchTimeframe
-          // fetchSource: (base, quotes, timeframe) =>
-          //   ctx.ratesSource.fetchTimeframe(base, quotes, timeframe),
-
-          // ? Uses fetchHistorical concurrently to avoid using fetchTimeframe
-          fetchSource: async (base, quotes, timeframe) => {
-            const rates = await Promise.all(
-              generateDateRange(timeframe).map(date =>
-                ctx.rates.fetchHistorical(base, quotes, date),
-              ),
-            )
-            return rates.flat()
-          },
+          fetchSource: (base, quotes, timeframe) =>
+            ctx.rates.fetchTimeframe(base, quotes, timeframe),
         }),
     })
   },

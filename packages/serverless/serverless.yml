@@ -26,7 +26,9 @@ custom:
       - BAVG_PUBLIC_KEY
       - BAVG_SECRET_KEY
       - CURRENCYLAYER_ACCESS_KEY
+      - CURRENCYLAYER_TIMEFRAME
       - COINLAYER_ACCESS_KEY
+      - COINLAYER_TIMEFRAME
   webpack:
     includeModules: true
     packager: yarn
