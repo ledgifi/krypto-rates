@@ -1,0 +1,27 @@
+{
+  "name": "@raptorsystems/krypto-rates-serverless",
+  "version": "1.0.0",
+  "description": "Krypto Rates Serverless",
+  "author": {
+    "name": "Raptor Systems SpA",
+    "email": "raptor@raptorsystems.cl"
+  },
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev:sls": "serverless offline",
+    "build:sls": "serverless package",
+    "clean": "rimraf dist .serverless",
+    "deploy": "serverless deploy",
+    "deploy:function": "yarn deploy function --function graphql",
+    "analyze": "yarn build:sls --analyze",
+    "logs": "serverless logs --function graphql --tail",
+    "lint": "eslint --ext .ts .",
+    "lint:fix": "eslint --fix --ext .ts ."
+  },
+  "dependencies": {
+    "@raptorsystems/krypto-rates-core": "^1.0.0",
+    "@raptorsystems/krypto-rates-utils": "^1.0.2",
+    "apollo-server-lambda": "^2.9.16"
+  }
+}
