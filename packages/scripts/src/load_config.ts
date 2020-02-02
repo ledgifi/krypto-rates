@@ -31,20 +31,20 @@ const buildCurrencies = (config: MarketsConfig): string[] =>
   )
 
 async function main(configPath = 'config/markets.yml'): Promise<void> {
-  try {
-    const redis = new RedisRatesDb()
-    const config = loadMarketsConfig(configPath)
-    const sourceByMarket = mapSourceByMarket(config)
-    const currencies = buildCurrencies(config)
-    await Promise.all([
-      redis.mset(sourceByMarket),
-      redis.set('config:currencies', JSON.stringify(currencies)),
-    ])
-  } catch (error) {
-    console.error(error)
-  }
+  const redis = new RedisRatesDb()
+  const config = loadMarketsConfig(configPath)
+  const sourceByMarket = mapSourceByMarket(config)
+  const currencies = buildCurrencies(config)
+  await Promise.all([
+    redis.mset(sourceByMarket),
+    redis.set('config:currencies', JSON.stringify(currencies)),
+  ])
 }
 
 const args = process.argv.slice(2)
 
-main(args[0])
+try {
+  main(args[0])
+} catch (error) {
+  console.error(error)
+}
