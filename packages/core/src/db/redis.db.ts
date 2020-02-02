@@ -9,9 +9,7 @@ import { RatesDb } from '../types'
 
 const host = process.env.REDIS_URL
 
-const parse = (value: string | null): DbRate => {
-  return value && JSON.parse(value)
-}
+const parse = (value: string | null): DbRate => value && JSON.parse(value)
 
 const key = (...keys: string[]): string => keys.join(':').replace('-', ':')
 
