@@ -1,0 +1,47 @@
+# https://serverless.com/framework/docs/providers/aws/guide/serverless.yml/
+
+service: krypto-rates
+
+app: krypto-rates
+org: raptor
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  memorySize: 128
+  versionFunctions: false
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-webpack
+  - serverless-offline
+
+custom:
+  dotenv:
+    basePath: ../../
+    include:
+      - REDIS_URL
+      - BAVG_PUBLIC_KEY
+      - BAVG_SECRET_KEY
+      - CURRENCYLAYER_ACCESS_KEY
+      - COINLAYER_ACCESS_KEY
+  webpack:
+    includeModules: true
+    packager: yarn
+  serverless-offline:
+    port: ${env:PORT, '4000'}
+
+functions:
+  graphql:
+    handler: handler.graphql
+    events:
+    - http:
+        path: /
+        method: post
+        cors: true
+    - http:
+        path: /
+        method: get
+        cors: true

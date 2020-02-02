@@ -29,6 +29,7 @@
     "@types/ioredis": "^4.14.6",
     "@types/js-yaml": "^3.12.2",
     "@types/node": "^12.12.25",
+    "@types/webpack": "^4.41.3",
     "@types/ws": "^7.2.0",
     "@typescript-eslint/eslint-plugin": "^2.18.0",
     "@typescript-eslint/parser": "^2.18.0",
@@ -40,8 +41,15 @@
     "lerna": "^3.20.2",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.1",
+    "serverless": "^1.62.0",
+    "serverless-dotenv-plugin": "^2.1.1",
+    "serverless-offline": "^5.12.1",
+    "serverless-webpack": "^5.3.1",
+    "ts-loader": "^6.2.1",
     "ts-node-dev": "^1.0.0-pre.44",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "~3.7.5"
+    "typescript": "~3.7.5",
+    "webpack": "^4.41.5",
+    "webpack-bundle-analyzer": "^3.6.0"
   }
 }
