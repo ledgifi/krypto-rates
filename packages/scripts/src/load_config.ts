@@ -15,7 +15,7 @@ const loadMarketsConfig = (configPath: string): MarketsConfig =>
 const mapSourceByMarket = (config: MarketsConfig): Map<string, string> =>
   new Map(
     Object.entries(config).map(([market, source]) => [
-      `config:sources:${market}`.replace('-', ':'),
+      `config:sources:${market}`.replace(/-/g, ':'),
       source,
     ]),
   )

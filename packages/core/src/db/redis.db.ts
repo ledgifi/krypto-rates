@@ -11,7 +11,7 @@ const host = process.env.REDIS_URL
 
 const parse = (value: string | null): DbRate => value && JSON.parse(value)
 
-const key = (...keys: string[]): string => keys.join(':').replace('-', ':')
+const key = (...keys: string[]): string => keys.join(':').replace(/-/g, ':')
 
 const configKey = (...keys: string[]): string => key('config', ...keys)
 
