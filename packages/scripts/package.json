@@ -9,7 +9,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "execute": "yarn ts-node -r tsconfig-paths/register",
+    "execute": "ts-node -r tsconfig-paths/register",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --fix --ext .ts src"
   },
