@@ -157,13 +157,14 @@ export class CoinlayerSource implements RatesSource<CoinlayerRates> {
       return result.flat()
     }
 
-    const rates = process.env.COINLAYER_TIMEFRAME
-      ? await Promise.all(currencies.map(quote => fetchAll(quote, [base])))
-      : await Promise.all(
-          generateDateRange(timeframe).map(date =>
-            this.fetchHistorical(base, currencies, date),
-          ),
-        )
+    const rates =
+      process.env.COINLAYER_TIMEFRAME === 'true'
+        ? await Promise.all(currencies.map(quote => fetchAll(quote, [base])))
+        : await Promise.all(
+            generateDateRange(timeframe).map(date =>
+              this.fetchHistorical(base, currencies, date),
+            ),
+          )
     return rates.flat()
   }
 

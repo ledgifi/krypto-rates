@@ -105,17 +105,18 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
     // currencylayer timeframe endpoint maximum range is 365 days
     const MAX_RANGE = 365
 
-    const result = process.env.CURRENCYLAYER_TIMEFRAME
-      ? await Promise.all(
-          chunkDateRange(timeframe, MAX_RANGE).map(range =>
-            fetch(range[0], range[range.length - 1]),
-          ),
-        )
-      : await Promise.all(
-          generateDateRange(timeframe).map(date =>
-            this.fetchHistorical(base, currencies, date),
-          ),
-        )
+    const result =
+      process.env.CURRENCYLAYER_TIMEFRAME === 'true'
+        ? await Promise.all(
+            chunkDateRange(timeframe, MAX_RANGE).map(range =>
+              fetch(range[0], range[range.length - 1]),
+            ),
+          )
+        : await Promise.all(
+            generateDateRange(timeframe).map(date =>
+              this.fetchHistorical(base, currencies, date),
+            ),
+          )
     return result.flat()
   }
 
