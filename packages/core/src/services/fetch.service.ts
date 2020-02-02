@@ -158,10 +158,8 @@ export class FetcheService {
       ({ market, date }) =>
         !rates
           .filter(notEmpty)
-          .map(
-            ({ market, date }) => market.code + moment(date).format('YYYYMMDD'),
-          )
-          .includes(market.code + date),
+          .map(({ market, date }) => market.code + date)
+          .includes(market.code + date.toISOString().slice(0, 10)),
     )
 
     // If there are missing market-dates, fetch the missing rates from
@@ -186,11 +184,8 @@ export class FetcheService {
         ({ market, date }) =>
           !rates
             .filter(notEmpty)
-            .map(
-              ({ market, date }) =>
-                market.code + moment(date).format('YYYYMMDD'),
-            )
-            .includes(market.code + date),
+            .map(({ market, date }) => market.code + date)
+            .includes(market.code + date.toISOString().slice(0, 10)),
       )
     }
 
