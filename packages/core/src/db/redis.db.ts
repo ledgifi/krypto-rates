@@ -13,6 +13,12 @@ const parse = (value: string | null): DbRate => {
   return value && JSON.parse(value)
 }
 
+const key = (...keys: string[]): string => keys.join(':').replace('-', ':')
+
+const configKey = (...keys: string[]): string => key('config', ...keys)
+
+const ratesKey = (...keys: string[]): string => key('rates', ...keys)
+
 export class RedisRatesDb extends IORedis implements RatesDb {
   public constructor() {
     super(host)
@@ -23,11 +29,11 @@ export class RedisRatesDb extends IORedis implements RatesDb {
   }: {
     market: string
   }): Promise<string | null> {
-    return this.get(`config:sources:${market}`)
+    return this.get(configKey('sources', market))
   }
 
   public async fetchCurrencies(): Promise<string[]> {
-    const result = await this.get(`config:currencies`)
+    const result = await this.get(configKey('currencies'))
     return result && JSON.parse(result)
   }
 
@@ -37,7 +43,7 @@ export class RedisRatesDb extends IORedis implements RatesDb {
     market: string
     ttl: number
   }): Promise<NullableDbRate> {
-    const result = await this.get(`rates:${market}:LIVE`)
+    const result = await this.get(ratesKey(market, 'LIVE'))
     return parse(result)
   }
 
@@ -48,7 +54,7 @@ export class RedisRatesDb extends IORedis implements RatesDb {
     rate: DbRate
     ttl: number
   }): Promise<void> {
-    await this.setex(`rates:${rate.market}:LIVE`, ttl, JSON.stringify(rate))
+    await this.setex(ratesKey(rate.market, 'LIVE'), ttl, JSON.stringify(rate))
   }
 
   public async fetchLiveRates({
@@ -57,7 +63,7 @@ export class RedisRatesDb extends IORedis implements RatesDb {
     markets: string[]
   }): Promise<NullableDbRate[]> {
     const results = await this.mget(
-      ...markets.map(market => `rates:${market}:LIVE`),
+      ...markets.map(market => ratesKey(market, 'LIVE')),
     )
     return results.map(item => parse(item))
   }
@@ -71,7 +77,7 @@ export class RedisRatesDb extends IORedis implements RatesDb {
   }): Promise<void> {
     const pipeline = this.pipeline()
     rates.forEach(rate =>
-      pipeline.setex(`rates:${rate.market}:LIVE`, ttl, JSON.stringify(rate)),
+      pipeline.setex(ratesKey(rate.market, 'LIVE'), ttl, JSON.stringify(rate)),
     )
     await pipeline.exec()
   }
@@ -83,12 +89,12 @@ export class RedisRatesDb extends IORedis implements RatesDb {
     market: string
     date: string
   }): Promise<NullableDbRate> {
-    const result = await this.get(`rates:${market}:${date.slice(0, 10)}`)
+    const result = await this.get(ratesKey(market, date.slice(0, 10)))
     return parse(result)
   }
 
   public async writeHistoricalRate({ rate }: { rate: DbRate }): Promise<void> {
-    await this.set(`rates:${rate.market}:${rate.date}`, JSON.stringify(rate))
+    await this.set(ratesKey(rate.market, rate.date), JSON.stringify(rate))
   }
 
   public async fetchHistoricalRates({
@@ -99,7 +105,7 @@ export class RedisRatesDb extends IORedis implements RatesDb {
     date: string
   }): Promise<NullableDbRate[]> {
     const results = await this.mget(
-      ...markets.map(market => `rates:${market}:${date.slice(0, 10)}`),
+      ...markets.map(market => ratesKey(market, date.slice(0, 10))),
     )
     return results.map(item => parse(item))
   }
@@ -112,7 +118,7 @@ export class RedisRatesDb extends IORedis implements RatesDb {
     await this.mset(
       new Map(
         rates.map(rate => [
-          `rates:${rate.market}:${rate.date}`,
+          ratesKey(rate.market, rate.date),
           JSON.stringify(rate),
         ]),
       ),
@@ -128,8 +134,8 @@ export class RedisRatesDb extends IORedis implements RatesDb {
   }): Promise<NullableDbRate[]> {
     const results = await this.mget(
       ...markets.flatMap(market =>
-        generateDateRange(timeframe).map(
-          date => `rates:${market}:${date.toISOString().slice(0, 10)}`,
+        generateDateRange(timeframe).map(date =>
+          ratesKey(market, date.toISOString().slice(0, 10)),
         ),
       ),
     )
