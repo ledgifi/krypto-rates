@@ -1,9 +1,9 @@
 import { dotenv } from '@raptorsystems/krypto-rates-utils/dotenv'
 dotenv.config()
 
+import { RedisRatesDb } from '@raptorsystems/krypto-rates-core/db/redis.db'
 import { workspaceRoot } from '@raptorsystems/krypto-rates-utils/paths'
 import fs from 'fs'
-import Redis from 'ioredis'
 import yaml from 'js-yaml'
 import path from 'path'
 
@@ -32,7 +32,7 @@ const buildCurrencies = (config: MarketsConfig): string[] =>
 
 async function main(configPath = 'config/markets.yml'): Promise<void> {
   try {
-    const redis = new Redis()
+    const redis = new RedisRatesDb()
     const config = loadMarketsConfig(configPath)
     const sourceByMarket = mapSourceByMarket(config)
     const currencies = buildCurrencies(config)
