@@ -18,7 +18,6 @@ import {
   parseDbRate,
   parseRate,
 } from '@raptorsystems/krypto-rates-utils'
-import moment from 'moment'
 import { logCreate } from '../utils'
 
 export class FetcheService {
