@@ -39,6 +39,7 @@ async function main(configPath = 'config/markets.yml'): Promise<void> {
     redis.mset(sourceByMarket),
     redis.set('config:currencies', JSON.stringify(currencies)),
   ])
+  redis.disconnect()
 }
 
 const args = process.argv.slice(2)
