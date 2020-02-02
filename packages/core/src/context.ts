@@ -1,15 +1,20 @@
-import { RateSource } from '@raptorsystems/krypto-rates-sources/models'
-import { UnifiedSource } from '@raptorsystems/krypto-rates-sources/unified'
-import { RedisClient } from '@raptorsystems/krypto-rates-common/redis'
+import { RedisRatesDb } from './db/redis.db'
+import { FetcheService } from './services/fetch.service'
+import { RatesService } from './services/rates.service'
+import { RatesDb } from './types'
 
-const redis = new RedisClient()
-const rates = new UnifiedSource()
+const db = new RedisRatesDb()
+
+const rates = new RatesService(db)
+
+const fetch = new FetcheService()
 
 export interface Context {
-  redis: RedisClient
-  rates: RateSource
+  db: RatesDb
+  rates: RatesService
+  fetch: FetcheService
 }
 
 export function createContext(): Context {
-  return { redis, rates }
+  return { db, rates, fetch }
 }

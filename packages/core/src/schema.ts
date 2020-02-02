@@ -25,6 +25,14 @@ export const schema = makeSchema({
     sources: [
       {
         source: '@raptorsystems/krypto-rates-common/types',
+        alias: 'commonTypes',
+      },
+      {
+        source: '@raptorsystems/krypto-rates-sources/types',
+        alias: 'sourceTypes',
+      },
+      {
+        source: require.resolve('./types'),
         alias: 'types',
       },
       {

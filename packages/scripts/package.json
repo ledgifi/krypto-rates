@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@raptorsystems/krypto-rates-common": "^1.0.5",
-    "@raptorsystems/krypto-rates-utils": "^1.0.2"
+    "@raptorsystems/krypto-rates-utils": "^1.0.2",
+    "ioredis": "^4.14.1"
   }
 }

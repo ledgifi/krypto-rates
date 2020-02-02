@@ -1,12 +1,17 @@
 /* eslint-disable @typescript-eslint/camelcase */
+import {
+  Currency,
+  ParsedRate,
+  ParsedRates,
+  Timeframe,
+} from '@raptorsystems/krypto-rates-common/types'
+import { chunkDateRange, parseMarket } from '@raptorsystems/krypto-rates-utils'
 import { AxiosInstance } from 'axios'
 import moment from 'moment'
-import { RateSource } from '../models'
-import { Currency, ParsedRate, ParsedRates, Timeframe } from '../types'
-import { chunkDateRange, parseMarket } from '../utils'
-import { createClient } from './client'
+import { createClient, RateSourceError } from '../utils'
+import { RatesSource } from './types'
 
-export class CoinlayerSource implements RateSource {
+export class CoinlayerSource implements RatesSource<CoinlayerRates> {
   public static id = 'coinlayer.com'
 
   public get client(): AxiosInstance {
@@ -24,11 +29,18 @@ export class CoinlayerSource implements RateSource {
     return client
   }
 
+  private handleError({ error }: CoinlayerResponse): void {
+    if (error) throw new RateSourceError(error.info, error)
+  }
+
   public async fetchLive(
     base: Currency,
     currencies: Currency[],
-  ): Promise<ParsedRates> {
-    const parse = (data: CoinlayerLive, quote: Currency): ParsedRates =>
+  ): Promise<ParsedRates<CoinlayerRates>> {
+    const parse = (
+      data: CoinlayerLive,
+      quote: Currency,
+    ): ParsedRates<CoinlayerRates> =>
       Object.entries(data.rates).map(([symbol, value]) =>
         this.parseRate(
           symbol + quote,
@@ -42,10 +54,11 @@ export class CoinlayerSource implements RateSource {
     const fetch = async (
       target: string,
       symbols: string[],
-    ): Promise<ParsedRates> => {
+    ): Promise<ParsedRates<CoinlayerRates>> => {
       const { data } = await this.client.get<CoinlayerLive>('live', {
         params: { target, symbols: symbols.join(',') },
       })
+      this.handleError(data)
       return parse(data, target)
     }
 
@@ -59,8 +72,11 @@ export class CoinlayerSource implements RateSource {
     base: Currency,
     currencies: Currency[],
     date: Date,
-  ): Promise<ParsedRates> {
-    const parse = (data: CoinlayerHistorical, quote: Currency): ParsedRates =>
+  ): Promise<ParsedRates<CoinlayerRates>> {
+    const parse = (
+      data: CoinlayerHistorical,
+      quote: Currency,
+    ): ParsedRates<CoinlayerRates> =>
       Object.entries(data.rates).map(([symbol, value]) =>
         this.parseRate(
           symbol + quote,
@@ -74,11 +90,12 @@ export class CoinlayerSource implements RateSource {
     const fetch = async (
       target: string,
       symbols: string[],
-    ): Promise<ParsedRates> => {
+    ): Promise<ParsedRates<CoinlayerRates>> => {
       const { data } = await this.client.get<CoinlayerHistorical>(
         date.toISOString().slice(0, 10),
         { params: { target, symbols: symbols.join(',') } },
       )
+      this.handleError(data)
       return parse(data, target)
     }
 
@@ -92,8 +109,11 @@ export class CoinlayerSource implements RateSource {
     base: Currency,
     currencies: Currency[],
     timeframe: Timeframe<Date>,
-  ): Promise<ParsedRates> {
-    const parse = (data: CoinlayerTimeframe, quote: Currency): ParsedRates =>
+  ): Promise<ParsedRates<CoinlayerRates>> {
+    const parse = (
+      data: CoinlayerTimeframe,
+      quote: Currency,
+    ): ParsedRates<CoinlayerRates> =>
       Object.entries(data.rates).flatMap(([date, rates]) =>
         Object.entries(rates).map(([symbol, value]) =>
           this.parseRate(symbol + quote, base, date, date, value),
@@ -105,7 +125,7 @@ export class CoinlayerSource implements RateSource {
       symbols: string[],
       start: Date,
       end: Date,
-    ): Promise<ParsedRates> => {
+    ): Promise<ParsedRates<CoinlayerRates>> => {
       const { data } = await this.client.get<CoinlayerTimeframe>('timeframe', {
         params: {
           target,
@@ -114,6 +134,7 @@ export class CoinlayerSource implements RateSource {
           end_date: end.toISOString().slice(0, 10),
         },
       })
+      this.handleError(data)
       return parse(data, target)
     }
 
@@ -123,7 +144,7 @@ export class CoinlayerSource implements RateSource {
     const fetchAll = async (
       target: string,
       symbols: string[],
-    ): Promise<ParsedRates> => {
+    ): Promise<ParsedRates<CoinlayerRates>> => {
       const result = await Promise.all(
         chunkDateRange(timeframe, MAX_RANGE).map(range =>
           fetch(target, symbols, range[0], range[range.length - 1]),
@@ -144,7 +165,7 @@ export class CoinlayerSource implements RateSource {
     date: number | string,
     timestamp: number | string,
     value: number,
-  ): ParsedRate {
+  ): ParsedRate<CoinlayerRates> {
     const { market, inverse } = parseMarket(marketCode, base)
     if (typeof date === 'number') {
       date = moment.unix(date).toISOString()
@@ -167,44 +188,37 @@ export class CoinlayerSource implements RateSource {
   }
 }
 
+export type CoinlayerRates = { [symbol: string]: number }
+
 interface CoinlayerError {
   code: number
   type: string
-  info?: string
+  info: string
 }
 
-type CoinlayerRates = { [symbol: string]: number }
-
-interface CoinlayerLive {
+interface CoinlayerResponse {
   success: boolean
   terms: string
   privacy: string
-  timestamp: number
   target: string
-  rates: CoinlayerRates
   error?: CoinlayerError
 }
 
-interface CoinlayerHistorical {
-  success: boolean
-  terms: string
-  privacy: string
+interface CoinlayerLive extends CoinlayerResponse {
+  timestamp: number
+  rates: CoinlayerRates
+}
+
+interface CoinlayerHistorical extends CoinlayerResponse {
   historical: boolean
   date: string
   timestamp: number
-  target: string
   rates: CoinlayerRates
-  error?: CoinlayerError
 }
 
-interface CoinlayerTimeframe {
-  success: boolean
-  terms: string
-  privacy: string
+interface CoinlayerTimeframe extends CoinlayerResponse {
   timeframe: boolean
   start_date: string
   end_date: string
-  target: string
   rates: { [date: string]: CoinlayerRates }
-  error?: CoinlayerError
 }

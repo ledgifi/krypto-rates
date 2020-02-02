@@ -26,6 +26,9 @@
       "@raptorsystems/krypto-rates-server/*": [
         "server/src/*"
       ],
+      "@raptorsystems/krypto-rates-sources": [
+        "sources/src"
+      ],
       "@raptorsystems/krypto-rates-sources/*": [
         "sources/src/*"
       ],

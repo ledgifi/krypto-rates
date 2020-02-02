@@ -1,16 +1,17 @@
+import { generateDateRange } from '@raptorsystems/krypto-rates-utils'
 import { GraphQLString } from 'graphql'
 import { GraphQLDate } from 'graphql-iso-date'
 import {
   arg,
   core,
   inputObjectType,
+  intArg,
   objectType,
   queryType,
   scalarType,
-  intArg,
 } from 'nexus'
-import { fetchRate, fetchRates, fetchRatesTimeframe } from './fetchers'
-import { generateDateRange } from './utils'
+
+const TTL = parseInt(process.env.RATES_LIVE_TTL ?? '') || 300
 
 // Scalars
 export const Currency = scalarType({
@@ -87,10 +88,7 @@ export const Query = queryType({
   definition(t) {
     t.string('currencies', {
       list: true,
-      resolve: async (_root, _args, ctx) => {
-        const currencies = await ctx.redis.get('config:currencies')
-        return currencies && JSON.parse(currencies)
-      },
+      resolve: (_root, _args, ctx) => ctx.db.fetchCurrencies(),
     })
 
     t.field('liveRate', {
@@ -98,18 +96,13 @@ export const Query = queryType({
       nullable: true,
       args: {
         market: arg({ type: MarketInput }),
-        ttl: intArg({ required: false, default: 300 }),
+        ttl: intArg({ required: false, default: TTL }),
       },
       resolve: (_root, { market, ttl }, ctx) =>
-        fetchRate({
+        ctx.fetch.fetchRate({
           market,
-          fetchDB: market => ctx.redis.get(`rates:${market}:LIVE`),
-          writeDB: rate =>
-            ctx.redis.setex(
-              `rates:${rate.market}:LIVE`,
-              ttl as number,
-              JSON.stringify(rate),
-            ),
+          fetchDB: market => ctx.db.fetchLiveRate({ market, ttl }),
+          writeDB: rate => ctx.db.writeLiveRate({ rate, ttl }),
           fetchSource: (base, quotes) => ctx.rates.fetchLive(base, quotes),
         }),
     })
@@ -120,24 +113,13 @@ export const Query = queryType({
       list: true,
       args: {
         markets: arg({ type: MarketsInput }),
-        ttl: intArg({ required: false, default: 300 }),
+        ttl: intArg({ required: false, default: TTL }),
       },
-      resolve: async (_root, { markets, ttl }, ctx) =>
-        fetchRates({
+      resolve: (_root, { markets, ttl }, ctx) =>
+        ctx.fetch.fetchRates({
           markets,
-          fetchDB: markets =>
-            ctx.redis.mget(...markets.map(market => `rates:${market}:LIVE`)),
-          writeDB: rates => {
-            const pipeline = ctx.redis.pipeline()
-            rates.forEach(rate =>
-              pipeline.setex(
-                `rates:${rate.market}:LIVE`,
-                ttl as number,
-                JSON.stringify(rate),
-              ),
-            )
-            return pipeline.exec()
-          },
+          fetchDB: markets => ctx.db.fetchLiveRates({ markets, ttl }),
+          writeDB: rates => ctx.db.writeLiveRates({ rates, ttl }),
           fetchSource: (base, quotes) => ctx.rates.fetchLive(base, quotes),
         }),
     })
@@ -150,15 +132,11 @@ export const Query = queryType({
         date: dateArg(),
       },
       resolve: (_root, { market, date }, ctx) =>
-        fetchRate({
+        ctx.fetch.fetchRate({
           market,
           fetchDB: market =>
-            ctx.redis.get(`rates:${market}:${date.toISOString().slice(0, 10)}`),
-          writeDB: rate =>
-            ctx.redis.set(
-              `rates:${rate.market}:${rate.date}`,
-              JSON.stringify(rate),
-            ),
+            ctx.db.fetchHistoricalRate({ market, date: date.toISOString() }),
+          writeDB: rate => ctx.db.writeHistoricalRate({ rate }),
           fetchSource: (base, quotes) =>
             ctx.rates.fetchHistorical(base, quotes, date),
         }),
@@ -172,24 +150,12 @@ export const Query = queryType({
         markets: arg({ type: MarketsInput }),
         date: dateArg(),
       },
-      resolve: async (_root, { markets, date }, ctx) =>
-        fetchRates({
+      resolve: (_root, { markets, date }, ctx) =>
+        ctx.fetch.fetchRates({
           markets,
           fetchDB: markets =>
-            ctx.redis.mget(
-              ...markets.map(
-                market => `rates:${market}:${date.toISOString().slice(0, 10)}`,
-              ),
-            ),
-          writeDB: rates =>
-            ctx.redis.mset(
-              new Map(
-                rates.map(rate => [
-                  `rates:${rate.market}:${rate.date}`,
-                  JSON.stringify(rate),
-                ]),
-              ),
-            ),
+            ctx.db.fetchHistoricalRates({ markets, date: date.toISOString() }),
+          writeDB: rates => ctx.db.writeHistoricalRates({ rates }),
           fetchSource: (base, quotes) =>
             ctx.rates.fetchHistorical(base, quotes, date),
         }),
@@ -203,27 +169,13 @@ export const Query = queryType({
         markets: arg({ type: MarketsInput }),
         timeframe: arg({ type: TimeframeInput }),
       },
-      resolve: async (_root, { markets, timeframe }, ctx) =>
-        fetchRatesTimeframe({
+      resolve: (_root, { markets, timeframe }, ctx) =>
+        ctx.fetch.fetchRatesTimeframe({
           markets,
           timeframe,
           fetchDB: (markets, timeframe) =>
-            ctx.redis.mget(
-              ...markets.flatMap(market =>
-                generateDateRange(timeframe).map(
-                  date => `rates:${market}:${date.toISOString().slice(0, 10)}`,
-                ),
-              ),
-            ),
-          writeDB: rates =>
-            ctx.redis.mset(
-              new Map(
-                rates.map(rate => [
-                  `rates:${rate.market}:${rate.date}`,
-                  JSON.stringify(rate),
-                ]),
-              ),
-            ),
+            ctx.db.fetchRatesTimeframe({ markets, timeframe }),
+          writeDB: rates => ctx.db.writeRatesTimeframe({ rates }),
 
           // TODO: use fetchTimeframe
           // fetchSource: (base, quotes, timeframe) =>

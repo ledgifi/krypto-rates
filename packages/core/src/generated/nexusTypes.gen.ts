@@ -4,7 +4,8 @@
  */
 
 import * as Context from '../context'
-import * as types from '@raptorsystems/krypto-rates-common/types'
+import * as commonTypes from '@raptorsystems/krypto-rates-common/types'
+import * as sourceTypes from '@raptorsystems/krypto-rates-sources/types'
 import { core } from 'nexus'
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {
@@ -66,7 +67,7 @@ export interface NexusGenRootTypes {
     quote: string // Currency!
   }
   Query: {}
-  Rate: types.Rate
+  Rate: sourceTypes.Rate
   String: string
   Int: number
   Float: number

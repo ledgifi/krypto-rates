@@ -1,8 +1,24 @@
-import { Market } from '@raptorsystems/krypto-rates-common/market'
-import { Currency } from '@raptorsystems/krypto-rates-common/types'
+import * as types from '@raptorsystems/krypto-rates-common/types'
+import {
+  BitcoinAverageData,
+  BitcoinAverageSource,
+} from './services/bitcoinaverage'
+import { CoinlayerRates, CoinlayerSource } from './services/coinlayer'
+import {
+  CurrencylayerRates,
+  CurrencylayerSource,
+} from './services/currencylayer'
 
-export * from '@raptorsystems/krypto-rates-common/types'
+export type RateSources =
+  | BitcoinAverageSource
+  | CoinlayerSource
+  | CurrencylayerSource
 
-export type QuotesByBaseCurrency = Map<Currency, Currency[]>
+export type RatesData = BitcoinAverageData | CoinlayerRates | CurrencylayerRates
 
-export type MarketsByKey<T = string> = Map<T, Market[]>
+export type Rate = types.Rate<RatesData>
+export type Rates = types.Rates<RatesData>
+export type DbRate = types.DbRate<RatesData>
+export type ParsedRate = types.ParsedRate<RatesData>
+export type ParsedRates = types.ParsedRates<RatesData>
+export type NullableDbRate = types.NullableDbRate<RatesData>

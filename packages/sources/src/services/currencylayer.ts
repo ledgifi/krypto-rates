@@ -1,17 +1,22 @@
 /* eslint-disable @typescript-eslint/camelcase */
+import {
+  Currency,
+  ParsedRate,
+  ParsedRates,
+  Timeframe,
+} from '@raptorsystems/krypto-rates-common/types'
+import { chunkDateRange, parseMarket } from '@raptorsystems/krypto-rates-utils'
 import { AxiosInstance } from 'axios'
 import moment from 'moment'
-import { RateSource } from '../models'
-import { Currency, ParsedRate, ParsedRates, Timeframe } from '../types'
-import { chunkDateRange, parseMarket } from '../utils'
-import { createClient } from './client'
+import { createClient, RateSourceError } from '../utils'
+import { RatesSource } from './types'
 
-export class CurrencylayerSource implements RateSource {
+export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
   public static id = 'currencylayer.com'
 
   public get client(): AxiosInstance {
     const client = createClient(CurrencylayerSource.id, {
-      baseURL: 'https://apilayer.net/api/',
+      baseURL: 'https://apilayer.net/api',
       timeout: 10000,
     })
     client.interceptors.request.use(config => ({
@@ -24,18 +29,23 @@ export class CurrencylayerSource implements RateSource {
     return client
   }
 
+  private handleError(error?: CurrencylayerError): void {
+    if (error) throw new RateSourceError(error.info, error)
+  }
+
   public async fetchLive(
     base: Currency,
     currencies: Currency[],
-  ): Promise<ParsedRates> {
+  ): Promise<ParsedRates<CurrencylayerRates>> {
     const {
-      data: { quotes = {}, timestamp },
+      data: { quotes = {}, timestamp, error },
     } = await this.client.get<CurrencylayerLive>('live', {
       params: {
         source: base,
         currencies: currencies.join(','),
       },
     })
+    this.handleError(error)
     return Object.entries(quotes).map(([market, value]) =>
       this.parseRate(market, base, timestamp, timestamp, value),
     )
@@ -45,9 +55,9 @@ export class CurrencylayerSource implements RateSource {
     base: Currency,
     currencies: Currency[],
     date: Date,
-  ): Promise<ParsedRates> {
+  ): Promise<ParsedRates<CurrencylayerRates>> {
     const {
-      data: { quotes = {}, timestamp },
+      data: { quotes = {}, timestamp, error },
     } = await this.client.get<CurrencylayerHistorical>('historical', {
       params: {
         source: base,
@@ -55,6 +65,7 @@ export class CurrencylayerSource implements RateSource {
         date: date.toISOString().slice(0, 10),
       },
     })
+    this.handleError(error)
     return Object.entries(quotes).map(([market, value]) =>
       this.parseRate(market, base, date.toISOString(), timestamp, value),
     )
@@ -64,10 +75,13 @@ export class CurrencylayerSource implements RateSource {
     base: Currency,
     currencies: Currency[],
     timeframe: Timeframe<Date>,
-  ): Promise<ParsedRates> {
-    const fetch = async (start: Date, end: Date): Promise<ParsedRates> => {
+  ): Promise<ParsedRates<CurrencylayerRates>> {
+    const fetch = async (
+      start: Date,
+      end: Date,
+    ): Promise<ParsedRates<CurrencylayerRates>> => {
       const {
-        data: { quotes = {} },
+        data: { quotes = {}, error },
       } = await this.client.get<CurrencylayerTimeframe>('timeframe', {
         params: {
           source: base,
@@ -76,6 +90,7 @@ export class CurrencylayerSource implements RateSource {
           end_date: end.toISOString().slice(0, 10),
         },
       })
+      this.handleError(error)
       const result = Object.entries(quotes).flatMap(([date, rates]) =>
         Object.entries(rates).map(([market, value]) =>
           this.parseRate(market, base, date, date, value),
@@ -100,7 +115,7 @@ export class CurrencylayerSource implements RateSource {
     date: number | string,
     timestamp: number | string,
     value: number,
-  ): ParsedRate {
+  ): ParsedRate<CurrencylayerRates> {
     const { market, inverse } = parseMarket(marketCode, base)
     if (typeof date === 'number') {
       date = moment.unix(date).toISOString()
@@ -123,44 +138,37 @@ export class CurrencylayerSource implements RateSource {
   }
 }
 
+export type CurrencylayerRates = { [market: string]: number }
+
 interface CurrencylayerError {
   code: number
   type: string
-  info?: string
+  info: string
 }
 
-type CurrencylayerRates = { [market: string]: number }
-
-interface CurrencylayerLive {
+interface CurrencylayerResponse {
   success: boolean
   terms: string
   privacy: string
-  timestamp: number
   source: string
-  quotes: CurrencylayerRates
   error?: CurrencylayerError
 }
 
-interface CurrencylayerHistorical {
-  success: boolean
-  terms: string
-  privacy: string
+interface CurrencylayerLive extends CurrencylayerResponse {
+  timestamp: number
+  quotes: CurrencylayerRates
+}
+
+interface CurrencylayerHistorical extends CurrencylayerResponse {
   historical: boolean
   date: string
   timestamp: number
-  source: string
   quotes: CurrencylayerRates
-  error?: CurrencylayerError
 }
 
-interface CurrencylayerTimeframe {
-  success: boolean
-  terms: string
-  privacy: string
+interface CurrencylayerTimeframe extends CurrencylayerResponse {
   timeframe: boolean
   start_date: string
   end_date: string
-  source: string
   quotes: { [date: string]: CurrencylayerRates }
-  error?: CurrencylayerError
 }

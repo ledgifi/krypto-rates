@@ -1,17 +1,32 @@
 import { Market } from '@raptorsystems/krypto-rates-common/market'
-import { RedisClient } from '@raptorsystems/krypto-rates-common/redis'
-import { RateSourceById } from './mapping'
-import { RateSource } from './models'
-import { Currency, MarketsByKey, ParsedRates, Timeframe } from './types'
-import { buildMarketsByKey, expandMarkets, parseMarket } from './utils'
+import {
+  Currency,
+  ParsedRates,
+  Timeframe,
+} from '@raptorsystems/krypto-rates-common/types'
+import { parseMarket } from '@raptorsystems/krypto-rates-utils'
+import { BitcoinAverageSource } from './services/bitcoinaverage'
+import { CoinlayerSource } from './services/coinlayer'
+import { CurrencylayerSource } from './services/currencylayer'
+import { MarketsByKey, RatesSource as BaseRateSource } from './services/types'
+import { RatesData, RateSources } from './types'
+import { buildMarketsByKey, expandMarkets } from './utils'
 
-export class UnifiedSource extends RateSource {
-  private redis = new RedisClient()
+export const rateSourceById = {
+  [BitcoinAverageSource.id]: BitcoinAverageSource,
+  [CoinlayerSource.id]: CoinlayerSource,
+  [CurrencylayerSource.id]: CurrencylayerSource,
+}
+
+export class RatesSource implements BaseRateSource<RatesData> {
+  public constructor(
+    public getSourceId: (market: string) => Promise<string | null | undefined>,
+  ) {}
 
   public async fetchLive(
     base: Currency,
     currencies: Currency[],
-  ): Promise<ParsedRates> {
+  ): Promise<ParsedRates<RatesData>> {
     return this.fetchForCurrencies(base, currencies, (source, base, quotes) =>
       source.fetchLive(base, quotes),
     )
@@ -21,7 +36,7 @@ export class UnifiedSource extends RateSource {
     base: Currency,
     currencies: Currency[],
     date: Date,
-  ): Promise<ParsedRates> {
+  ): Promise<ParsedRates<RatesData>> {
     return this.fetchForCurrencies(base, currencies, (source, base, quotes) =>
       source.fetchHistorical(base, quotes, date),
     )
@@ -31,7 +46,7 @@ export class UnifiedSource extends RateSource {
     base: Currency,
     currencies: Currency[],
     timeframe: Timeframe<Date>,
-  ): Promise<ParsedRates> {
+  ): Promise<ParsedRates<RatesData>> {
     return this.fetchForCurrencies(
       base,
       currencies,
@@ -40,21 +55,24 @@ export class UnifiedSource extends RateSource {
     )
   }
 
-  public setSource(sourceId: string): RateSource {
-    const source = RateSourceById.get(sourceId)
+  public setSource(sourceId: string): RateSources {
+    const source = rateSourceById[sourceId]
     if (!source) throw `RateSource '${sourceId}' is not supported`
     return new source()
   }
 
-  private async getSource(market: Market): Promise<RateSource | undefined> {
-    const sourceId = await this.redis.get(`config:sources:${market.id}`)
+  private async getSource(market: Market): Promise<RateSources | undefined> {
+    const sourceId = await this.getSourceId(market.id)
     if (sourceId) {
-      const source = RateSourceById.get(sourceId)
+      const source = rateSourceById[sourceId]
       if (source) return new source()
     }
   }
 
-  private buildResponse(base: Currency, rates: ParsedRates): ParsedRates {
+  private buildResponse<TData>(
+    base: Currency,
+    rates: ParsedRates<TData>,
+  ): ParsedRates<TData> {
     return rates.map(rate => {
       const { market: parsedMarket, inverse } = parseMarket(rate.market, base)
       if (inverse) {
@@ -68,9 +86,9 @@ export class UnifiedSource extends RateSource {
   private async buildMarketsBySource(
     base: Currency,
     currencies: Currency[],
-  ): Promise<MarketsByKey<RateSource>> {
+  ): Promise<MarketsByKey<RateSources>> {
     const markets: Market[] = currencies.map(quote => new Market(base, quote))
-    return buildMarketsByKey<RateSource>(markets, market =>
+    return buildMarketsByKey<RateSources>(markets, market =>
       this.getSource(market),
     )
   }
@@ -79,11 +97,11 @@ export class UnifiedSource extends RateSource {
     base: Currency,
     currencies: Currency[],
     fetch: (
-      source: RateSource,
+      source: RateSources,
       base: Currency,
       quotes: Currency[],
-    ) => Promise<ParsedRates>,
-  ): Promise<ParsedRates> {
+    ) => Promise<ParsedRates<RatesData>>,
+  ): Promise<ParsedRates<RatesData>> {
     const marketsBySource = await this.buildMarketsBySource(base, currencies)
     const sourceRates = await Promise.all(
       Array.from(marketsBySource).flatMap(([source, markets]) =>

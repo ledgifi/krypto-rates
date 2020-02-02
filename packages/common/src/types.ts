@@ -12,35 +12,37 @@ export interface MarketsArg {
   quotes: string[]
 }
 
-export interface Rate<M = MarketArg> {
-  market: M
+export interface Rate<TData, TMarket = MarketArg> {
+  market: TMarket
   source: string
-  sourceData?: any
+  sourceData?: TData
   value: number
   date: string
   timestamp: number
   inverse: boolean
 }
 
-export type Rates<M = MarketArg> = Rate<M>[]
+export type Rates<TData, TMarket = MarketArg> = Rate<TData, TMarket>[]
 
 export interface ParsedMarket {
   market: Market
   inverse: boolean
 }
 
-export type ParsedRate = Rate<Market>
+export type ParsedRate<TData> = Rate<TData, Market>
 
-export type ParsedRates = Rates<Market>
+export type ParsedRates<TData> = Rates<TData, Market>
 
-export interface RedisRate {
+export interface DbRate<TData> {
   market: string
   source: string
-  sourceData?: any
+  sourceData?: TData
   value: number
   date: string
   timestamp: number
 }
+
+export type NullableDbRate<TData> = DbRate<TData> | null | undefined
 
 export interface Timeframe<T = Date | string> {
   start: T

@@ -10,7 +10,7 @@
   "private": true,
   "scripts": {
     "generate": "yarn generate:nexus",
-    "generate:nexus": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register --transpile-only src/schema",
+    "generate:nexus": "cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register --transpile-only src/schema",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --fix --ext .ts src"
   },

@@ -1,13 +1,18 @@
 import { Market } from '@raptorsystems/krypto-rates-common/market'
 import {
   Currency,
+  DbRate,
+  NullableDbRate,
   ParsedMarket,
+  ParsedRate,
+  Rate,
   Timeframe,
 } from '@raptorsystems/krypto-rates-common/types'
 import * as Moment from 'moment'
 import { extendMoment } from 'moment-range'
 
 const moment = Moment.default
+const momentRange = extendMoment(Moment)
 
 export function parseMarket(
   market: string | Market,
@@ -50,10 +55,57 @@ export function parseMarket(
   }
 }
 
+export const parseRate = <TData>(
+  rate: ParsedRate<TData>,
+): ParsedRate<TData> => {
+  if (rate.inverse) {
+    rate.value **= -1
+    rate.inverse = false
+  }
+  return rate
+}
+
+export function parseDbRate<TData>(
+  base: Currency,
+  rate: NullableDbRate<TData>,
+): Rate<TData, Market> | undefined {
+  if (!rate) return
+  const { value, date, timestamp, source, sourceData, market } = rate
+  const { market: parsedMarket, inverse } = parseMarket(market, base)
+  return {
+    value,
+    date,
+    timestamp,
+    source,
+    sourceData,
+    market: parsedMarket,
+    inverse,
+  }
+}
+
+export const buildDbRate = <TData>({
+  date,
+  timestamp,
+  value,
+  source,
+  sourceData,
+  market,
+  inverse,
+}: ParsedRate<TData>): DbRate<TData> => {
+  if (inverse) market = market.inverse
+  return {
+    date,
+    timestamp,
+    value,
+    source,
+    sourceData,
+    market: market.id,
+  }
+}
+
 export function generateDateRange({ start, end }: Timeframe): Date[] {
-  const moment = extendMoment(Moment)
   return Array.from(
-    moment.range(moment.utc(start), moment.utc(end)).by('day'),
+    momentRange.range(moment.utc(start), moment.utc(end)).by('day'),
     el => el.toDate(),
   )
 }
@@ -86,6 +138,10 @@ export function consecutiveTimeframes(iterable: Date[]): Timeframe<Date>[] {
     start: group[0],
     end: group[group.length - 1],
   }))
+}
+
+export function notEmpty<T>(value: T | null | undefined): value is T {
+  return value !== null && value !== undefined
 }
 
 export function dailyFilter({ timestamp }: { timestamp: Date }): boolean {

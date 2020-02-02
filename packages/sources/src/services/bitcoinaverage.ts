@@ -1,11 +1,16 @@
 import { Market } from '@raptorsystems/krypto-rates-common/market'
+import {
+  Currency,
+  ParsedRate,
+  ParsedRates,
+  Timeframe,
+} from '@raptorsystems/krypto-rates-common/types'
+import { parseMarket } from '@raptorsystems/krypto-rates-utils'
 import { AxiosInstance } from 'axios'
 import crypto from 'crypto-js'
 import moment from 'moment'
-import { RateSource } from '../models'
-import { Currency, ParsedRate, ParsedRates, Timeframe } from '../types'
-import { buildMarketsByKey, expandMarkets, parseMarket } from '../utils'
-import { createClient } from './client'
+import { buildMarketsByKey, createClient, expandMarkets } from '../utils'
+import { RatesSource } from './types'
 
 export class BitcoinAverageAPI {
   public get client(): AxiosInstance {
@@ -83,7 +88,7 @@ export class BitcoinAverageAPI {
   }
 }
 
-export class BitcoinAverageSource implements RateSource {
+export class BitcoinAverageSource implements RatesSource<BitcoinAverageData> {
   public static id = 'bitcoinaverage.com'
 
   public get api(): BitcoinAverageAPI {
@@ -105,7 +110,7 @@ export class BitcoinAverageSource implements RateSource {
   public async fetchLive(
     base: Currency,
     currencies: Currency[],
-  ): Promise<ParsedRates> {
+  ): Promise<ParsedRates<BitcoinAverageTicker>> {
     const markets: Market[] = currencies.map(quote => new Market(base, quote))
 
     const marketsBySymbolSet = await buildMarketsByKey<string>(
@@ -139,7 +144,7 @@ export class BitcoinAverageSource implements RateSource {
     base: string,
     currencies: string[],
     date: Date,
-  ): Promise<ParsedRates> {
+  ): Promise<ParsedRates<BitcoinAveragePriceAtTimestamp>> {
     const markets: Market[] = currencies.map(quote => new Market(base, quote))
 
     const marketsBySymbolSet = await buildMarketsByKey<string>(
@@ -174,7 +179,7 @@ export class BitcoinAverageSource implements RateSource {
     base: string,
     currencies: string[],
     timeframe: Timeframe<Date>,
-  ): Promise<ParsedRates> {
+  ): Promise<ParsedRates<BitcoinAverageHistory>> {
     const markets: Market[] = currencies.map(quote => new Market(base, quote))
 
     const marketsBySymbolSet = await buildMarketsByKey<string>(
@@ -205,14 +210,14 @@ export class BitcoinAverageSource implements RateSource {
     )
   }
 
-  private parseRate(
+  private parseRate<TData>(
     market: string | Market,
     base: Currency,
     value: number,
     date: string | number,
     timestamp: string | number,
-    sourceData: any,
-  ): ParsedRate {
+    sourceData: TData,
+  ): ParsedRate<TData> {
     const { market: parsedMarket, inverse } = parseMarket(market, base)
     if (typeof date === 'number') {
       date = moment.unix(date).toISOString()
@@ -243,6 +248,11 @@ export class BitcoinAverageSource implements RateSource {
     }
   }
 }
+
+export type BitcoinAverageData =
+  | BitcoinAverageTicker
+  | BitcoinAverageHistory
+  | BitcoinAveragePriceAtTimestamp
 
 interface BitcoinAverageSymbolsMapping {
   crypto: BitcoinAverageSymbolSet
