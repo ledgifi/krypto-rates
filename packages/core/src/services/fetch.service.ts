@@ -20,6 +20,29 @@ import {
 } from '@raptorsystems/krypto-rates-utils'
 import { logCreate } from '../utils'
 
+async function fetchDates<T>({
+  dates,
+  fetch,
+}: {
+  dates: Date[]
+  fetch: {
+    single: (date: Date) => Promise<T[]>
+    timeframe: (timeframe: Timeframe<Date>) => Promise<T[]>
+  }
+}): Promise<T[]> {
+  const rateGroups = await Promise.all(
+    consecutiveTimeframes(dates).map(timeframe => {
+      if (timeframe.start !== timeframe.end) {
+        return fetch.timeframe(timeframe)
+      } else {
+        const date = generateDateRange(timeframe)[0]
+        return fetch.single(date)
+      }
+    }),
+  )
+  return rateGroups.flat()
+}
+
 export class FetcheService {
   public async fetchRate({
     market: { base, quote },
@@ -117,46 +140,67 @@ export class FetcheService {
       .map(rate => rate && parseRate(rate))
   }
 
-  public async fetchRatesTimeframe({
+  public async fetchRatesDates({
     markets: { base, quotes },
-    timeframe,
+    dates,
     fetchDB,
     writeDB,
     fetchSource,
   }: {
     markets: MarketsArg
-    timeframe: Timeframe<Date>
-    fetchDB: (
-      markets: string[],
-      timeframe: Timeframe<Date>,
-    ) => Promise<NullableDbRate[]>
+    dates: Date[]
+    fetchDB: {
+      single: (markets: string[], date: Date) => Promise<NullableDbRate[]>
+      timeframe: (
+        markets: string[],
+        timeframe: Timeframe<Date>,
+      ) => Promise<NullableDbRate[]>
+    }
     writeDB: (rates: DbRate[]) => Promise<void>
-    fetchSource: (
-      base: string,
-      quotes: string[],
-      timeframe: Timeframe<Date>,
-    ) => Promise<ParsedRates>
+    fetchSource: {
+      single: (
+        base: string,
+        quotes: string[],
+        date: Date,
+      ) => Promise<ParsedRates>
+      timeframe: (
+        base: string,
+        quotes: string[],
+        timeframe: Timeframe<Date>,
+      ) => Promise<ParsedRates>
+    }
   }): Promise<ParsedRates> {
-    // Build requested market-dates
+    // Build requested markets
     const markets = quotes.map(quote => new Market(base, quote))
-    const dates = generateDateRange(timeframe)
+
     const marketDates = markets.flatMap(market =>
       dates.map(date => ({ market, date })),
     )
 
+    const fetchDBDates = async (
+      dates: Date[],
+      markets: Market[],
+    ): Promise<ParsedRate[]> => {
+      const marketsId = markets.map(m => m.id)
+      const rates = await fetchDates<NullableDbRate>({
+        dates,
+        fetch: {
+          single: (date): Promise<NullableDbRate[]> =>
+            fetchDB.single(marketsId, date),
+          timeframe: (timeframe): Promise<NullableDbRate[]> =>
+            fetchDB.timeframe(marketsId, timeframe),
+        },
+      })
+      return rates.map(rate => parseDbRate(base, rate)).filter(notEmpty)
+    }
+
     // Fetch rates from Redis DB and map them to Rate instances
-    let rates = (
-      await fetchDB(
-        markets.map(m => m.id),
-        timeframe,
-      )
-    ).map(rate => parseDbRate(base, rate))
+    let rates = await fetchDBDates(dates, markets)
 
     // Filter missing market-dates in DB response
     let missingMarketDates = marketDates.filter(
       ({ market, date }) =>
         !rates
-          .filter(notEmpty)
           .map(({ market, date }) => market.code + date)
           .includes(market.code + date.toISOString().slice(0, 10)),
     )
@@ -164,26 +208,17 @@ export class FetcheService {
     // If there are missing market-dates, fetch the missing rates from
     // inverse markets on Redis DB
     if (missingMarketDates.length) {
-      const missingTimeframes = consecutiveTimeframes(
-        missingMarketDates.map(({ date }) => date),
-      )
-      const missingQuotes = [
-        ...new Set(
-          missingMarketDates.map(({ market }) => market.inverse.quote),
-        ),
+      const missingMarkets = [
+        ...new Set(missingMarketDates.map(({ market }) => market)),
       ]
-      const missingRateGroups = await Promise.all(
-        missingTimeframes.map(timeframe => fetchDB(missingQuotes, timeframe)),
-      )
-      const missingRates = missingRateGroups.flatMap(rates =>
-        rates.map(rate => parseDbRate(base, rate)),
-      )
+      const missingDates = missingMarketDates.map(({ date }) => date)
+      const missingRates = await fetchDBDates(missingDates, missingMarkets)
+
       rates = [...rates, ...missingRates]
       missingMarketDates = marketDates.filter(
         ({ market, date }) =>
           !rates
-            .filter(notEmpty)
-            .map(({ market, date }) => market.code + date)
+            .map(({ market, timestamp }) => market.code + timestamp)
             .includes(market.code + date.toISOString().slice(0, 10)),
       )
     }
@@ -192,19 +227,20 @@ export class FetcheService {
     if (!missingMarketDates.length) return rates.filter(notEmpty)
 
     // Fetch missing rates from RatesSource
-    const missingQuotes = Array.from(
-      new Set(missingMarketDates.map(({ market }) => market.quote)),
-    )
-    const missingTimeframes = consecutiveTimeframes(
-      missingMarketDates.map(({ date }) => date),
-    )
-    const missingRates = (
-      await Promise.all(
-        missingTimeframes.map(timeframe =>
-          fetchSource(base, missingQuotes, timeframe),
-        ),
-      )
-    ).flat()
+    const missingQuotes = [
+      ...new Set(missingMarketDates.map(({ market }) => market.quote)),
+    ]
+    const missingDates = missingMarketDates.map(({ date }) => date)
+
+    const missingRates = await fetchDates({
+      dates: missingDates,
+      fetch: {
+        single: (date): Promise<ParsedRates> =>
+          fetchSource.single(base, missingQuotes, date),
+        timeframe: (timeframe): Promise<ParsedRates> =>
+          fetchSource.timeframe(base, missingQuotes, timeframe),
+      },
+    })
 
     // Write missing rates on Redis DB
     const dbRates = missingRates.map(rate => buildDbRate(rate))
@@ -212,8 +248,6 @@ export class FetcheService {
     dbRates.map(item => logCreate(item))
 
     // Return all requested rates
-    return [...rates, ...missingRates]
-      .filter(notEmpty)
-      .map(rate => rate && parseRate(rate))
+    return [...rates, ...missingRates].map(rate => rate && parseRate(rate))
   }
 }

@@ -1,3 +1,8 @@
+import {
+  NullableDbRate,
+  ParsedRates,
+} from '@raptorsystems/krypto-rates-sources/types'
+import { generateDateRange } from '@raptorsystems/krypto-rates-utils'
 import { GraphQLString } from 'graphql'
 import { GraphQLDate } from 'graphql-iso-date'
 import {
@@ -169,14 +174,25 @@ export const Query = queryType({
         timeframe: arg({ type: TimeframeInput }),
       },
       resolve: (_root, { markets, timeframe }, ctx) =>
-        ctx.fetch.fetchRatesTimeframe({
+        ctx.fetch.fetchRatesDates({
           markets,
-          timeframe,
-          fetchDB: (markets, timeframe) =>
-            ctx.db.fetchRatesTimeframe({ markets, timeframe }),
+          dates: generateDateRange(timeframe),
+          fetchDB: {
+            single: (markets, date): Promise<NullableDbRate[]> =>
+              ctx.db.fetchHistoricalRates({
+                markets,
+                date: date.toISOString(),
+              }),
+            timeframe: (markets, timeframe): Promise<NullableDbRate[]> =>
+              ctx.db.fetchRatesTimeframe({ markets, timeframe }),
+          },
           writeDB: rates => ctx.db.writeRatesTimeframe({ rates }),
-          fetchSource: (base, quotes, timeframe) =>
-            ctx.rates.fetchTimeframe(base, quotes, timeframe),
+          fetchSource: {
+            single: (base, quotes, dates): Promise<ParsedRates> =>
+              ctx.rates.fetchHistorical(base, quotes, dates),
+            timeframe: (base, quotes, timeframe): Promise<ParsedRates> =>
+              ctx.rates.fetchTimeframe(base, quotes, timeframe),
+          },
         }),
     })
   },
