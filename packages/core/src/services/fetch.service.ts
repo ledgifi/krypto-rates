@@ -50,9 +50,9 @@ export class FetcheService {
 
         if (rate) {
           // Write missing rate on DB
-          const redisRate = buildDbRate(rate)
-          await writeDB(redisRate)
-          logCreate(redisRate)
+          const dbRate = buildDbRate(rate)
+          await writeDB(dbRate)
+          logCreate(dbRate)
         }
       }
     }
@@ -107,9 +107,9 @@ export class FetcheService {
     )
 
     // Write missing rates on Redis DB
-    const redisRates = missingRates.map(rate => buildDbRate(rate))
-    await writeDB(redisRates)
-    redisRates.map(item => logCreate(item))
+    const dbRates = missingRates.map(rate => buildDbRate(rate))
+    await writeDB(dbRates)
+    dbRates.map(item => logCreate(item))
 
     // Return all requested rates
     return [...rates, ...missingRates]
@@ -207,9 +207,9 @@ export class FetcheService {
     ).flat()
 
     // Write missing rates on Redis DB
-    const redisRates = missingRates.map(rate => buildDbRate(rate))
-    await writeDB(redisRates)
-    redisRates.map(item => logCreate(item))
+    const dbRates = missingRates.map(rate => buildDbRate(rate))
+    await writeDB(dbRates)
+    dbRates.map(item => logCreate(item))
 
     // Return all requested rates
     return [...rates, ...missingRates]
