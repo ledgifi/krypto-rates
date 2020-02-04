@@ -7,7 +7,6 @@
     "email": "raptor@raptorsystems.cl"
   },
   "license": "MIT",
-  "private": true,
   "scripts": {
     "build:clients": "poetry build",
     "prebuild:clients": "yarn clean",
