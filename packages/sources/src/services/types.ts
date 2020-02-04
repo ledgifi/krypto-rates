@@ -1,28 +1,23 @@
-import { Market } from '@raptorsystems/krypto-rates-common/market'
 import {
-  Currency,
+  MarketBase,
   ParsedRates,
   Timeframe,
 } from '@raptorsystems/krypto-rates-common/types'
 
-export type QuotesByBaseCurrency = Map<Currency, Currency[]>
-
-export type MarketsByKey<T = string> = Map<T, Market[]>
+export type MarketsByKey<T = string, M = MarketBase> = Map<T, M[]>
 
 export interface RatesSource<TData> {
   id?: string
 
-  fetchLive(base: Currency, currencies: Currency[]): Promise<ParsedRates<TData>>
+  fetchLive(markets: MarketBase[]): Promise<ParsedRates<TData>>
 
   fetchHistorical(
-    base: Currency,
-    currencies: Currency[],
+    markets: MarketBase[],
     date: Date,
   ): Promise<ParsedRates<TData>>
 
   fetchTimeframe(
-    base: Currency,
-    currencies: Currency[],
+    markets: MarketBase[],
     timeframe: Timeframe<Date>,
   ): Promise<ParsedRates<TData>>
 }

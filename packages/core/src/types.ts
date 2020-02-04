@@ -34,7 +34,7 @@ export interface RatesDb {
 
   fetchHistoricalRates(args: {
     markets: string[]
-    date: string
+    dates: string[]
   }): Promise<NullableDbRate[]>
 
   writeHistoricalRates(args: { rates: DbRate[] }): Promise<void>

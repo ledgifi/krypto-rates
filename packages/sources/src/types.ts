@@ -1,20 +1,13 @@
 import * as types from '@raptorsystems/krypto-rates-common/types'
-import {
-  BitcoinAverageData,
-  BitcoinAverageSource,
-} from './services/bitcoinaverage'
 import { CoinlayerRates, CoinlayerSource } from './services/coinlayer'
 import {
   CurrencylayerRates,
   CurrencylayerSource,
 } from './services/currencylayer'
 
-export type RateSources =
-  | BitcoinAverageSource
-  | CoinlayerSource
-  | CurrencylayerSource
+export type RateSources = CoinlayerSource | CurrencylayerSource
 
-export type RatesData = BitcoinAverageData | CoinlayerRates | CurrencylayerRates
+export type RatesData = CoinlayerRates | CurrencylayerRates
 
 export type Rate = types.Rate<RatesData>
 export type Rates = types.Rates<RatesData>

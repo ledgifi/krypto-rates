@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {
   Currency,
+  MarketBase,
   ParsedRate,
   ParsedRates,
   Timeframe,
@@ -12,8 +13,19 @@ import {
 } from '@raptorsystems/krypto-rates-utils'
 import { AxiosInstance } from 'axios'
 import moment from 'moment'
-import { createClient, RateSourceError } from '../utils'
+import { createClient, mapMarketsByBase, RateSourceError } from '../utils'
 import { RatesSource } from './types'
+
+const fetchMarkets = async <T>(
+  markets: MarketBase[],
+  fetch: (base: string, currencies: string[]) => Promise<T[]>,
+): Promise<T[]> =>
+  mapMarketsByBase(markets, (quote, markets) =>
+    fetch(
+      quote,
+      markets.map(m => m.quote),
+    ),
+  )
 
 export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
   public static id = 'currencylayer.com'
@@ -38,49 +50,60 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
   }
 
   public async fetchLive(
-    base: Currency,
-    currencies: Currency[],
+    markets: MarketBase[],
   ): Promise<ParsedRates<CurrencylayerRates>> {
-    const {
-      data: { quotes = {}, timestamp, error },
-    } = await this.client.get<CurrencylayerLive>('live', {
-      params: {
-        source: base,
-        currencies: currencies.join(','),
-      },
-    })
-    this.handleError(error)
-    return Object.entries(quotes).map(([market, value]) =>
-      this.parseRate(market, base, timestamp, timestamp, value),
-    )
+    const fetch = async (
+      base: string,
+      currencies: string[],
+    ): Promise<ParsedRates<CurrencylayerRates>> => {
+      const {
+        data: { quotes = {}, timestamp, error },
+      } = await this.client.get<CurrencylayerLive>('live', {
+        params: {
+          source: base,
+          currencies: currencies.join(','),
+        },
+      })
+      this.handleError(error)
+      return Object.entries(quotes).map(([market, value]) =>
+        this.parseRate(market, base, timestamp, timestamp, value),
+      )
+    }
+    return fetchMarkets(markets, (base, currencies) => fetch(base, currencies))
   }
 
   public async fetchHistorical(
-    base: Currency,
-    currencies: Currency[],
+    markets: MarketBase[],
     date: Date,
   ): Promise<ParsedRates<CurrencylayerRates>> {
-    const {
-      data: { quotes = {}, timestamp, error },
-    } = await this.client.get<CurrencylayerHistorical>('historical', {
-      params: {
-        source: base,
-        currencies: currencies.join(','),
-        date: date.toISOString().slice(0, 10),
-      },
-    })
-    this.handleError(error)
-    return Object.entries(quotes).map(([market, value]) =>
-      this.parseRate(market, base, date.toISOString(), timestamp, value),
-    )
+    const fetch = async (
+      base: string,
+      currencies: string[],
+    ): Promise<ParsedRates<CurrencylayerRates>> => {
+      const {
+        data: { quotes = {}, timestamp, error },
+      } = await this.client.get<CurrencylayerHistorical>('historical', {
+        params: {
+          source: base,
+          currencies: currencies.join(','),
+          date: date.toISOString().slice(0, 10),
+        },
+      })
+      this.handleError(error)
+      return Object.entries(quotes).map(([market, value]) =>
+        this.parseRate(market, base, date.toISOString(), timestamp, value),
+      )
+    }
+    return fetchMarkets(markets, (base, currencies) => fetch(base, currencies))
   }
 
   public async fetchTimeframe(
-    base: Currency,
-    currencies: Currency[],
+    markets: MarketBase[],
     timeframe: Timeframe<Date>,
   ): Promise<ParsedRates<CurrencylayerRates>> {
     const fetch = async (
+      base: Currency,
+      currencies: Currency[],
       start: Date,
       end: Date,
     ): Promise<ParsedRates<CurrencylayerRates>> => {
@@ -109,12 +132,14 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
       process.env.CURRENCYLAYER_TIMEFRAME === 'true'
         ? await Promise.all(
             chunkDateRange(timeframe, MAX_RANGE).map(range =>
-              fetch(range[0], range[range.length - 1]),
+              fetchMarkets(markets, (base, currencies) =>
+                fetch(base, currencies, range[0], range[range.length - 1]),
+              ),
             ),
           )
         : await Promise.all(
             generateDateRange(timeframe).map(date =>
-              this.fetchHistorical(base, currencies, date),
+              this.fetchHistorical(markets, date),
             ),
           )
     return result.flat()

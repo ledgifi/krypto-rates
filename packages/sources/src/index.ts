@@ -1,19 +1,18 @@
 import { Market } from '@raptorsystems/krypto-rates-common/market'
 import {
   Currency,
+  MarketBase,
   ParsedRates,
   Timeframe,
 } from '@raptorsystems/krypto-rates-common/types'
 import { parseMarket } from '@raptorsystems/krypto-rates-utils'
-import { BitcoinAverageSource } from './services/bitcoinaverage'
 import { CoinlayerSource } from './services/coinlayer'
 import { CurrencylayerSource } from './services/currencylayer'
 import { MarketsByKey, RatesSource as BaseRateSource } from './services/types'
 import { RatesData, RateSources } from './types'
-import { buildMarketsByKey, expandMarkets } from './utils'
+import { buildMarketsByKey, mapMarketsByBase } from './utils'
 
 export const rateSourceById = {
-  [BitcoinAverageSource.id]: BitcoinAverageSource,
   [CoinlayerSource.id]: CoinlayerSource,
   [CurrencylayerSource.id]: CurrencylayerSource,
 }
@@ -24,34 +23,28 @@ export class RatesSource implements BaseRateSource<RatesData> {
   ) {}
 
   public async fetchLive(
-    base: Currency,
-    currencies: Currency[],
+    markets: MarketBase[],
   ): Promise<ParsedRates<RatesData>> {
-    return this.fetchForCurrencies(base, currencies, (source, base, quotes) =>
-      source.fetchLive(base, quotes),
+    return this.fetchForMarkets(markets, (source, markets) =>
+      source.fetchLive(markets),
     )
   }
 
   public async fetchHistorical(
-    base: Currency,
-    currencies: Currency[],
+    markets: MarketBase[],
     date: Date,
   ): Promise<ParsedRates<RatesData>> {
-    return this.fetchForCurrencies(base, currencies, (source, base, quotes) =>
-      source.fetchHistorical(base, quotes, date),
+    return this.fetchForMarkets(markets, (source, markets) =>
+      source.fetchHistorical(markets, date),
     )
   }
 
   public async fetchTimeframe(
-    base: Currency,
-    currencies: Currency[],
+    markets: MarketBase[],
     timeframe: Timeframe<Date>,
   ): Promise<ParsedRates<RatesData>> {
-    return this.fetchForCurrencies(
-      base,
-      currencies,
-      (source, base, currencies) =>
-        source.fetchTimeframe(base, currencies, timeframe),
+    return this.fetchForMarkets(markets, (source, markets) =>
+      source.fetchTimeframe(markets, timeframe),
     )
   }
 
@@ -84,32 +77,32 @@ export class RatesSource implements BaseRateSource<RatesData> {
   }
 
   private async buildMarketsBySource(
-    base: Currency,
-    currencies: Currency[],
-  ): Promise<MarketsByKey<RateSources>> {
-    const markets: Market[] = currencies.map(quote => new Market(base, quote))
+    markets: Market[],
+  ): Promise<MarketsByKey<RateSources, Market>> {
     return buildMarketsByKey<RateSources>(markets, market =>
       this.getSource(market),
     )
   }
 
-  private async fetchForCurrencies(
-    base: Currency,
-    currencies: Currency[],
+  private async fetchForMarkets(
+    markets: MarketBase[],
     fetch: (
       source: RateSources,
-      base: Currency,
-      quotes: Currency[],
+      markets: MarketBase[],
     ) => Promise<ParsedRates<RatesData>>,
   ): Promise<ParsedRates<RatesData>> {
-    const marketsBySource = await this.buildMarketsBySource(base, currencies)
-    const sourceRates = await Promise.all(
-      Array.from(marketsBySource).flatMap(([source, markets]) =>
-        Array.from(expandMarkets(markets)).map(([base, quotes]) =>
-          fetch(source, base, quotes),
-        ),
-      ),
+    return mapMarketsByBase(
+      markets.map(({ base, quote }) => new Market(base, quote)),
+      async (base, markets) => {
+        const marketsBySource = await this.buildMarketsBySource(markets)
+        const rates = await Promise.all(
+          Array.from(marketsBySource).flatMap(async ([source, markets]) => {
+            const sourceRates = await fetch(source, markets)
+            return this.buildResponse(base, sourceRates)
+          }),
+        )
+        return rates.flat()
+      },
     )
-    return this.buildResponse(base, sourceRates.flat())
   }
 }

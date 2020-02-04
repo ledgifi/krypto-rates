@@ -117,8 +117,8 @@ export interface NexusGenArgTypes {
     }
     historicalRates: {
       // args
-      date: Date // Date!
-      markets: NexusGenInputs['MarketsInput'] // MarketsInput!
+      dates: Date[] // [Date!]!
+      markets: NexusGenInputs['MarketInput'][] // [MarketInput!]!
     }
     liveRate: {
       // args
@@ -127,12 +127,12 @@ export interface NexusGenArgTypes {
     }
     liveRates: {
       // args
-      markets: NexusGenInputs['MarketsInput'] // MarketsInput!
+      markets: NexusGenInputs['MarketInput'][] // [MarketInput!]!
       ttl?: number | null // Int
     }
     timeframeRates: {
       // args
-      markets: NexusGenInputs['MarketsInput'] // MarketsInput!
+      markets: NexusGenInputs['MarketInput'][] // [MarketInput!]!
       timeframe: NexusGenInputs['TimeframeInput'] // TimeframeInput!
     }
   }

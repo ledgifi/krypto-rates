@@ -83,6 +83,13 @@ export function parseDbRate<TData>(
   }
 }
 
+export function parseDbRates<TData>(
+  base: Currency,
+  rates: NullableDbRate<TData>[],
+): (Rate<TData, Market> | undefined)[] {
+  return rates.map(rate => parseDbRate(base, rate))
+}
+
 export const buildDbRate = <TData>({
   date,
   timestamp,

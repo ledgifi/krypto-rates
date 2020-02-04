@@ -104,10 +104,10 @@ export const Query = queryType({
       },
       resolve: (_root, { market, ttl }, ctx) =>
         ctx.fetch.fetchRate({
-          market,
+          marketInput: market,
           fetchDB: market => ctx.db.fetchLiveRate({ market, ttl }),
           writeDB: rate => ctx.db.writeLiveRate({ rate, ttl }),
-          fetchSource: (base, quotes) => ctx.rates.fetchLive(base, quotes),
+          fetchSource: market => ctx.rates.fetchLive([market]),
         }),
     })
 
@@ -116,15 +116,15 @@ export const Query = queryType({
       nullable: true,
       list: true,
       args: {
-        markets: arg({ type: MarketsInput }),
+        markets: arg({ type: MarketInput, list: true }),
         ttl: intArg({ required: false, default: TTL }),
       },
       resolve: (_root, { markets, ttl }, ctx) =>
         ctx.fetch.fetchRates({
-          markets,
+          marketsInput: markets,
           fetchDB: markets => ctx.db.fetchLiveRates({ markets, ttl }),
           writeDB: rates => ctx.db.writeLiveRates({ rates, ttl }),
-          fetchSource: (base, quotes) => ctx.rates.fetchLive(base, quotes),
+          fetchSource: markets => ctx.rates.fetchLive(markets),
         }),
     })
 
@@ -137,12 +137,11 @@ export const Query = queryType({
       },
       resolve: (_root, { market, date }, ctx) =>
         ctx.fetch.fetchRate({
-          market,
+          marketInput: market,
           fetchDB: market =>
             ctx.db.fetchHistoricalRate({ market, date: date.toISOString() }),
           writeDB: rate => ctx.db.writeHistoricalRate({ rate }),
-          fetchSource: (base, quotes) =>
-            ctx.rates.fetchHistorical(base, quotes, date),
+          fetchSource: market => ctx.rates.fetchHistorical([market], date),
         }),
     })
 
@@ -151,17 +150,32 @@ export const Query = queryType({
       nullable: true,
       list: true,
       args: {
-        markets: arg({ type: MarketsInput }),
-        date: dateArg(),
+        markets: arg({ type: MarketInput, list: true }),
+        dates: dateArg({ list: true }),
       },
-      resolve: (_root, { markets, date }, ctx) =>
-        ctx.fetch.fetchRates({
-          markets,
-          fetchDB: markets =>
-            ctx.db.fetchHistoricalRates({ markets, date: date.toISOString() }),
+      resolve: (_root, { markets, dates }, ctx) =>
+        ctx.fetch.fetchRatesDates({
+          marketsInput: markets,
+          dates,
+          fetchDB: {
+            single: (markets, date): Promise<NullableDbRate[]> =>
+              ctx.db.fetchHistoricalRates({
+                markets,
+                dates: [date.toISOString()],
+              }),
+            timeframe: (markets, timeframe): Promise<NullableDbRate[]> =>
+              ctx.db.fetchRatesTimeframe({
+                markets,
+                timeframe,
+              }),
+          },
           writeDB: rates => ctx.db.writeHistoricalRates({ rates }),
-          fetchSource: (base, quotes) =>
-            ctx.rates.fetchHistorical(base, quotes, date),
+          fetchSource: {
+            single: (markets, date): Promise<ParsedRates> =>
+              ctx.rates.fetchHistorical(markets, date),
+            timeframe: (markets, timeframe): Promise<ParsedRates> =>
+              ctx.rates.fetchTimeframe(markets, timeframe),
+          },
         }),
     })
 
@@ -170,28 +184,28 @@ export const Query = queryType({
       nullable: true,
       list: true,
       args: {
-        markets: arg({ type: MarketsInput }),
+        markets: arg({ type: MarketInput, list: true }),
         timeframe: arg({ type: TimeframeInput }),
       },
       resolve: (_root, { markets, timeframe }, ctx) =>
         ctx.fetch.fetchRatesDates({
-          markets,
+          marketsInput: markets,
           dates: generateDateRange(timeframe),
           fetchDB: {
             single: (markets, date): Promise<NullableDbRate[]> =>
               ctx.db.fetchHistoricalRates({
                 markets,
-                date: date.toISOString(),
+                dates: [date.toISOString()],
               }),
             timeframe: (markets, timeframe): Promise<NullableDbRate[]> =>
               ctx.db.fetchRatesTimeframe({ markets, timeframe }),
           },
           writeDB: rates => ctx.db.writeRatesTimeframe({ rates }),
           fetchSource: {
-            single: (base, quotes, dates): Promise<ParsedRates> =>
-              ctx.rates.fetchHistorical(base, quotes, dates),
-            timeframe: (base, quotes, timeframe): Promise<ParsedRates> =>
-              ctx.rates.fetchTimeframe(base, quotes, timeframe),
+            single: (markets, dates): Promise<ParsedRates> =>
+              ctx.rates.fetchHistorical(markets, dates),
+            timeframe: (markets, timeframe): Promise<ParsedRates> =>
+              ctx.rates.fetchTimeframe(markets, timeframe),
           },
         }),
     })

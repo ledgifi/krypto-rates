@@ -1,6 +1,6 @@
-import { Currency, MarketArg } from './types'
+import { Currency, MarketBase } from './types'
 
-export class Market implements MarketArg {
+export class Market implements MarketBase {
   public constructor(public base: Currency, public quote: Currency) {}
 
   public get id(): string {

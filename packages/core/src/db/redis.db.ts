@@ -97,13 +97,15 @@ export class RedisRatesDb extends IORedis implements RatesDb {
 
   public async fetchHistoricalRates({
     markets,
-    date,
+    dates,
   }: {
     markets: string[]
-    date: string
+    dates: string[]
   }): Promise<NullableDbRate[]> {
     const results = await this.mget(
-      ...markets.map(market => ratesKey(market, date.slice(0, 10))),
+      ...markets.flatMap(market =>
+        dates.map(date => ratesKey(market, date.slice(0, 10))),
+      ),
     )
     return results.map(item => parse(item))
   }

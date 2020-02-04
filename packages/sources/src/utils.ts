@@ -1,7 +1,8 @@
 import { Market } from '@raptorsystems/krypto-rates-common/market'
 import { ApolloError } from 'apollo-server-core'
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios'
-import { MarketsByKey, QuotesByBaseCurrency } from './services/types'
+import { MarketsByKey } from './services/types'
+import { Currency, MarketBase } from '@raptorsystems/krypto-rates-common/types'
 
 export class RateSourceError<T> extends ApolloError {
   public constructor(message: string, properties?: T) {
@@ -37,8 +38,8 @@ export const createClient = (
 export async function buildMarketsByKey<T>(
   markets: Market[],
   getKey: (market: Market) => T | undefined | Promise<T | undefined>,
-): Promise<MarketsByKey<T>> {
-  const marketsMap: MarketsByKey<T> = new Map()
+): Promise<MarketsByKey<T, Market>> {
+  const marketsMap: MarketsByKey<T, Market> = new Map()
   for (let market of markets) {
     let key = await getKey(market)
     if (!key) {
@@ -53,11 +54,42 @@ export async function buildMarketsByKey<T>(
   return marketsMap
 }
 
-export function expandMarkets(markets: Market[]): QuotesByBaseCurrency {
-  return markets.reduce<QuotesByBaseCurrency>((mapping, market) => {
-    const quotes = mapping.get(market.base) || []
-    quotes.push(market.quote)
-    mapping.set(market.base, quotes)
+export function expandMarkets<M extends MarketBase>(
+  markets: M[],
+  by: 'base' | 'quote',
+): MarketsByKey<Currency, M> {
+  return markets.reduce<MarketsByKey<Currency, M>>((mapping, market) => {
+    const markets = mapping.get(market[by]) || []
+    markets.push(market)
+    mapping.set(market[by], markets)
     return mapping
   }, new Map())
+}
+
+export async function mapMarkets<T, M extends MarketBase>(
+  markets: M[],
+  by: 'base' | 'quote',
+  callback: (currency: Currency, markets: M[]) => T[] | Promise<T[]>,
+): Promise<T[]> {
+  return (
+    await Promise.all(
+      Array.from(expandMarkets(markets, by)).map(([currency, markets]) =>
+        callback(currency, markets),
+      ),
+    )
+  ).flat()
+}
+
+export async function mapMarketsByBase<T, M extends MarketBase>(
+  markets: M[],
+  callback: (currency: Currency, markets: M[]) => T[] | Promise<T[]>,
+): Promise<T[]> {
+  return mapMarkets(markets, 'base', callback)
+}
+
+export async function mapMarketsByQuote<T, M extends MarketBase>(
+  markets: M[],
+  callback: (currency: Currency, markets: M[]) => T[] | Promise<T[]>,
+): Promise<T[]> {
+  return mapMarkets(markets, 'quote', callback)
 }

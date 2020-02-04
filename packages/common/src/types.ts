@@ -2,17 +2,12 @@ import { Market } from './market'
 
 export type Currency = string
 
-export interface MarketArg {
+export interface MarketBase {
   base: string
   quote: string
 }
 
-export interface MarketsArg {
-  base: string
-  quotes: string[]
-}
-
-export interface Rate<TData, TMarket = MarketArg> {
+export interface Rate<TData, TMarket = MarketBase> {
   market: TMarket
   source: string
   sourceData?: TData
@@ -22,7 +17,7 @@ export interface Rate<TData, TMarket = MarketArg> {
   inverse: boolean
 }
 
-export type Rates<TData, TMarket = MarketArg> = Rate<TData, TMarket>[]
+export type Rates<TData, TMarket = MarketBase> = Rate<TData, TMarket>[]
 
 export interface ParsedMarket {
   market: Market
