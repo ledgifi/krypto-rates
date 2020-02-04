@@ -23,8 +23,6 @@ custom:
     basePath: ../../
     include:
       - REDIS_URL
-      - BAVG_PUBLIC_KEY
-      - BAVG_SECRET_KEY
       - CURRENCYLAYER_ACCESS_KEY
       - CURRENCYLAYER_TIMEFRAME
       - COINLAYER_ACCESS_KEY
