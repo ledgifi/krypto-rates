@@ -51,5 +51,12 @@
     "typescript": "~3.7.5",
     "webpack": "^4.41.5",
     "webpack-bundle-analyzer": "^3.6.0"
+  },
+  "resolutions": {
+    "serverless-webpack/fs-extra": "^8.1.0",
+    "serverless-webpack/is-builtin-module": "^3.0.0",
+    "serverless-webpack/lodash": "^4.17.15",
+    "serverless-webpack/semver": "^6.2.0",
+    "serverless-webpack/ts-node": "^8.6.2"
   }
 }
