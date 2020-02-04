@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.0](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-sources@1.1.1...@raptorsystems/krypto-rates-sources@2.0.0-alpha.0) (2020-02-04)
+
+
+### Bug Fixes
+
+* **sources:** check for str value of timeframe env vars ([4ace659](https://github.com/raptorsystems/krypto-rates/commit/4ace6596ba4a03c362c7fb2eae9539d9537595c2))
+* **sources:** pass correct base and quote on coinlayer ([1bf947d](https://github.com/raptorsystems/krypto-rates/commit/1bf947d7f0c3d515ac0f9f32a3fb3ef212a4c89d))
+
+
+### Code Refactoring
+
+* complete refactor, multiple dates on historical ([f094008](https://github.com/raptorsystems/krypto-rates/commit/f0940080bb43b12dde2f3795a0623179a59ee29e))
+* **sources:** remove bitcoinaverage service ([fc2537c](https://github.com/raptorsystems/krypto-rates/commit/fc2537c4926d9b9fc31638447c56cf6ee2e7bf70))
+
+
+### BREAKING CHANGES
+
+* allow multiple dates on historical
+* **sources:** drop support for bitcoinaverage
+
+
+
+
+
 ## [1.1.1](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-sources@1.1.0...@raptorsystems/krypto-rates-sources@1.1.1) (2019-12-31)
 
 

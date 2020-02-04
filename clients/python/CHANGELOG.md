@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.0](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-python@1.1.5...@raptorsystems/krypto-rates-python@2.0.0-alpha.0) (2020-02-04)
+
+
+### Code Refactoring
+
+* complete refactor, new clients api ([2c82f41](https://github.com/raptorsystems/krypto-rates/commit/2c82f414314dcbe263ab19cda4838e76754620e3))
+
+
+### BREAKING CHANGES
+
+* change clients api
+
+
+
+
+
 ## [1.1.5](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-python@1.1.4...@raptorsystems/krypto-rates-python@1.1.5) (2019-12-31)
 
 **Note:** Version bump only for package @raptorsystems/krypto-rates-python
