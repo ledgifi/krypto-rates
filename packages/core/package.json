@@ -1,6 +1,6 @@
 {
   "name": "@raptorsystems/krypto-rates-core",
-  "version": "2.0.0-alpha.2",
+  "version": "2.0.0-alpha.3",
   "description": "Krypto Rates Core",
   "author": {
     "name": "Raptor Systems SpA",
@@ -15,9 +15,9 @@
     "lint:fix": "eslint --fix --ext .ts src"
   },
   "dependencies": {
-    "@raptorsystems/krypto-rates-common": "^2.0.0-alpha.2",
-    "@raptorsystems/krypto-rates-sources": "^2.0.0-alpha.2",
-    "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.2",
+    "@raptorsystems/krypto-rates-common": "^2.0.0-alpha.3",
+    "@raptorsystems/krypto-rates-sources": "^2.0.0-alpha.3",
+    "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.3",
     "apollo-server-core": "^2.9.16",
     "graphql": "^14.6.0",
     "graphql-iso-date": "^3.6.1",
