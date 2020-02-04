@@ -19,7 +19,7 @@
     "build:clients": "tsc --build",
     "prebuild:clients": "yarn clean",
     "clean": "rimraf dist tsconfig.tsbuildinfo",
-    "prepublish": "yarn build:clients",
+    "prepublishOnly ": "yarn build:clients",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --fix --ext .ts src"
   },
