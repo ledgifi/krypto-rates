@@ -9,9 +9,10 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "lint": "poetry run flake8 --exit-zero",
     "clean": "rimraf dist build *.egg-info",
     "prebuild": "yarn clean",
-    "build:python": "pipenv run python setup.py --quiet sdist bdist_wheel --universal",
-    "upload": "pipenv run twine upload dist/*"
+    "build:python": "poetry run python setup.py --quiet sdist bdist_wheel --universal",
+    "upload": "poetry run twine upload dist/*"
   }
 }

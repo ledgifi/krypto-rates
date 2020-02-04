@@ -1,20 +1,28 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import { GraphQLClient } from 'graphql-request'
+import { Options as ClientOptions } from 'graphql-request/dist/src/types'
 import {
-  Currency,
+  DateMoneyDict,
+  FetchBase,
+  FetchBy,
   Market,
   Markets,
-  Money,
+  MoneyDict,
+  MoneyDictBuilder,
   Rate,
   Rates,
+  Response,
   Timeframe,
 } from './types'
-import { parseMoney } from './utils'
+import { buildDateMoneyDict, buildMoneyDict } from './utils'
 
 const RATE_FRAGMENT = /* GraphQL */ `
   fragment rate on Rate {
-    source
-    timestamp
     value
+    date
+    timestamp
+    source
     market {
       base
       quote
@@ -43,7 +51,7 @@ class API extends Client {
   public async fetchLiveRates(markets: Markets): Promise<Rates> {
     const response = await this.request<{ liveRates: Rates }>(
       /* GraphQL */ `
-        query($markets: MarketsInput!) {
+        query($markets: [MarketInput!]!) {
           liveRates(markets: $markets) {
             ...rate
           }
@@ -75,18 +83,18 @@ class API extends Client {
 
   public async fetchHistoricalRates(
     markets: Markets,
-    date: string | Date,
+    dates: (string | Date)[],
   ): Promise<Rates> {
     const response = await this.request<{ historicalRates: Rates }>(
       /* GraphQL */ `
-        query($markets: MarketsInput!, $date: Date!) {
-          historicalRates(markets: $markets, date: $date) {
+        query($markets: [MarketInput!]!, $dates: [Date!]!) {
+          historicalRates(markets: $markets, dates: $dates) {
             ...rate
           }
         }
         ${RATE_FRAGMENT}
       `,
-      { markets, date },
+      { markets, dates },
     )
     return response.historicalRates
   }
@@ -97,7 +105,7 @@ class API extends Client {
   ): Promise<Rates> {
     const response = await this.request<{ timeframeRates: Rates }>(
       /* GraphQL */ `
-        query($markets: MarketsInput!, $timeframe: TimeframeInput!) {
+        query($markets: [MarketInput!]!, $timeframe: TimeframeInput!) {
           timeframeRates(markets: $markets, timeframe: $timeframe) {
             ...rate
           }
@@ -110,77 +118,69 @@ class API extends Client {
   }
 }
 
-export class KryptoRates extends Client {
+const fetchRates = <R extends Response>(
+  fn: (markets: Market[]) => Promise<Rate[]>,
+  builder: MoneyDictBuilder<R>,
+  inverse?: boolean,
+): FetchBase<R> => {
+  const fetch: FetchBy<Market, R> = async (markets, by) => {
+    const rates = await fn(markets)
+    return builder(rates, by, inverse)
+  }
+  return {
+    from: base => ({
+      to: (...quotes) =>
+        fetch(
+          quotes.map(quote => ({ base, quote })),
+          market => market.quote,
+        ),
+    }),
+    to: quote => ({
+      from: (...bases) =>
+        fetch(
+          bases.map(base => ({ base, quote })),
+          market => market.base,
+        ),
+    }),
+    markets: (...markets) =>
+      fetch(markets, market => market.base + market.quote),
+  }
+}
+
+export class KryptoRates {
   public api: API
+  private _inverse = false
 
-  public constructor(url: string) {
-    super(url)
-    this.api = new API(url)
+  public constructor(url: string, options?: ClientOptions) {
+    this.api = new API(url, options)
   }
 
-  public async fetchRateFor({
-    currency,
-    to,
-    date,
-    inverse,
-  }: {
-    currency: Currency
-    to: Currency
-    date?: Date | string
-    inverse?: boolean
-  }): Promise<Money> {
-    if (currency.toUpperCase() === to.toUpperCase())
-      return { amount: 1, currency }
-    const market: Market = { base: currency, quote: to }
-    const rate = date
-      ? await this.api.fetchHistoricalRate(market, date)
-      : await this.api.fetchLiveRate(market)
-    return parseMoney(rate, inverse)
+  public get inverse(): KryptoRates {
+    this._inverse = !this._inverse
+    return this
   }
 
-  public async fetchRatesFor({
-    currency,
-    to,
-    date,
-    inverse,
-  }: {
-    currency: Currency
-    to: Currency[]
-    date?: Date | string
-    inverse?: boolean
-  }): Promise<Map<Currency, Money>> {
-    const markets: Markets = { base: currency, quotes: to }
-    const rates = date
-      ? await this.api.fetchHistoricalRates(markets, date)
-      : await this.api.fetchLiveRates(markets)
-    return new Map(
-      rates
-        .map(rate => parseMoney(rate, inverse))
-        .map(money => [money.currency, money]),
+  public get live(): FetchBase<MoneyDict> {
+    return fetchRates(
+      markets => this.api.fetchLiveRates(markets),
+      buildMoneyDict,
+      this._inverse,
     )
   }
 
-  public async fetchRateTimeframeFor({
-    currency,
-    to,
-    start,
-    end,
-    inverse,
-  }: {
-    currency: Currency
-    to: Currency
-    start: Date | string
-    end: Date | string
-    inverse?: boolean
-  }): Promise<Map<string, Money>> {
-    const markets: Markets = { base: currency, quotes: [to] }
-    const timeframe = { start, end }
-    const rates = await this.api.fetchTimeframeRates(markets, timeframe)
-    return new Map(
-      rates.map(rate => [
-        rate.timestamp.split('T')[0],
-        parseMoney(rate, inverse),
-      ]),
+  public historical(...dates: (string | Date)[]): FetchBase<DateMoneyDict> {
+    return fetchRates(
+      markets => this.api.fetchHistoricalRates(markets, dates),
+      buildDateMoneyDict,
+      this._inverse,
+    )
+  }
+
+  public timeframe(timeframe: Timeframe): FetchBase<DateMoneyDict> {
+    return fetchRates(
+      markets => this.api.fetchTimeframeRates(markets, timeframe),
+      buildDateMoneyDict,
+      this._inverse,
     )
   }
 }

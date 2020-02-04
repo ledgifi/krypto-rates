@@ -1,22 +1,33 @@
-from typing import Any, Dict, Iterable
+from importlib.metadata import version
+from typing import Any, Iterable
 
 from requests import Session
 from requests_toolbelt import user_agent as ua
 
-from .__version__ import __version__
-from .types import Money, Timeframe, Market, Markets, Rate, Rates, Date
-from .utils import serialize_date, parse_money
+from .types import (
+    Currency,
+    Date,
+    FetchFunction,
+    Market,
+    MarketByFunction,
+    Markets,
+    MoneyDictBuilder,
+    Rate,
+    Rates,
+    Response,
+    Timeframe,
+)
+from .utils import build_date_money_dict, build_money_dict, serialize_date
 
 __all__ = ["KryptoRates"]
-
-TIMEOUT = 30
 
 
 RATES_FRAGMENT = """
   fragment rate on Rate {
-    source
-    timestamp
     value
+    date
+    timestamp
+    source
     market {
       base
       quote
@@ -26,31 +37,23 @@ RATES_FRAGMENT = """
 
 
 class Client(Session):
-    user_agent = ua("krypto-ledgers-python-client", __version__)
+    user_agent = ua("krypto-ledgers-python-client", version("krypto-rates-client"))
 
-    def __init__(self, url: str, timeout: int = TIMEOUT, user_agent: str = None):
+    def __init__(self, url: str, **options):
         super().__init__()
         # Instance attributes
         self.url: str = url
-        self.timeout: int = timeout
-        if user_agent is not None:
-            self.user_agent = user_agent
+        self.options = options
+        self.headers.setdefault("User-Agent", self.user_agent)
 
     def request(self, query: str, variables: Any, **kwargs):
-        # Set default user-agent
-        headers = kwargs.pop("headers", {})
-        headers["User-Agent"] = self.user_agent
-        # Build request data
-        data = {"query": query, "variables": variables}
         # Send the request
         response = super().request(
             method="POST",
             url=self.url,
-            headers=headers,
-            auth=self.auth,
-            timeout=self.timeout,
-            json=data,
-            **kwargs
+            json={"query": query, "variables": variables},
+            **self.options,
+            **kwargs,
         )
         # Validate response
         response.raise_for_status()
@@ -80,7 +83,7 @@ class API(Client):
     def fetch_live_rates(self, markets: Markets) -> Rates:
         response = self.request(
             """
-              query($markets: MarketsInput!) {
+              query($markets: [MarketInput!]!) {
                 liveRates(markets: $markets) {
                   ...rate
                 }
@@ -105,24 +108,24 @@ class API(Client):
         )
         return response["historicalRate"]
 
-    def fetch_historical_rates(self, markets: Markets, date: Date) -> Rates:
+    def fetch_historical_rates(self, markets: Markets, dates: Iterable[Date]) -> Rates:
         response = self.request(
             """
-              query($markets: MarketsInput!, $date: Date!) {
-                historicalRates(markets: $markets, date: $date) {
+              query($markets: [MarketInput!]!, $dates: [Date!]!) {
+                historicalRates(markets: $markets, dates: $dates) {
                   ...rate
                 }
               }
             """
             + RATES_FRAGMENT,
-            {"markets": markets, "date": serialize_date(date)},
+            {"markets": markets, "dates": [serialize_date(date) for date in dates]},
         )
         return response["historicalRates"]
 
     def fetch_timeframe_rates(self, markets: Markets, timeframe: Timeframe) -> Rates:
         response = self.request(
             """
-              query($markets: MarketsInput!, $timeframe: TimeframeInput!) {
+              query($markets: [MarketInput!]!, $timeframe: TimeframeInput!) {
                 timeframeRates(markets: $markets, timeframe: $timeframe) {
                   ...rate
                 }
@@ -140,47 +143,103 @@ class API(Client):
         return response["timeframeRates"]
 
 
-class KryptoRates(Client):
-    def __init__(self, url: str, timeout: int = TIMEOUT, user_agent: str = None):
-        super().__init__(url, timeout, user_agent)
-        self.api = API(url, timeout, user_agent)
+class Fetch:
+    def __init__(self, fn: FetchFunction, builder: MoneyDictBuilder, inverse: bool):
+        def fetch(markets: Markets, by: MarketByFunction) -> Response:
+            rates = fn(markets)
+            return builder(rates, by, inverse)
 
-    def fetch_rate_for(
-        self, currency: str, to: str, date: Date = None, inverse: bool = False
-    ) -> Money:
-        if currency.upper() == to.upper():
-            return Money(amount=1, currency=currency)
-        market = Market(base=currency, quote=to)
-        rate = (
-            self.api.fetch_historical_rate(market, date)
-            if date
-            else self.api.fetch_live_rate(market)
-        )
-        return parse_money(rate, inverse)
+        self._fetch = fetch
 
-    def fetch_rates_for(
-        self, currency: str, to: Iterable[str], date: Date = None, inverse: bool = False
-    ) -> Dict[str, Money]:
-        markets = Markets(base=currency, quotes=to)
-        rates = (
-            self.api.fetch_historical_rates(markets, date)
-            if date
-            else self.api.fetch_live_rates(markets)
-        )
-        return {
-            money["currency"]: money
-            for money in (parse_money(rate, inverse) for rate in rates)
-        }
 
-    def fetch_rate_timeframe_for(
+class FetchBase(Fetch):
+    def __init__(
         self,
-        currency: str,
-        to: str,
-        start: Date,
-        end: Date = None,
-        inverse: bool = False,
-    ) -> Dict[str, Money]:
-        markets = Markets(base=currency, quotes=[to])
-        timeframe = dict(start=start, end=end)
-        rates = self.api.fetch_timeframe_rates(markets, timeframe)
-        return {rate["timestamp"][:10]: parse_money(rate, inverse) for rate in rates}
+        base: Currency,
+        fn: FetchFunction,
+        builder: MoneyDictBuilder,
+        inverse: bool,
+    ):
+        super().__init__(fn, builder, inverse)
+
+        def to(*quotes: Currency) -> Response:
+            markets = [Market(base=base, quote=quote) for quote in quotes]
+            return self._fetch(markets, lambda market: market["quote"])
+
+        self.to = to
+
+
+class FetchQuote(Fetch):
+    def __init__(
+        self,
+        quote: Currency,
+        fn: FetchFunction,
+        builder: MoneyDictBuilder,
+        inverse: bool,
+    ):
+        super().__init__(fn, builder, inverse)
+
+        def from_(*bases: Currency) -> Response:
+            markets = [Market(base=base, quote=quote) for base in bases]
+            return self._fetch(markets, lambda market: market["base"])
+
+        self.from_ = from_
+
+
+class FetchRates(Fetch):
+    def __init__(self, fn: FetchFunction, builder: MoneyDictBuilder, inverse: bool):
+        super().__init__(fn, builder, inverse)
+
+        def from_(base: Currency) -> FetchBase:
+            return FetchBase(base, fn, builder, inverse)
+
+        self.from_ = from_
+
+        def to(quote: Currency) -> FetchQuote:
+            return FetchQuote(quote, fn, builder, inverse)
+
+        self.to = to
+
+        def markets(*markets_: Market) -> Response:
+            return self._fetch(
+                markets_, lambda market: market["base"] + market["quote"]
+            )
+
+        self.markets = markets
+
+
+class KryptoRates:
+    def __init__(self, url: str, **options):
+        self.api = API(url, **options)
+        self._inverse = False
+
+    @property
+    def inverse(self) -> "KryptoRates":
+        self._inverse = not self._inverse
+        return self
+
+    @property
+    def live(self) -> FetchRates:
+        return FetchRates(
+            lambda markets: self.api.fetch_live_rates(markets),
+            build_money_dict,
+            self._inverse,
+        )
+
+    def historical(self, *dates: Date) -> FetchRates:
+        return FetchRates(
+            lambda markets: self.api.fetch_historical_rates(markets, dates),
+            build_date_money_dict,
+            self._inverse,
+        )
+
+    def timeframe(
+        self, timeframe: Timeframe = None, **timeframe_kwargs: Timeframe
+    ) -> FetchRates:
+        return FetchRates(
+            lambda markets: self.api.fetch_timeframe_rates(
+                markets, timeframe or timeframe_kwargs
+            ),
+            build_date_money_dict,
+            self._inverse,
+        )
