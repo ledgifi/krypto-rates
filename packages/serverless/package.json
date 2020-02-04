@@ -11,7 +11,7 @@
   "scripts": {
     "dev:sls": "serverless offline",
     "build:sls": "serverless package",
-    "clean": "rimraf dist .serverless",
+    "clean": "rimraf dist .serverless .webpack",
     "deploy": "serverless deploy",
     "deploy:function": "yarn deploy function --function graphql",
     "analyze": "yarn build:sls --analyze",
