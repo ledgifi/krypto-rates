@@ -4,7 +4,7 @@
   "useWorkspaces": true,
   "command": {
     "publish": {
-      "message": "chore(release): publish"
+      "message": "chore(release): bump version"
     }
   },
   "packages": [
