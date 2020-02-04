@@ -1,6 +1,6 @@
 {
   "name": "@raptorsystems/krypto-rates-scripts",
-  "version": "1.0.3-alpha.0",
+  "version": "1.0.3-alpha.1",
   "description": "Krypto Rates Scripts",
   "author": {
     "name": "Raptor Systems SpA",
@@ -14,8 +14,8 @@
     "lint:fix": "eslint --fix --ext .ts src"
   },
   "dependencies": {
-    "@raptorsystems/krypto-rates-common": "^2.0.0-alpha.0",
-    "@raptorsystems/krypto-rates-core": "^2.0.0-alpha.0",
-    "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.0"
+    "@raptorsystems/krypto-rates-common": "^2.0.0-alpha.1",
+    "@raptorsystems/krypto-rates-core": "^2.0.0-alpha.1",
+    "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.1"
   }
 }
