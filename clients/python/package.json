@@ -13,7 +13,7 @@
     "prebuild:clients": "yarn clean",
     "clean": "rimraf dist build *.egg-info",
     "prepublishOnly ": "yarn build:clients",
-    "version": "cross-var poetry version $npm_package_version && git add .",
+    "version": "cross-var poetry version $npm_package_version && git add pyproject.toml",
     "publish": "poetry publish",
     "lint": "poetry run flake8 --exit-zero"
   }
