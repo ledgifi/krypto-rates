@@ -32,8 +32,8 @@
     "@types/node": "^12.12.26",
     "@types/webpack": "^4.41.4",
     "@types/ws": "^7.2.1",
-    "@typescript-eslint/eslint-plugin": "^2.18.0",
-    "@typescript-eslint/parser": "^2.18.0",
+    "@typescript-eslint/eslint-plugin": "^2.19.0",
+    "@typescript-eslint/parser": "^2.19.0",
     "cross-env": "^7.0.0",
     "cross-var": "^1.1.0",
     "eslint": "^6.8.0",
@@ -58,7 +58,7 @@
     "serverless-webpack/fs-extra": "^8.1.0",
     "serverless-webpack/is-builtin-module": "^3.0.0",
     "serverless-webpack/lodash": "^4.17.15",
-    "serverless-webpack/semver": "^6.2.0",
+    "serverless-webpack/semver": "^7.1.2",
     "serverless-webpack/ts-node": "^8.6.2"
   }
 }
