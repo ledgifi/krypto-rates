@@ -19,6 +19,7 @@
     "build": "tsc --build",
     "prebuild": "yarn clean",
     "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "prepublish": "yarn build",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --fix --ext .ts src"
   }

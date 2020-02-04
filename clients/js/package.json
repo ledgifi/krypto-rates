@@ -16,9 +16,10 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc --build",
-    "prebuild": "yarn clean",
+    "build:clients": "tsc --build",
+    "prebuild:clients": "yarn clean",
     "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "prepublish": "yarn build:clients",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --fix --ext .ts src"
   },

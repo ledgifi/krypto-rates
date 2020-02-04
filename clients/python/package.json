@@ -9,10 +9,12 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "lint": "poetry run flake8 --exit-zero",
+    "build:clients": "poetry build",
+    "prebuild:clients": "yarn clean",
     "clean": "rimraf dist build *.egg-info",
-    "prebuild": "yarn clean",
-    "build:python": "poetry run python setup.py --quiet sdist bdist_wheel --universal",
-    "upload": "poetry run twine upload dist/*"
+    "prepublish": "yarn build:clients",
+    "version": "cross-var poetry version $npm_package_version",
+    "publish": "poetry publish",
+    "lint": "poetry run flake8 --exit-zero"
   }
 }
