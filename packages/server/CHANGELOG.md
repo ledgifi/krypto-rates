@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.2-alpha.4](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-server@1.2.2-alpha.3...@raptorsystems/krypto-rates-server@1.2.2-alpha.4) (2020-02-06)
+
+**Note:** Version bump only for package @raptorsystems/krypto-rates-server
+
+
+
+
+
 ## [1.2.2-alpha.3](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-server@1.2.2-alpha.2...@raptorsystems/krypto-rates-server@1.2.2-alpha.3) (2020-02-04)
 
 **Note:** Version bump only for package @raptorsystems/krypto-rates-server
