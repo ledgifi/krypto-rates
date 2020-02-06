@@ -73,13 +73,17 @@ async function fetchMarketDates<T>({
   return rateGroups.flat()
 }
 
-const ratesIncludesMarketDate = (
-  { market, date }: MarketDate<Market, Date>,
+// TODO: This takes a lot of time
+const filterMissingMarketDates = (
   rates: ParsedRate[],
-): boolean =>
-  !rates
-    .map(({ market, date }) => market.code + date)
-    .includes(market.code + date.toISOString().slice(0, 10))
+  marketDates: MarketDate<Market, Date>[],
+): MarketDate<Market, Date>[] => {
+  const reference = rates.map(({ market, date }) => market.code + date)
+  return marketDates.filter(
+    ({ market, date }) =>
+      !reference.includes(market.code + date.toISOString().slice(0, 10)),
+  )
+}
 
 export class FetcheService {
   public async fetchRate({
@@ -243,9 +247,7 @@ export class FetcheService {
     let rates = await fetchDBMarketDates(marketDates)
 
     // Filter missing market-dates in DB response
-    let missingMarketDates = marketDates.filter(item =>
-      ratesIncludesMarketDate(item, rates),
-    )
+    let missingMarketDates = filterMissingMarketDates(rates, marketDates)
 
     // If there are missing market-dates, fetch the missing rates from
     // inverse markets on Redis DB
@@ -254,9 +256,7 @@ export class FetcheService {
 
       rates = [...rates, ...missingRates]
 
-      missingMarketDates = marketDates.filter(item =>
-        ratesIncludesMarketDate(item, rates),
-      )
+      missingMarketDates = filterMissingMarketDates(rates, marketDates)
     }
 
     // If there are still missing market-dates left, fetch the missing
