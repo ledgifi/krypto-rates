@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {
   Currency,
-  MarketBase,
+  MarketInput,
   ParsedRate,
-  ParsedRates,
   Timeframe,
 } from '@raptorsystems/krypto-rates-common/types'
 import {
@@ -17,7 +16,7 @@ import { createClient, mapMarketsByBase, RateSourceError } from '../utils'
 import { RatesSource } from './types'
 
 const fetchMarkets = async <T>(
-  markets: MarketBase[],
+  markets: MarketInput[],
   fetch: (base: string, currencies: string[]) => Promise<T[]>,
 ): Promise<T[]> =>
   mapMarketsByBase(markets, (quote, markets) =>
@@ -50,12 +49,12 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
   }
 
   public async fetchLive(
-    markets: MarketBase[],
-  ): Promise<ParsedRates<CurrencylayerRates>> {
+    markets: MarketInput[],
+  ): Promise<ParsedRate<CurrencylayerRates>[]> {
     const fetch = async (
       base: string,
       currencies: string[],
-    ): Promise<ParsedRates<CurrencylayerRates>> => {
+    ): Promise<ParsedRate<CurrencylayerRates>[]> => {
       const {
         data: { quotes = {}, timestamp, error },
       } = await this.client.get<CurrencylayerLive>('live', {
@@ -73,13 +72,13 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
   }
 
   public async fetchHistorical(
-    markets: MarketBase[],
+    markets: MarketInput[],
     date: Date,
-  ): Promise<ParsedRates<CurrencylayerRates>> {
+  ): Promise<ParsedRate<CurrencylayerRates>[]> {
     const fetch = async (
       base: string,
       currencies: string[],
-    ): Promise<ParsedRates<CurrencylayerRates>> => {
+    ): Promise<ParsedRate<CurrencylayerRates>[]> => {
       const {
         data: { quotes = {}, timestamp, error },
       } = await this.client.get<CurrencylayerHistorical>('historical', {
@@ -98,15 +97,15 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
   }
 
   public async fetchTimeframe(
-    markets: MarketBase[],
+    markets: MarketInput[],
     timeframe: Timeframe<Date>,
-  ): Promise<ParsedRates<CurrencylayerRates>> {
+  ): Promise<ParsedRate<CurrencylayerRates>[]> {
     const fetch = async (
       base: Currency,
       currencies: Currency[],
       start: Date,
       end: Date,
-    ): Promise<ParsedRates<CurrencylayerRates>> => {
+    ): Promise<ParsedRate<CurrencylayerRates>[]> => {
       const {
         data: { quotes = {}, error },
       } = await this.client.get<CurrencylayerTimeframe>('timeframe', {

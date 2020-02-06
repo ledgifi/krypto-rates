@@ -10,8 +10,6 @@ export type RateSources = CoinlayerSource | CurrencylayerSource
 export type RatesData = CoinlayerRates | CurrencylayerRates
 
 export type Rate = types.Rate<RatesData>
-export type Rates = types.Rates<RatesData>
 export type DbRate = types.DbRate<RatesData>
 export type ParsedRate = types.ParsedRate<RatesData>
-export type ParsedRates = types.ParsedRates<RatesData>
 export type NullableDbRate = types.NullableDbRate<RatesData>

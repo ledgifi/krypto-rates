@@ -1,6 +1,10 @@
 import {
+  MarketDate,
+  MarketInput,
+} from '@raptorsystems/krypto-rates-common/types'
+import {
   NullableDbRate,
-  ParsedRates,
+  ParsedRate,
 } from '@raptorsystems/krypto-rates-sources/types'
 import { generateDateRange } from '@raptorsystems/krypto-rates-utils'
 import { GraphQLString } from 'graphql'
@@ -14,6 +18,7 @@ import {
   queryType,
   scalarType,
 } from 'nexus'
+import { Context } from './context'
 
 const TTL = parseInt(process.env.RATES_LIVE_TTL ?? '') || 300
 
@@ -43,7 +48,7 @@ export function dateArg(
 }
 
 // Inputs
-export const MarketInput = inputObjectType({
+export const MarketInputType = inputObjectType({
   name: 'MarketInput',
   definition(t) {
     t.currency('base')
@@ -51,11 +56,11 @@ export const MarketInput = inputObjectType({
   },
 })
 
-export const MarketsInput = inputObjectType({
-  name: 'MarketsInput',
+export const MarketDateInput = inputObjectType({
+  name: 'MarketDateInput',
   definition(t) {
-    t.currency('base')
-    t.list.currency('quotes')
+    t.field('market', { type: 'MarketInput' })
+    t.date('date')
   },
 })
 
@@ -64,6 +69,14 @@ export const TimeframeInput = inputObjectType({
   definition(t) {
     t.date('start')
     t.date('end')
+  },
+})
+
+export const MarketTimeframeInput = inputObjectType({
+  name: 'MarketTimeframeInput',
+  definition(t) {
+    t.field('market', { type: 'MarketInput' })
+    t.field('timeframe', { type: 'TimeframeInput' })
   },
 })
 
@@ -87,6 +100,43 @@ export const RateObject = objectType({
   },
 })
 
+// Common functions
+const fetchHistoricalMarketDates = ({
+  ctx,
+  marketDates,
+}: {
+  ctx: Context
+  marketDates: MarketDate<MarketInput, Date>[]
+}): Promise<ParsedRate[]> =>
+  ctx.fetch.fetchRatesDates({
+    marketDatesInput: marketDates,
+    fetchDB: {
+      single: (markets, date): Promise<NullableDbRate[]> =>
+        ctx.db.fetchHistoricalRates({
+          marketDates: markets.map(market => ({
+            market,
+            date: date.toISOString(),
+          })),
+        }),
+      timeframe: (markets, timeframe): Promise<NullableDbRate[]> =>
+        ctx.db.fetchHistoricalRates({
+          marketDates: generateDateRange(timeframe).flatMap(date =>
+            markets.map(market => ({
+              market,
+              date: date.toISOString(),
+            })),
+          ),
+        }),
+    },
+    writeDB: rates => ctx.db.writeHistoricalRates({ rates }),
+    fetchSource: {
+      single: (markets, date): Promise<ParsedRate[]> =>
+        ctx.rates.fetchHistorical(markets, date),
+      timeframe: (markets, timeframe): Promise<ParsedRate[]> =>
+        ctx.rates.fetchTimeframe(markets, timeframe),
+    },
+  })
+
 // Querys
 export const Query = queryType({
   definition(t) {
@@ -99,7 +149,7 @@ export const Query = queryType({
       type: RateObject,
       nullable: true,
       args: {
-        market: arg({ type: MarketInput }),
+        market: arg({ type: 'MarketInput' }),
         ttl: intArg({ required: false, default: TTL }),
       },
       resolve: (_root, { market, ttl }, ctx) =>
@@ -116,7 +166,7 @@ export const Query = queryType({
       nullable: true,
       list: true,
       args: {
-        markets: arg({ type: MarketInput, list: true }),
+        markets: arg({ type: 'MarketInput', list: true }),
         ttl: intArg({ required: false, default: TTL }),
       },
       resolve: (_root, { markets, ttl }, ctx) =>
@@ -128,11 +178,11 @@ export const Query = queryType({
         }),
     })
 
-    t.field('historicalRate', {
+    t.field('historicalRateForDate', {
       type: RateObject,
       nullable: true,
       args: {
-        market: arg({ type: MarketInput }),
+        market: arg({ type: 'MarketInput' }),
         date: dateArg(),
       },
       resolve: (_root, { market, date }, ctx) =>
@@ -145,68 +195,77 @@ export const Query = queryType({
         }),
     })
 
-    t.field('historicalRates', {
+    t.field('historicalRatesForDate', {
       type: RateObject,
       nullable: true,
       list: true,
       args: {
-        markets: arg({ type: MarketInput, list: true }),
-        dates: dateArg({ list: true }),
+        markets: arg({ type: 'MarketInput', list: true }),
+        date: dateArg(),
       },
-      resolve: (_root, { markets, dates }, ctx) =>
-        ctx.fetch.fetchRatesDates({
-          marketsInput: markets,
-          dates,
-          fetchDB: {
-            single: (markets, date): Promise<NullableDbRate[]> =>
-              ctx.db.fetchHistoricalRates({
-                markets,
-                dates: [date.toISOString()],
-              }),
-            timeframe: (markets, timeframe): Promise<NullableDbRate[]> =>
-              ctx.db.fetchRatesTimeframe({
-                markets,
-                timeframe,
-              }),
-          },
-          writeDB: rates => ctx.db.writeHistoricalRates({ rates }),
-          fetchSource: {
-            single: (markets, date): Promise<ParsedRates> =>
-              ctx.rates.fetchHistorical(markets, date),
-            timeframe: (markets, timeframe): Promise<ParsedRates> =>
-              ctx.rates.fetchTimeframe(markets, timeframe),
-          },
+      resolve: (_root, { markets, date }, ctx) =>
+        fetchHistoricalMarketDates({
+          ctx,
+          marketDates: markets.map(market => ({ market, date })),
         }),
     })
 
-    t.field('timeframeRates', {
+    t.field('historicalRatesForDates', {
       type: RateObject,
       nullable: true,
       list: true,
       args: {
-        markets: arg({ type: MarketInput, list: true }),
+        markets: arg({ type: 'MarketInput', list: true }),
+        dates: dateArg({ list: true }),
+      },
+      resolve: (_root, { markets, dates }, ctx) =>
+        fetchHistoricalMarketDates({
+          ctx,
+          marketDates: markets.flatMap(market =>
+            dates.map(date => ({ market, date })),
+          ),
+        }),
+    })
+
+    t.field('historicalRatesByDate', {
+      type: RateObject,
+      nullable: true,
+      list: true,
+      args: { marketDates: arg({ list: true, type: 'MarketDateInput' }) },
+      resolve: (_root, { marketDates }, ctx) =>
+        fetchHistoricalMarketDates({ ctx, marketDates }),
+    })
+
+    t.field('historicalRatesForTimeframe', {
+      type: RateObject,
+      nullable: true,
+      list: true,
+      args: {
+        markets: arg({ type: 'MarketInput', list: true }),
         timeframe: arg({ type: TimeframeInput }),
       },
       resolve: (_root, { markets, timeframe }, ctx) =>
-        ctx.fetch.fetchRatesDates({
-          marketsInput: markets,
-          dates: generateDateRange(timeframe),
-          fetchDB: {
-            single: (markets, date): Promise<NullableDbRate[]> =>
-              ctx.db.fetchHistoricalRates({
-                markets,
-                dates: [date.toISOString()],
-              }),
-            timeframe: (markets, timeframe): Promise<NullableDbRate[]> =>
-              ctx.db.fetchRatesTimeframe({ markets, timeframe }),
-          },
-          writeDB: rates => ctx.db.writeRatesTimeframe({ rates }),
-          fetchSource: {
-            single: (markets, dates): Promise<ParsedRates> =>
-              ctx.rates.fetchHistorical(markets, dates),
-            timeframe: (markets, timeframe): Promise<ParsedRates> =>
-              ctx.rates.fetchTimeframe(markets, timeframe),
-          },
+        fetchHistoricalMarketDates({
+          ctx,
+          marketDates: generateDateRange(timeframe).flatMap(date =>
+            markets.map(market => ({ market, date })),
+          ),
+        }),
+    })
+
+    t.field('historicalRatesByTimeframe', {
+      type: RateObject,
+      nullable: true,
+      list: true,
+      args: {
+        marketTimeframes: arg({ list: true, type: 'MarketTimeframeInput' }),
+      },
+      resolve: (_root, { marketTimeframes }, ctx) =>
+        fetchHistoricalMarketDates({
+          ctx,
+          marketDates: marketTimeframes.flatMap(({ market, timeframe }) =>
+            generateDateRange(timeframe).map(date => ({ market, date })),
+          ),
         }),
     })
   },

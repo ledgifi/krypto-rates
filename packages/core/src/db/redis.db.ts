@@ -1,11 +1,10 @@
-import { Timeframe } from '@raptorsystems/krypto-rates-common/types'
 import {
   DbRate,
   NullableDbRate,
 } from '@raptorsystems/krypto-rates-sources/types'
-import { generateDateRange } from '@raptorsystems/krypto-rates-utils'
 import IORedis from 'ioredis'
 import { RatesDb } from '../types'
+import { MarketDate } from '@raptorsystems/krypto-rates-common/types'
 
 const host = process.env.REDIS_URL
 
@@ -96,15 +95,13 @@ export class RedisRatesDb extends IORedis implements RatesDb {
   }
 
   public async fetchHistoricalRates({
-    markets,
-    dates,
+    marketDates,
   }: {
-    markets: string[]
-    dates: string[]
+    marketDates: MarketDate<string, string>[]
   }): Promise<NullableDbRate[]> {
     const results = await this.mget(
-      ...markets.flatMap(market =>
-        dates.map(date => ratesKey(market, date.slice(0, 10))),
+      ...marketDates.map(({ market, date }) =>
+        ratesKey(market, date.slice(0, 10)),
       ),
     )
     return results.map(item => parse(item))
@@ -123,30 +120,5 @@ export class RedisRatesDb extends IORedis implements RatesDb {
         ]),
       ),
     )
-  }
-
-  public async fetchRatesTimeframe({
-    markets,
-    timeframe,
-  }: {
-    markets: string[]
-    timeframe: Timeframe
-  }): Promise<NullableDbRate[]> {
-    const results = await this.mget(
-      ...markets.flatMap(market =>
-        generateDateRange(timeframe).map(date =>
-          ratesKey(market, date.toISOString().slice(0, 10)),
-        ),
-      ),
-    )
-    return results.map(item => parse(item))
-  }
-
-  public async writeRatesTimeframe({
-    rates,
-  }: {
-    rates: DbRate[]
-  }): Promise<void> {
-    await this.writeHistoricalRates({ rates })
   }
 }

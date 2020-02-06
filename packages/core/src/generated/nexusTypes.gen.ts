@@ -41,15 +41,20 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  MarketDateInput: {
+    // input type
+    date: Date // Date!
+    market: NexusGenInputs['MarketInput'] // MarketInput!
+  }
   MarketInput: {
     // input type
     base: string // Currency!
     quote: string // Currency!
   }
-  MarketsInput: {
+  MarketTimeframeInput: {
     // input type
-    base: string // Currency!
-    quotes: string[] // [Currency!]!
+    market: NexusGenInputs['MarketInput'] // MarketInput!
+    timeframe: NexusGenInputs['TimeframeInput'] // TimeframeInput!
   }
   TimeframeInput: {
     // input type
@@ -78,8 +83,9 @@ export interface NexusGenRootTypes {
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
+  MarketDateInput: NexusGenInputs['MarketDateInput']
   MarketInput: NexusGenInputs['MarketInput']
-  MarketsInput: NexusGenInputs['MarketsInput']
+  MarketTimeframeInput: NexusGenInputs['MarketTimeframeInput']
   TimeframeInput: NexusGenInputs['TimeframeInput']
 }
 
@@ -92,11 +98,14 @@ export interface NexusGenFieldTypes {
   Query: {
     // field return type
     currencies: string[] // [String!]!
-    historicalRate: NexusGenRootTypes['Rate'] | null // Rate
-    historicalRates: NexusGenRootTypes['Rate'][] | null // [Rate!]
+    historicalRateForDate: NexusGenRootTypes['Rate'] | null // Rate
+    historicalRatesByDate: NexusGenRootTypes['Rate'][] | null // [Rate!]
+    historicalRatesByTimeframe: NexusGenRootTypes['Rate'][] | null // [Rate!]
+    historicalRatesForDate: NexusGenRootTypes['Rate'][] | null // [Rate!]
+    historicalRatesForDates: NexusGenRootTypes['Rate'][] | null // [Rate!]
+    historicalRatesForTimeframe: NexusGenRootTypes['Rate'][] | null // [Rate!]
     liveRate: NexusGenRootTypes['Rate'] | null // Rate
     liveRates: NexusGenRootTypes['Rate'][] | null // [Rate!]
-    timeframeRates: NexusGenRootTypes['Rate'][] | null // [Rate!]
   }
   Rate: {
     // field return type
@@ -110,15 +119,33 @@ export interface NexusGenFieldTypes {
 
 export interface NexusGenArgTypes {
   Query: {
-    historicalRate: {
+    historicalRateForDate: {
       // args
       date: Date // Date!
       market: NexusGenInputs['MarketInput'] // MarketInput!
     }
-    historicalRates: {
+    historicalRatesByDate: {
+      // args
+      marketDates: NexusGenInputs['MarketDateInput'][] // [MarketDateInput!]!
+    }
+    historicalRatesByTimeframe: {
+      // args
+      marketTimeframes: NexusGenInputs['MarketTimeframeInput'][] // [MarketTimeframeInput!]!
+    }
+    historicalRatesForDate: {
+      // args
+      date: Date // Date!
+      markets: NexusGenInputs['MarketInput'][] // [MarketInput!]!
+    }
+    historicalRatesForDates: {
       // args
       dates: Date[] // [Date!]!
       markets: NexusGenInputs['MarketInput'][] // [MarketInput!]!
+    }
+    historicalRatesForTimeframe: {
+      // args
+      markets: NexusGenInputs['MarketInput'][] // [MarketInput!]!
+      timeframe: NexusGenInputs['TimeframeInput'] // TimeframeInput!
     }
     liveRate: {
       // args
@@ -130,11 +157,6 @@ export interface NexusGenArgTypes {
       markets: NexusGenInputs['MarketInput'][] // [MarketInput!]!
       ttl?: number | null // Int
     }
-    timeframeRates: {
-      // args
-      markets: NexusGenInputs['MarketInput'][] // [MarketInput!]!
-      timeframe: NexusGenInputs['TimeframeInput'] // TimeframeInput!
-    }
   }
 }
 
@@ -145,8 +167,9 @@ export interface NexusGenInheritedFields {}
 export type NexusGenObjectNames = 'Market' | 'Query' | 'Rate'
 
 export type NexusGenInputNames =
+  | 'MarketDateInput'
   | 'MarketInput'
-  | 'MarketsInput'
+  | 'MarketTimeframeInput'
   | 'TimeframeInput'
 
 export type NexusGenEnumNames = never

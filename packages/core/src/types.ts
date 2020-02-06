@@ -1,4 +1,4 @@
-import { Timeframe } from '@raptorsystems/krypto-rates-common/types'
+import { MarketDate } from '@raptorsystems/krypto-rates-common/types'
 import {
   DbRate,
   NullableDbRate,
@@ -33,16 +33,8 @@ export interface RatesDb {
   writeHistoricalRate(args: { rate: DbRate }): Promise<void>
 
   fetchHistoricalRates(args: {
-    markets: string[]
-    dates: string[]
+    marketDates: MarketDate<string, string>[]
   }): Promise<NullableDbRate[]>
 
   writeHistoricalRates(args: { rates: DbRate[] }): Promise<void>
-
-  fetchRatesTimeframe(args: {
-    markets: string[]
-    timeframe: Timeframe
-  }): Promise<NullableDbRate[]>
-
-  writeRatesTimeframe(args: { rates: DbRate[] }): Promise<void>
 }

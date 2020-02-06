@@ -1,8 +1,8 @@
 import { Market } from '@raptorsystems/krypto-rates-common/market'
+import { Currency, MarketInput } from '@raptorsystems/krypto-rates-common/types'
 import { ApolloError } from 'apollo-server-core'
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios'
 import { MarketsByKey } from './services/types'
-import { Currency, MarketBase } from '@raptorsystems/krypto-rates-common/types'
 
 export class RateSourceError<T> extends ApolloError {
   public constructor(message: string, properties?: T) {
@@ -54,7 +54,7 @@ export async function buildMarketsByKey<T>(
   return marketsMap
 }
 
-export function expandMarkets<M extends MarketBase>(
+export function expandMarkets<M extends MarketInput>(
   markets: M[],
   by: 'base' | 'quote',
 ): MarketsByKey<Currency, M> {
@@ -66,7 +66,7 @@ export function expandMarkets<M extends MarketBase>(
   }, new Map())
 }
 
-export async function mapMarkets<T, M extends MarketBase>(
+export async function mapMarkets<T, M extends MarketInput>(
   markets: M[],
   by: 'base' | 'quote',
   callback: (currency: Currency, markets: M[]) => T[] | Promise<T[]>,
@@ -80,14 +80,14 @@ export async function mapMarkets<T, M extends MarketBase>(
   ).flat()
 }
 
-export async function mapMarketsByBase<T, M extends MarketBase>(
+export async function mapMarketsByBase<T, M extends MarketInput>(
   markets: M[],
   callback: (currency: Currency, markets: M[]) => T[] | Promise<T[]>,
 ): Promise<T[]> {
   return mapMarkets(markets, 'base', callback)
 }
 
-export async function mapMarketsByQuote<T, M extends MarketBase>(
+export async function mapMarketsByQuote<T, M extends MarketInput>(
   markets: M[],
   callback: (currency: Currency, markets: M[]) => T[] | Promise<T[]>,
 ): Promise<T[]> {

@@ -6,6 +6,7 @@ from typing_extensions import TypedDict
 __all__ = [
     "Currency",
     "Date",
+    "Dates",
     "Money",
     "MoneyDict",
     "DateMoneyDict",
@@ -13,7 +14,11 @@ __all__ = [
     "MarketByFunction",
     "Market",
     "Markets",
+    "MarketDate",
+    "MarketDates",
     "Timeframe",
+    "MarketTimeframe",
+    "MarketTimeframes",
     "Rate",
     "Rates",
     "FetchFunction",
@@ -22,7 +27,10 @@ __all__ = [
 ]
 
 Currency = str
+
 Date = Union[str, datetime.date]
+
+Dates = Iterable[Date]
 
 
 class Money(TypedDict):
@@ -43,9 +51,25 @@ class Market(TypedDict):
 Markets = Iterable[Market]
 
 
+class MarketDate(TypedDict):
+    market: Market
+    date: Date
+
+
+MarketDates = Iterable[MarketDate]
+
+
 class Timeframe(TypedDict):
     start: Date
     end: Date
+
+
+class MarketTimeframe(TypedDict):
+    market: Market
+    timeframe: Timeframe
+
+
+MarketTimeframes = Iterable[MarketTimeframe]
 
 
 class Rate(TypedDict):
@@ -60,5 +84,7 @@ class Rate(TypedDict):
 Rates = Iterable[Rate]
 
 FetchFunction = Callable[[Markets], Rates]
+
 MarketByFunction = Callable[[Market], str]
+
 MoneyDictBuilder = Callable[[Rates, MarketByFunction, bool], Response]

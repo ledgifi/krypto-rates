@@ -1,5 +1,5 @@
 from importlib.metadata import version
-from typing import Any, Iterable
+from typing import Any
 
 from requests import Session
 from requests_toolbelt import user_agent as ua
@@ -7,10 +7,16 @@ from requests_toolbelt import user_agent as ua
 from .types import (
     Currency,
     Date,
+    DateMoneyDict,
+    Dates,
     FetchFunction,
     Market,
     MarketByFunction,
+    MarketDate,
+    MarketDates,
     Markets,
+    MarketTimeframe,
+    MarketTimeframes,
     MoneyDictBuilder,
     Rate,
     Rates,
@@ -66,39 +72,39 @@ class Client(Session):
 
 
 class API(Client):
-    def fetch_live_rate(self, market: Market) -> Rate:
+    def live_rate(self, market: Market, ttl: int = None) -> Rate:
         response = self.request(
             """
-              query($market: MarketInput!) {
-                liveRate(market: $market) {
+              query($market: MarketInput!, $ttl: Int) {
+                liveRate(market: $market, ttl: $ttl) {
                   ...rate
                 }
               }
             """
             + RATES_FRAGMENT,
-            {"market": market},
+            {"market": market, "ttl": ttl},
         )
         return response["liveRate"]
 
-    def fetch_live_rates(self, markets: Markets) -> Rates:
+    def live_rates(self, markets: Markets, ttl: int = None) -> Rates:
         response = self.request(
             """
-              query($markets: [MarketInput!]!) {
-                liveRates(markets: $markets) {
+              query($markets: [MarketInput!]!, $ttl: Int) {
+                liveRates(markets: $markets, ttl: $ttl) {
                   ...rate
                 }
               }
             """
             + RATES_FRAGMENT,
-            {"markets": markets},
+            {"markets": markets, "ttl": ttl},
         )
         return response["liveRates"]
 
-    def fetch_historical_rate(self, market: Market, date: Date) -> Rate:
+    def historical_rate_for_date(self, market: Market, date: Date) -> Rate:
         response = self.request(
             """
               query($market: MarketInput!, $date: Date!) {
-                historicalRate(market: $market, date: $date) {
+                historicalRateForDate(market: $market, date: $date) {
                   ...rate
                 }
               }
@@ -106,13 +112,27 @@ class API(Client):
             + RATES_FRAGMENT,
             {"market": market, "date": serialize_date(date)},
         )
-        return response["historicalRate"]
+        return response["historicalRateForDate"]
 
-    def fetch_historical_rates(self, markets: Markets, dates: Iterable[Date]) -> Rates:
+    def historical_rates_for_date(self, markets: Markets, date: Date) -> Rates:
+        response = self.request(
+            """
+              query($markets: [MarketInput!]!, $dates: Date!) {
+                historicalRatesForDate(markets: $markets, dates: $dates) {
+                  ...rate
+                }
+              }
+            """
+            + RATES_FRAGMENT,
+            {"markets": markets, "date": serialize_date(date)},
+        )
+        return response["historicalRatesForDate"]
+
+    def historical_rates_for_dates(self, markets: Markets, dates: Dates) -> Rates:
         response = self.request(
             """
               query($markets: [MarketInput!]!, $dates: [Date!]!) {
-                historicalRates(markets: $markets, dates: $dates) {
+                historicalRatesForDates(markets: $markets, dates: $dates) {
                   ...rate
                 }
               }
@@ -120,13 +140,34 @@ class API(Client):
             + RATES_FRAGMENT,
             {"markets": markets, "dates": [serialize_date(date) for date in dates]},
         )
-        return response["historicalRates"]
+        return response["historicalRatesForDates"]
 
-    def fetch_timeframe_rates(self, markets: Markets, timeframe: Timeframe) -> Rates:
+    def historical_rates_by_date(self, market_dates: MarketDates) -> Rates:
+        response = self.request(
+            """
+              query($marketDates: [MarketDateInput!]!) {
+                historicalRatesByDate(marketDates: $marketDates) {
+                  ...rate
+                }
+              }
+            """
+            + RATES_FRAGMENT,
+            {
+                "marketDates": [
+                    {"market": item["market"], "date": serialize_date(item["date"])}
+                    for item in market_dates
+                ]
+            },
+        )
+        return response["historicalRatesByDate"]
+
+    def historical_rates_for_timeframe(
+        self, markets: Markets, timeframe: Timeframe
+    ) -> Rates:
         response = self.request(
             """
               query($markets: [MarketInput!]!, $timeframe: TimeframeInput!) {
-                timeframeRates(markets: $markets, timeframe: $timeframe) {
+                historicalRatesForTimeframe(markets: $markets, timeframe: $timeframe) {
                   ...rate
                 }
               }
@@ -140,7 +181,34 @@ class API(Client):
                 },
             },
         )
-        return response["timeframeRates"]
+        return response["historicalRatesForTimeframe"]
+
+    def historical_rates_by_timeframe(
+        self, market_timeframes: MarketTimeframes
+    ) -> Rates:
+        response = self.request(
+            """
+              query($marketTimeframes: [MarketTimeframeInput!]!) {
+                historicalRatesByTimeframe(marketTimeframes: $marketTimeframes) {
+                  ...rate
+                }
+              }
+            """
+            + RATES_FRAGMENT,
+            {
+                "marketTimeframes": [
+                    {
+                        "market": item["market"],
+                        "timeframe": {
+                            "start": serialize_date(item["timeframe"]["start"]),
+                            "end": serialize_date(item["timeframe"]["end"]),
+                        },
+                    }
+                    for item in market_timeframes
+                ]
+            },
+        )
+        return response["historicalRatesByTimeframe"]
 
 
 class Fetch:
@@ -221,25 +289,37 @@ class KryptoRates:
     @property
     def live(self) -> FetchRates:
         return FetchRates(
-            lambda markets: self.api.fetch_live_rates(markets),
+            lambda markets: self.api.live_rates(markets),
             build_money_dict,
             self._inverse,
         )
 
     def historical(self, *dates: Date) -> FetchRates:
         return FetchRates(
-            lambda markets: self.api.fetch_historical_rates(markets, dates),
+            lambda markets: self.api.historical_rates_for_dates(markets, dates),
             build_date_money_dict,
             self._inverse,
         )
 
     def timeframe(
-        self, timeframe: Timeframe = None, **timeframe_kwargs: Timeframe
+        self, timeframe: Timeframe = None, **timeframe_kwargs: Date
     ) -> FetchRates:
         return FetchRates(
-            lambda markets: self.api.fetch_timeframe_rates(
+            lambda markets: self.api.historical_rates_for_timeframe(
                 markets, timeframe or timeframe_kwargs
             ),
             build_date_money_dict,
             self._inverse,
+        )
+
+    def market_dates(self, *market_dates: MarketDate) -> DateMoneyDict:
+        rates = self.api.historical_rates_by_date(market_dates)
+        return build_date_money_dict(
+            rates, lambda market: market["base"] + market["quote"], self._inverse
+        )
+
+    def market_timeframes(self, *market_timeframes: MarketTimeframe) -> DateMoneyDict:
+        rates = self.api.historical_rates_by_timeframe(market_timeframes)
+        return build_date_money_dict(
+            rates, lambda market: market["base"] + market["quote"], self._inverse
         )

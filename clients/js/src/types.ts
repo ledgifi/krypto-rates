@@ -1,12 +1,13 @@
-import { Currency, MarketBase } from '@raptorsystems/krypto-rates-common/types'
+import { Currency, MarketInput } from '@raptorsystems/krypto-rates-common/types'
 
 export {
   Currency,
-  MarketBase as Market,
+  MarketInput as Market,
   Timeframe,
+  MarketDate,
+  MarketTimeframe,
+  DateInput,
 } from '@raptorsystems/krypto-rates-common/types'
-
-export type Markets = MarketBase[]
 
 export type Money = {
   amount: number
@@ -14,14 +15,12 @@ export type Money = {
 }
 
 export type Rate = {
-  market: MarketBase
+  market: MarketInput
   source: string
   value: number
   date: string
   timestamp: number
 }
-
-export type Rates = Rate[]
 
 export type MoneyDict = Record<Currency, Money>
 export type DateMoneyDict = Record<string, MoneyDict>
@@ -31,17 +30,17 @@ export type Fetch<T, R extends Response> = (...value: T[]) => Promise<R>
 
 export type FetchBy<T, R extends Response> = (
   value: T[],
-  by: (market: MarketBase) => string,
+  by: (market: MarketInput) => string,
 ) => Promise<R>
 
 export interface FetchBase<R extends Response> {
   from: (base: string) => { to: Fetch<Currency, R> }
   to: (quote: string) => { from: Fetch<Currency, R> }
-  markets: Fetch<MarketBase, R>
+  markets: Fetch<MarketInput, R>
 }
 
 export type MoneyDictBuilder<R extends Response> = (
   rates: Rate[],
-  by: (market: MarketBase) => string,
+  by: (market: MarketInput) => string,
   inverse?: boolean,
 ) => R

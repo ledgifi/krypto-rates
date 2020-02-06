@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {
   Currency,
-  MarketBase,
+  MarketInput,
   ParsedRate,
-  ParsedRates,
   Timeframe,
 } from '@raptorsystems/krypto-rates-common/types'
 import {
@@ -17,7 +16,7 @@ import { createClient, mapMarketsByQuote, RateSourceError } from '../utils'
 import { RatesSource } from './types'
 
 const fetchMarkets = async <T>(
-  markets: MarketBase[],
+  markets: MarketInput[],
   fetch: (quote: string, currencies: string[]) => Promise<T[]>,
 ): Promise<T[]> =>
   mapMarketsByQuote(markets, (quote, markets) =>
@@ -50,12 +49,12 @@ export class CoinlayerSource implements RatesSource<CoinlayerRates> {
   }
 
   public async fetchLive(
-    markets: MarketBase[],
-  ): Promise<ParsedRates<CoinlayerRates>> {
+    markets: MarketInput[],
+  ): Promise<ParsedRate<CoinlayerRates>[]> {
     const parse = (
       data: CoinlayerLive,
       quote: Currency,
-    ): ParsedRates<CoinlayerRates> =>
+    ): ParsedRate<CoinlayerRates>[] =>
       Object.entries(data.rates).map(([symbol, value]) =>
         this.parseRate(
           symbol + quote,
@@ -69,7 +68,7 @@ export class CoinlayerSource implements RatesSource<CoinlayerRates> {
     const fetch = async (
       target: string,
       symbols: string[],
-    ): Promise<ParsedRates<CoinlayerRates>> => {
+    ): Promise<ParsedRate<CoinlayerRates>[]> => {
       const { data } = await this.client.get<CoinlayerLive>('live', {
         params: { target, symbols: symbols.join(',') },
       })
@@ -83,13 +82,13 @@ export class CoinlayerSource implements RatesSource<CoinlayerRates> {
   }
 
   public async fetchHistorical(
-    markets: MarketBase[],
+    markets: MarketInput[],
     date: Date,
-  ): Promise<ParsedRates<CoinlayerRates>> {
+  ): Promise<ParsedRate<CoinlayerRates>[]> {
     const parse = (
       data: CoinlayerHistorical,
       quote: Currency,
-    ): ParsedRates<CoinlayerRates> =>
+    ): ParsedRate<CoinlayerRates>[] =>
       Object.entries(data.rates).map(([symbol, value]) =>
         this.parseRate(
           symbol + quote,
@@ -103,7 +102,7 @@ export class CoinlayerSource implements RatesSource<CoinlayerRates> {
     const fetch = async (
       target: string,
       symbols: string[],
-    ): Promise<ParsedRates<CoinlayerRates>> => {
+    ): Promise<ParsedRate<CoinlayerRates>[]> => {
       const { data } = await this.client.get<CoinlayerHistorical>(
         date.toISOString().slice(0, 10),
         { params: { target, symbols: symbols.join(',') } },
@@ -118,13 +117,13 @@ export class CoinlayerSource implements RatesSource<CoinlayerRates> {
   }
 
   public async fetchTimeframe(
-    markets: MarketBase[],
+    markets: MarketInput[],
     timeframe: Timeframe<Date>,
-  ): Promise<ParsedRates<CoinlayerRates>> {
+  ): Promise<ParsedRate<CoinlayerRates>[]> {
     const parse = (
       data: CoinlayerTimeframe,
       quote: Currency,
-    ): ParsedRates<CoinlayerRates> =>
+    ): ParsedRate<CoinlayerRates>[] =>
       Object.entries(data.rates).flatMap(([date, rates]) =>
         Object.entries(rates).map(([symbol, value]) =>
           this.parseRate(symbol + quote, symbol, date, date, value),
@@ -136,7 +135,7 @@ export class CoinlayerSource implements RatesSource<CoinlayerRates> {
       symbols: string[],
       start: Date,
       end: Date,
-    ): Promise<ParsedRates<CoinlayerRates>> => {
+    ): Promise<ParsedRate<CoinlayerRates>[]> => {
       const { data } = await this.client.get<CoinlayerTimeframe>('timeframe', {
         params: {
           target,

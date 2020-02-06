@@ -2,12 +2,29 @@ import { Market } from './market'
 
 export type Currency = string
 
-export interface MarketBase {
+export type DateInput = Date | string
+
+export interface MarketInput {
   base: string
   quote: string
 }
 
-export interface Rate<TData, TMarket = MarketBase> {
+export interface MarketDate<TMarket = MarketInput, TDate = string> {
+  market: TMarket
+  date: TDate
+}
+
+export interface Timeframe<T = DateInput> {
+  start: T
+  end: T
+}
+
+export interface MarketTimeframe<TMarket = MarketInput, TDate = DateInput> {
+  market: TMarket
+  timeframe: Timeframe<TDate>
+}
+
+export interface Rate<TData, TMarket = MarketInput> {
   market: TMarket
   source: string
   sourceData?: TData
@@ -17,16 +34,12 @@ export interface Rate<TData, TMarket = MarketBase> {
   inverse: boolean
 }
 
-export type Rates<TData, TMarket = MarketBase> = Rate<TData, TMarket>[]
-
 export interface ParsedMarket {
   market: Market
   inverse: boolean
 }
 
 export type ParsedRate<TData> = Rate<TData, Market>
-
-export type ParsedRates<TData> = Rates<TData, Market>
 
 export interface DbRate<TData> {
   market: string
@@ -38,8 +51,3 @@ export interface DbRate<TData> {
 }
 
 export type NullableDbRate<TData> = DbRate<TData> | null | undefined
-
-export interface Timeframe<T = Date | string> {
-  start: T
-  end: T
-}

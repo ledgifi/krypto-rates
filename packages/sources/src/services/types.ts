@@ -1,23 +1,23 @@
 import {
-  MarketBase,
-  ParsedRates,
+  MarketInput,
+  ParsedRate,
   Timeframe,
 } from '@raptorsystems/krypto-rates-common/types'
 
-export type MarketsByKey<T = string, M = MarketBase> = Map<T, M[]>
+export type MarketsByKey<T = string, M = MarketInput> = Map<T, M[]>
 
 export interface RatesSource<TData> {
   id?: string
 
-  fetchLive(markets: MarketBase[]): Promise<ParsedRates<TData>>
+  fetchLive(markets: MarketInput[]): Promise<ParsedRate<TData>[]>
 
   fetchHistorical(
-    markets: MarketBase[],
+    markets: MarketInput[],
     date: Date,
-  ): Promise<ParsedRates<TData>>
+  ): Promise<ParsedRate<TData>[]>
 
   fetchTimeframe(
-    markets: MarketBase[],
+    markets: MarketInput[],
     timeframe: Timeframe<Date>,
-  ): Promise<ParsedRates<TData>>
+  ): Promise<ParsedRate<TData>[]>
 }
