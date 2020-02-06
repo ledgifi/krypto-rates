@@ -155,9 +155,11 @@ export class FetcheService {
       const missingRates = await fetchSource(missingMarkets)
 
       // Write missing rates on Redis DB
-      const dbRates = missingRates.map(rate => buildDbRate(rate))
-      await writeDB(dbRates)
-      dbRates.map(item => logCreate(item))
+      if (missingRates.length) {
+        const dbRates = missingRates.map(rate => buildDbRate(rate))
+        await writeDB(dbRates)
+        dbRates.map(item => logCreate(item))
+      }
 
       rates = [...rates, ...missingRates]
     }
@@ -256,9 +258,11 @@ export class FetcheService {
       })
 
       // Write missing rates on Redis DB
-      const dbRates = missingRates.map(rate => buildDbRate(rate))
-      await writeDB(dbRates)
-      dbRates.map(item => logCreate(item))
+      if (missingRates.length) {
+        const dbRates = missingRates.map(rate => buildDbRate(rate))
+        await writeDB(dbRates)
+        dbRates.map(item => logCreate(item))
+      }
 
       rates = [...rates, ...missingRates]
     }
