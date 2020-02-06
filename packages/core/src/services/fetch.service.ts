@@ -30,22 +30,37 @@ async function fetchMarketDates<T>({
     timeframe: (markets: Market[], timeframe: Timeframe<Date>) => Promise<T[]>
   }
 }): Promise<T[]> {
-  const marketsByDate = Array.from(
-    marketDates.reduce<Map<Date, Market[]>>((mapping, { market, date }) => {
-      const markets = mapping.get(date) || []
-      markets.push(market)
-      mapping.set(date, markets.sort())
-      return mapping
-    }, new Map()),
+  const marketsByDate = marketDates.reduce<Record<string, Set<string>>>(
+    (obj, { market, date }) => {
+      const key = date.toISOString()
+      const markets = obj[key] || new Set()
+      markets.add(market.id)
+      obj[key] = markets
+      return obj
+    },
+    {},
   )
-  const marketDateGroups = Array.from(
-    marketsByDate.reduce<Map<Market[], Date[]>>((mapping, [date, markets]) => {
-      const dates = mapping.get(markets) || []
-      dates.push(date)
-      mapping.set(markets, dates.sort())
-      return mapping
-    }, new Map()),
-  )
+
+  const datesByMarkets = Object.entries(marketsByDate).reduce<
+    Record<string, Set<Date>>
+  >((obj, [date, markets]) => {
+    const key = [...markets].sort().join(',')
+    const dates = obj[key] || new Set()
+    dates.add(new Date(date))
+    obj[key] = dates
+    return obj
+  }, {})
+
+  const marketDateGroups = Object.entries(datesByMarkets).map<
+    [Market[], Date[]]
+  >(([markets, dates]) => [
+    markets.split(',').map(m => {
+      const [base, quote] = m.split('-')
+      return new Market(base, quote)
+    }),
+    [...dates],
+  ])
+
   const rateGroups = await Promise.all(
     marketDateGroups.flatMap(([markets, dates]) =>
       consecutiveTimeframes(dates).map(timeframe =>
