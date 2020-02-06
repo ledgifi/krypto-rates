@@ -4,12 +4,6 @@
     "outDir": "dist",
     "rootDir": "src"
   },
-  "references": [
-    {
-      "path": "../../packages/common"
-    }
-  ],
-  "include": [
-    "src"
-  ],
+  "references": [{ "path": "../../packages/common" }],
+  "include": ["src"]
 }

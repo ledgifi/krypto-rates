@@ -1,11 +1,9 @@
 {
   "compilerOptions": {
     /* Basic Options */
-    "target": "es2019",  // Node.js 10
+    "target": "es2019", // Node.js 10
     "module": "commonjs",
-    "lib": [
-      "es2019"
-    ],
+    "lib": ["es2019"],
     "sourceMap": true,
     "declaration": true,
     "skipLibCheck": true,
@@ -17,27 +15,13 @@
     "moduleResolution": "node",
     "baseUrl": "packages",
     "paths": {
-      "@raptorsystems/krypto-rates-common/*": [
-        "common/src/*"
-      ],
-      "@raptorsystems/krypto-rates-core/*": [
-        "core/src/*"
-      ],
-      "@raptorsystems/krypto-rates-server/*": [
-        "server/src/*"
-      ],
-      "@raptorsystems/krypto-rates-sources": [
-        "sources/src"
-      ],
-      "@raptorsystems/krypto-rates-sources/*": [
-        "sources/src/*"
-      ],
-      "@raptorsystems/krypto-rates-utils": [
-        "utils/src/"
-      ],
-      "@raptorsystems/krypto-rates-utils/*": [
-        "utils/src/*"
-      ]
+      "@raptorsystems/krypto-rates-common/*": ["common/src/*"],
+      "@raptorsystems/krypto-rates-core/*": ["core/src/*"],
+      "@raptorsystems/krypto-rates-server/*": ["server/src/*"],
+      "@raptorsystems/krypto-rates-sources": ["sources/src"],
+      "@raptorsystems/krypto-rates-sources/*": ["sources/src/*"],
+      "@raptorsystems/krypto-rates-utils": ["utils/src/"],
+      "@raptorsystems/krypto-rates-utils/*": ["utils/src/*"]
     },
     "esModuleInterop": true,
 
