@@ -78,10 +78,10 @@ const filterMissingMarketDates = (
   rates: ParsedRate[],
   marketDates: MarketDate<Market, Date>[],
 ): MarketDate<Market, Date>[] => {
-  const reference = rates.map(({ market, date }) => market.code + date)
+  const reference = new Set(rates.map(({ market, date }) => market.code + date))
   return marketDates.filter(
     ({ market, date }) =>
-      !reference.includes(market.code + date.toISOString().slice(0, 10)),
+      !reference.has(market.code + date.toISOString().slice(0, 10)),
   )
 }
 
