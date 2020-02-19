@@ -1,4 +1,4 @@
-import { Currency, MarketInput } from '@raptorsystems/krypto-rates-common/types'
+import { Currency, MarketInput } from '@raptorsystems/krypto-rates-common'
 
 export {
   Currency,
@@ -7,7 +7,7 @@ export {
   MarketDate,
   MarketTimeframe,
   DateInput,
-} from '@raptorsystems/krypto-rates-common/types'
+} from '@raptorsystems/krypto-rates-common'
 
 export type Money = {
   amount: number

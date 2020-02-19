@@ -4,8 +4,8 @@
  */
 
 import * as Context from '../context'
-import * as commonTypes from '@raptorsystems/krypto-rates-common/types'
-import * as sourceTypes from '@raptorsystems/krypto-rates-sources/types'
+import * as commonTypes from '@raptorsystems/krypto-rates-common/src/types'
+import * as sourceTypes from '@raptorsystems/krypto-rates-sources/src/types'
 import { core } from 'nexus'
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {

@@ -4,12 +4,12 @@ import {
   MarketInput,
   ParsedRate,
   Timeframe,
-} from '@raptorsystems/krypto-rates-common/types'
+} from '@raptorsystems/krypto-rates-common/src/types'
 import {
   chunkDateRange,
   generateDateRange,
   parseMarket,
-} from '@raptorsystems/krypto-rates-utils'
+} from '@raptorsystems/krypto-rates-utils/src/index'
 import { AxiosInstance } from 'axios'
 import moment from 'moment'
 import { createClient, mapMarketsByBase, RateSourceError } from '../utils'

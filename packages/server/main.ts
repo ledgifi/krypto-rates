@@ -1,7 +1,7 @@
-import { dotenv } from '@raptorsystems/krypto-rates-utils/dotenv'
+import { dotenv } from '@raptorsystems/krypto-rates-utils/src/dotenv'
 dotenv.config()
 
-import { config } from '@raptorsystems/krypto-rates-core/apollo.config'
+import { config } from '@raptorsystems/krypto-rates-core/src/apollo.config'
 import { ApolloServer } from 'apollo-server'
 import chalk from 'chalk'
 

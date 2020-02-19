@@ -1,12 +1,12 @@
 import {
   MarketDate,
   MarketInput,
-} from '@raptorsystems/krypto-rates-common/types'
+} from '@raptorsystems/krypto-rates-common/src/types'
 import {
   NullableDbRate,
   ParsedRate,
-} from '@raptorsystems/krypto-rates-sources/types'
-import { generateDateRange } from '@raptorsystems/krypto-rates-utils'
+} from '@raptorsystems/krypto-rates-sources/src/types'
+import { generateDateRange } from '@raptorsystems/krypto-rates-utils/src/index'
 import { GraphQLString } from 'graphql'
 import { GraphQLDate } from 'graphql-iso-date'
 import {

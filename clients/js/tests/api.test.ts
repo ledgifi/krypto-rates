@@ -1,5 +1,5 @@
 import { KryptoRates } from '../src/clients'
-import { Market } from '@raptorsystems/krypto-rates-common/market'
+import { Market } from '@raptorsystems/krypto-rates-common/src/market'
 import { Rate } from '../src/types'
 
 const client = new KryptoRates('http://localhost:4010')

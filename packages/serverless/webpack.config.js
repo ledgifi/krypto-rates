@@ -46,24 +46,6 @@ module.exports = {
       '.js',
       '.ts',
     ],
-    alias: {
-      '@raptorsystems/krypto-rates-common': path.resolve(
-        __dirname,
-        '../common/src',
-      ),
-      '@raptorsystems/krypto-rates-core': path.resolve(
-        __dirname,
-        '../core/src',
-      ),
-      '@raptorsystems/krypto-rates-sources': path.resolve(
-        __dirname,
-        '../sources/src',
-      ),
-      '@raptorsystems/krypto-rates-utils': path.resolve(
-        __dirname,
-        '../utils/src',
-      ),
-    },
   },
   output: {
     libraryTarget: 'commonjs2',

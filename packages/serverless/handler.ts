@@ -1,9 +1,9 @@
-import { dotenv } from '@raptorsystems/krypto-rates-utils/dotenv'
+import { dotenv } from '@raptorsystems/krypto-rates-utils/src/dotenv'
 dotenv.config()
 
 import { ApolloServer } from 'apollo-server-lambda'
 import { APIGatewayProxyEvent, Handler } from 'aws-lambda'
-import { config } from '@raptorsystems/krypto-rates-core/apollo.config'
+import { config } from '@raptorsystems/krypto-rates-core/src/apollo.config'
 
 const server = new ApolloServer(config)
 

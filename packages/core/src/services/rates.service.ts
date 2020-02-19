@@ -1,4 +1,4 @@
-import { RatesSource } from '@raptorsystems/krypto-rates-sources'
+import { RatesSource } from '@raptorsystems/krypto-rates-sources/src/index'
 import { RatesDb } from '../types'
 
 export class RatesService extends RatesSource {

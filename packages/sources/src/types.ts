@@ -1,4 +1,4 @@
-import * as types from '@raptorsystems/krypto-rates-common/types'
+import * as types from '@raptorsystems/krypto-rates-common/src/types'
 import { CoinlayerRates, CoinlayerSource } from './services/coinlayer'
 import {
   CurrencylayerRates,

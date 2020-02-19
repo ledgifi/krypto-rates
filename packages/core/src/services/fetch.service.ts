@@ -1,15 +1,15 @@
-import { Market } from '@raptorsystems/krypto-rates-common/market'
+import { Market } from '@raptorsystems/krypto-rates-common/src/market'
 import {
-  MarketInput,
   MarketDate,
+  MarketInput,
   Timeframe,
-} from '@raptorsystems/krypto-rates-common/types'
+} from '@raptorsystems/krypto-rates-common/src/types'
 import {
   DbRate,
   NullableDbRate,
   ParsedRate,
-} from '@raptorsystems/krypto-rates-sources/types'
-import { mapMarketsByBase } from '@raptorsystems/krypto-rates-sources/utils'
+} from '@raptorsystems/krypto-rates-sources/src/types'
+import { mapMarketsByBase } from '@raptorsystems/krypto-rates-sources/src/utils'
 import {
   buildDbRate,
   consecutiveTimeframes,
@@ -17,7 +17,7 @@ import {
   parseDbRate,
   parseDbRates,
   parseRate,
-} from '@raptorsystems/krypto-rates-utils'
+} from '@raptorsystems/krypto-rates-utils/src/index'
 import { logCreate } from '../utils'
 
 async function fetchMarketDates<T>({

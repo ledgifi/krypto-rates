@@ -1,8 +1,8 @@
-import { MarketDate } from '@raptorsystems/krypto-rates-common/types'
+import { MarketDate } from '@raptorsystems/krypto-rates-common/src/types'
 import {
   DbRate,
   NullableDbRate,
-} from '@raptorsystems/krypto-rates-sources/types'
+} from '@raptorsystems/krypto-rates-sources/src/types'
 
 export interface RatesDb {
   fetchMarketSourceId(args: {

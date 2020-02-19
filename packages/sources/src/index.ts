@@ -1,11 +1,11 @@
-import { Market } from '@raptorsystems/krypto-rates-common/market'
+import { Market } from '@raptorsystems/krypto-rates-common/src/market'
 import {
   Currency,
   MarketInput,
   ParsedRate,
   Timeframe,
-} from '@raptorsystems/krypto-rates-common/types'
-import { parseMarket } from '@raptorsystems/krypto-rates-utils'
+} from '@raptorsystems/krypto-rates-common/src/types'
+import { parseMarket } from '@raptorsystems/krypto-rates-utils/src/index'
 import { CoinlayerSource } from './services/coinlayer'
 import { CurrencylayerSource } from './services/currencylayer'
 import { MarketsByKey, RatesSource as BaseRateSource } from './services/types'

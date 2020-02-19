@@ -2,7 +2,7 @@ import {
   MarketInput,
   ParsedRate,
   Timeframe,
-} from '@raptorsystems/krypto-rates-common/types'
+} from '@raptorsystems/krypto-rates-common/src/types'
 
 export type MarketsByKey<T = string, M = MarketInput> = Map<T, M[]>
 

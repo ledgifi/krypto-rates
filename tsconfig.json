@@ -13,16 +13,6 @@
 
     /* Module Resolution Options */
     "moduleResolution": "node",
-    "baseUrl": "packages",
-    "paths": {
-      "@raptorsystems/krypto-rates-common/*": ["common/src/*"],
-      "@raptorsystems/krypto-rates-core/*": ["core/src/*"],
-      "@raptorsystems/krypto-rates-server/*": ["server/src/*"],
-      "@raptorsystems/krypto-rates-sources": ["sources/src"],
-      "@raptorsystems/krypto-rates-sources/*": ["sources/src/*"],
-      "@raptorsystems/krypto-rates-utils": ["utils/src/"],
-      "@raptorsystems/krypto-rates-utils/*": ["utils/src/*"]
-    },
     "esModuleInterop": true,
 
     /* Experimental Options */

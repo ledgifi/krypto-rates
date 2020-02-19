@@ -1,10 +1,10 @@
+import { MarketDate } from '@raptorsystems/krypto-rates-common/src/types'
 import {
   DbRate,
   NullableDbRate,
-} from '@raptorsystems/krypto-rates-sources/types'
+} from '@raptorsystems/krypto-rates-sources/src/types'
 import IORedis from 'ioredis'
 import { RatesDb } from '../types'
-import { MarketDate } from '@raptorsystems/krypto-rates-common/types'
 
 const host = process.env.REDIS_URL
 

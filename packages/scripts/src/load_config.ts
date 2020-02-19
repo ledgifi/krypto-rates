@@ -1,8 +1,8 @@
-import { dotenv } from '@raptorsystems/krypto-rates-utils/dotenv'
+import { dotenv } from '@raptorsystems/krypto-rates-utils/src/dotenv'
 dotenv.config()
 
-import { RedisRatesDb } from '@raptorsystems/krypto-rates-core/db/redis.db'
-import { workspaceRoot } from '@raptorsystems/krypto-rates-utils/paths'
+import { RedisRatesDb } from '@raptorsystems/krypto-rates-core/src/db/redis.db'
+import { workspaceRoot } from '@raptorsystems/krypto-rates-utils/src/paths'
 import fs from 'fs'
 import yaml from 'js-yaml'
 import path from 'path'

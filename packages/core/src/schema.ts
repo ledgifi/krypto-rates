@@ -1,4 +1,4 @@
-import { workspaceRoot } from '@raptorsystems/krypto-rates-utils/paths'
+import { workspaceRoot } from '@raptorsystems/krypto-rates-utils/src/paths'
 import { makeSchema } from 'nexus'
 import path from 'path'
 import * as types from './resolvers'
@@ -25,11 +25,11 @@ export const schema = makeSchema({
     },
     sources: [
       {
-        source: '@raptorsystems/krypto-rates-common/types',
+        source: '@raptorsystems/krypto-rates-common/src/types',
         alias: 'commonTypes',
       },
       {
-        source: '@raptorsystems/krypto-rates-sources/types',
+        source: '@raptorsystems/krypto-rates-sources/src/types',
         alias: 'sourceTypes',
       },
       {

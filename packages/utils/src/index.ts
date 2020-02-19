@@ -1,4 +1,4 @@
-import { Market } from '@raptorsystems/krypto-rates-common/market'
+import { Market } from '@raptorsystems/krypto-rates-common/src/market'
 import {
   Currency,
   DbRate,
@@ -7,7 +7,7 @@ import {
   ParsedRate,
   Rate,
   Timeframe,
-} from '@raptorsystems/krypto-rates-common/types'
+} from '@raptorsystems/krypto-rates-common/src/types'
 import * as Moment from 'moment'
 import { extendMoment } from 'moment-range'
 

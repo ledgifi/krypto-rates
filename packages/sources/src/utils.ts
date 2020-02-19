@@ -1,5 +1,8 @@
-import { Market } from '@raptorsystems/krypto-rates-common/market'
-import { Currency, MarketInput } from '@raptorsystems/krypto-rates-common/types'
+import { Market } from '@raptorsystems/krypto-rates-common/src/market'
+import {
+  Currency,
+  MarketInput,
+} from '@raptorsystems/krypto-rates-common/src/types'
 import { ApolloError } from 'apollo-server-core'
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios'
 import { MarketsByKey } from './services/types'

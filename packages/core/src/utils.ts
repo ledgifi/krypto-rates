@@ -1,4 +1,4 @@
-import { DbRate, Rate } from '@raptorsystems/krypto-rates-sources/types'
+import { DbRate, Rate } from '@raptorsystems/krypto-rates-sources/src/types'
 
 export function logCreate(data: DbRate): void {
   console.log(`Rate stored\n${JSON.stringify(data, undefined, 2)}`)
