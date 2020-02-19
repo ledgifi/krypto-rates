@@ -6,7 +6,6 @@
     "lib": ["es2019"],
     "sourceMap": true,
     "declaration": true,
-    "skipLibCheck": true,
 
     /* Strict Type-Checking Options */
     "strict": true,
