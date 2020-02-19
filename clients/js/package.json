@@ -8,9 +8,8 @@
   },
   "license": "MIT",
   "main": "dist/index",
-  "types": "dist/index",
   "files": [
-    "dist"
+    "dist/*"
   ],
   "publishConfig": {
     "access": "public"
