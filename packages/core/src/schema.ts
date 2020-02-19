@@ -7,7 +7,7 @@ export const schema = makeSchema({
   types,
   outputs: {
     schema: path.join(__dirname, 'generated/schema.gen.graphql'),
-    typegen: path.join(__dirname, 'generated/nexusTypes.gen.d.ts'),
+    typegen: path.join(__dirname, 'generated/nexusTypes.gen.ts'),
   },
   prettierConfig:
     process.env.NODE_ENV === 'development'
