@@ -6,7 +6,8 @@ import * as types from './resolvers'
 export const schema = makeSchema({
   types,
   outputs: {
-    typegen: path.join(__dirname, 'generated/nexusTypes.gen.ts'),
+    schema: path.join(__dirname, 'generated/schema.gen.graphql'),
+    typegen: path.join(__dirname, 'generated/nexusTypes.gen.d.ts'),
   },
   prettierConfig:
     process.env.NODE_ENV === 'development'
