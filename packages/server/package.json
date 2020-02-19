@@ -17,7 +17,7 @@
   "dependencies": {
     "@raptorsystems/krypto-rates-core": "^2.0.0-alpha.6",
     "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.6",
-    "apollo-server": "^2.9.16",
+    "apollo-server": "^2.10.1",
     "chalk": "^3.0.0",
     "ts-node": "^8.6.2",
     "tsconfig-paths": "^3.9.0"
