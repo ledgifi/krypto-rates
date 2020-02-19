@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.8](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-common@2.0.0-alpha.7...@raptorsystems/krypto-rates-common@2.0.0-alpha.8) (2020-02-19)
+
+**Note:** Version bump only for package @raptorsystems/krypto-rates-common
+
+
+
+
+
 # [2.0.0-alpha.7](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-common@2.0.0-alpha.6...@raptorsystems/krypto-rates-common@2.0.0-alpha.7) (2020-02-19)
 
 
