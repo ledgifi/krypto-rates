@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.7](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-core@2.0.0-alpha.6...@raptorsystems/krypto-rates-core@2.0.0-alpha.7) (2020-02-19)
+
+
+### Performance Improvements
+
+* **core:** optimize filter for missing market dates ([d844abd](https://github.com/raptorsystems/krypto-rates/commit/d844abdae28ae6134809f05af672009905b6a5b8))
+
+
+
+
+
 # [2.0.0-alpha.6](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-core@2.0.0-alpha.5...@raptorsystems/krypto-rates-core@2.0.0-alpha.6) (2020-02-07)
 
 **Note:** Version bump only for package @raptorsystems/krypto-rates-core
