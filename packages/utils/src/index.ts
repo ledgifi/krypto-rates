@@ -110,6 +110,9 @@ export const buildDbRate = <TData>({
   }
 }
 
+export const sortDates = (iterable: Date[]): Date[] =>
+  iterable.sort((a, b) => moment(a).diff(b))
+
 export function generateDateRange({ start, end }: Timeframe): Date[] {
   return Array.from(
     momentRange.range(moment.utc(start), moment.utc(end)).by('day'),
@@ -118,7 +121,7 @@ export function generateDateRange({ start, end }: Timeframe): Date[] {
 }
 
 export function consecutiveDateGroups(iterable: Date[]): Date[][] {
-  return iterable.reduce<Date[][]>(
+  return sortDates(iterable).reduce<Date[][]>(
     (groups, date) => {
       const lastGroup = groups[groups.length - 1]
       if (
