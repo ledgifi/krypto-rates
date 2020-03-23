@@ -87,7 +87,7 @@ export function parseDbRates<TData>(
   base: Currency,
   rates: NullableDbRate<TData>[],
 ): (Rate<TData, Market> | undefined)[] {
-  return rates.map(rate => parseDbRate(base, rate))
+  return rates.map((rate) => parseDbRate(base, rate))
 }
 
 export const buildDbRate = <TData>({
@@ -116,7 +116,7 @@ export const sortDates = (iterable: Date[]): Date[] =>
 export function generateDateRange({ start, end }: Timeframe): Date[] {
   return Array.from(
     momentRange.range(moment.utc(start), moment.utc(end)).by('day'),
-    el => el.toDate(),
+    (el) => el.toDate(),
   )
 }
 
@@ -144,7 +144,7 @@ export function consecutiveDateGroups(iterable: Date[]): Date[][] {
 }
 
 export function consecutiveTimeframes(iterable: Date[]): Timeframe<Date>[] {
-  return consecutiveDateGroups(iterable).map(group => ({
+  return consecutiveDateGroups(iterable).map((group) => ({
     start: group[0],
     end: group[group.length - 1],
   }))

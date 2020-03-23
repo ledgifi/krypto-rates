@@ -22,7 +22,7 @@ const fetchMarkets = async <T>(
   mapMarketsByQuote(markets, (quote, markets) =>
     fetch(
       quote,
-      markets.map(m => m.base),
+      markets.map((m) => m.base),
     ),
   )
 
@@ -34,7 +34,7 @@ export class CoinlayerSource implements RatesSource<CoinlayerRates> {
       baseURL: 'http://api.coinlayer.com/',
       timeout: 10000,
     })
-    client.interceptors.request.use(config => ({
+    client.interceptors.request.use((config) => ({
       ...config,
       params: {
         access_key: process.env.COINLAYER_ACCESS_KEY,
@@ -154,14 +154,14 @@ export class CoinlayerSource implements RatesSource<CoinlayerRates> {
     const rates =
       process.env.COINLAYER_TIMEFRAME === 'true'
         ? await Promise.all(
-            chunkDateRange(timeframe, MAX_RANGE).map(range =>
+            chunkDateRange(timeframe, MAX_RANGE).map((range) =>
               fetchMarkets(markets, (base, currencies) =>
                 fetch(base, currencies, range[0], range[range.length - 1]),
               ),
             ),
           )
         : await Promise.all(
-            generateDateRange(timeframe).map(date =>
+            generateDateRange(timeframe).map((date) =>
               this.fetchHistorical(markets, date),
             ),
           )

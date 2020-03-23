@@ -36,7 +36,7 @@ export const buildDateMoneyDict: MoneyDictBuilder<DateMoneyDict> = (
     (obj, rate) => ({
       ...obj,
       [rate.date]: buildMoneyDict(
-        rates.filter(r => r.date === rate.date),
+        rates.filter((r) => r.date === rate.date),
         by,
         inverse,
       ),

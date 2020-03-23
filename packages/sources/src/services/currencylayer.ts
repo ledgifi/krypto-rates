@@ -22,7 +22,7 @@ const fetchMarkets = async <T>(
   mapMarketsByBase(markets, (quote, markets) =>
     fetch(
       quote,
-      markets.map(m => m.quote),
+      markets.map((m) => m.quote),
     ),
   )
 
@@ -34,7 +34,7 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
       baseURL: 'https://apilayer.net/api',
       timeout: 10000,
     })
-    client.interceptors.request.use(config => ({
+    client.interceptors.request.use((config) => ({
       ...config,
       params: {
         access_key: process.env.CURRENCYLAYER_ACCESS_KEY,
@@ -130,14 +130,14 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
     const result =
       process.env.CURRENCYLAYER_TIMEFRAME === 'true'
         ? await Promise.all(
-            chunkDateRange(timeframe, MAX_RANGE).map(range =>
+            chunkDateRange(timeframe, MAX_RANGE).map((range) =>
               fetchMarkets(markets, (base, currencies) =>
                 fetch(base, currencies, range[0], range[range.length - 1]),
               ),
             ),
           )
         : await Promise.all(
-            generateDateRange(timeframe).map(date =>
+            generateDateRange(timeframe).map((date) =>
               this.fetchHistorical(markets, date),
             ),
           )

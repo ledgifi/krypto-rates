@@ -189,22 +189,22 @@ const fetchRates = <R extends Response>(
     return builder(rates, by, inverse)
   }
   return {
-    from: base => ({
+    from: (base) => ({
       to: (...quotes) =>
         fetch(
-          quotes.map(quote => ({ base, quote })),
-          market => market.quote,
+          quotes.map((quote) => ({ base, quote })),
+          (market) => market.quote,
         ),
     }),
-    to: quote => ({
+    to: (quote) => ({
       from: (...bases) =>
         fetch(
-          bases.map(base => ({ base, quote })),
-          market => market.base,
+          bases.map((base) => ({ base, quote })),
+          (market) => market.base,
         ),
     }),
     markets: (...markets) =>
-      fetch(markets, market => market.base + market.quote),
+      fetch(markets, (market) => market.base + market.quote),
   }
 }
 
@@ -223,7 +223,7 @@ export class KryptoRates {
 
   public get live(): FetchBase<MoneyDict> {
     return fetchRates(
-      markets => this.api.liveRates({ markets }),
+      (markets) => this.api.liveRates({ markets }),
       buildMoneyDict,
       this._inverse,
     )
@@ -231,7 +231,7 @@ export class KryptoRates {
 
   public historical(...dates: DateInput[]): FetchBase<DateMoneyDict> {
     return fetchRates(
-      markets => this.api.historicalRatesForDates({ markets, dates }),
+      (markets) => this.api.historicalRatesForDates({ markets, dates }),
       buildDateMoneyDict,
       this._inverse,
     )
@@ -239,7 +239,7 @@ export class KryptoRates {
 
   public timeframe(timeframe: Timeframe): FetchBase<DateMoneyDict> {
     return fetchRates(
-      markets => this.api.historicalRatesForTimeframe({ markets, timeframe }),
+      (markets) => this.api.historicalRatesForTimeframe({ markets, timeframe }),
       buildDateMoneyDict,
       this._inverse,
     )
@@ -251,7 +251,7 @@ export class KryptoRates {
     const rates = await this.api.historicalRatesByDate({ marketDates })
     return buildDateMoneyDict(
       rates,
-      market => market.base + market.quote,
+      (market) => market.base + market.quote,
       this._inverse,
     )
   }
@@ -264,7 +264,7 @@ export class KryptoRates {
     })
     return buildDateMoneyDict(
       rates,
-      market => market.base + market.quote,
+      (market) => market.base + market.quote,
       this._inverse,
     )
   }

@@ -66,7 +66,7 @@ export class RatesSource implements BaseRateSource<RatesData> {
     base: Currency,
     rates: ParsedRate<TData>[],
   ): ParsedRate<TData>[] {
-    return rates.map(rate => {
+    return rates.map((rate) => {
       const { market: parsedMarket, inverse } = parseMarket(rate.market, base)
       if (inverse) {
         rate.market = parsedMarket
@@ -79,7 +79,7 @@ export class RatesSource implements BaseRateSource<RatesData> {
   private async buildMarketsBySource(
     markets: Market[],
   ): Promise<MarketsByKey<RateSources, Market>> {
-    return buildMarketsByKey<RateSources>(markets, market =>
+    return buildMarketsByKey<RateSources>(markets, (market) =>
       this.getSource(market),
     )
   }

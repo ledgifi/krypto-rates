@@ -54,7 +54,7 @@ async function fetchMarketDates<T>({
   const marketDateGroups = Object.entries(datesByMarkets).map<
     [Market[], Date[]]
   >(([markets, dates]) => [
-    markets.split(',').map(m => {
+    markets.split(',').map((m) => {
       const [base, quote] = m.split('-')
       return new Market(base, quote)
     }),
@@ -63,7 +63,7 @@ async function fetchMarketDates<T>({
 
   const rateGroups = await Promise.all(
     marketDateGroups.flatMap(([markets, dates]) =>
-      consecutiveTimeframes(dates).map(timeframe =>
+      consecutiveTimeframes(dates).map((timeframe) =>
         timeframe.start === timeframe.end
           ? fetch.single(markets, timeframe.start)
           : fetch.timeframe(markets, timeframe),
@@ -143,13 +143,13 @@ export class FetcheService {
     )
     // Fetch rates from Redis DB and map them to Rate instances
     let rates = await mapMarketsByBase(markets, async (base, markets) => {
-      const rates = await fetchDB(markets.map(m => m.id))
+      const rates = await fetchDB(markets.map((m) => m.id))
       return parseDbRates(base, rates)
     })
 
     // Filter for missing markets in DB response
     let missingMarkets = markets.filter(
-      market => !rates.map(r => r?.market.id).includes(market.id),
+      (market) => !rates.map((r) => r?.market.id).includes(market.id),
     )
 
     // If there are missing markets, fetch the missing rates from
@@ -158,13 +158,13 @@ export class FetcheService {
       const missingRates = await mapMarketsByBase(
         markets,
         async (base, markets) => {
-          const rates = await fetchDB(markets.map(m => m.inverse.id))
+          const rates = await fetchDB(markets.map((m) => m.inverse.id))
           return parseDbRates(base, rates)
         },
       )
       rates = [...rates, ...missingRates]
       missingMarkets = markets.filter(
-        market => !rates.map(r => r?.market.id).includes(market.id),
+        (market) => !rates.map((r) => r?.market.id).includes(market.id),
       )
     }
 
@@ -175,9 +175,9 @@ export class FetcheService {
 
       // Write missing rates on Redis DB
       if (missingRates.length) {
-        const dbRates = missingRates.map(rate => buildDbRate(rate))
+        const dbRates = missingRates.map((rate) => buildDbRate(rate))
         await writeDB(dbRates)
-        dbRates.map(item => logCreate(item))
+        dbRates.map((item) => logCreate(item))
       }
 
       rates = [...rates, ...missingRates]
@@ -227,18 +227,22 @@ export class FetcheService {
           single: (markets, date): Promise<ParsedRate[]> =>
             mapMarketsByBase(markets, async (base, markets) => {
               const rates = await fetchDB.single(
-                markets.map(m => m.id),
+                markets.map((m) => m.id),
                 date,
               )
-              return rates.map(rate => parseDbRate(base, rate)).filter(notEmpty)
+              return rates
+                .map((rate) => parseDbRate(base, rate))
+                .filter(notEmpty)
             }),
           timeframe: (markets, timeframe): Promise<ParsedRate[]> =>
             mapMarketsByBase(markets, async (base, markets) => {
               const rates = await fetchDB.timeframe(
-                markets.map(m => m.id),
+                markets.map((m) => m.id),
                 timeframe,
               )
-              return rates.map(rate => parseDbRate(base, rate)).filter(notEmpty)
+              return rates
+                .map((rate) => parseDbRate(base, rate))
+                .filter(notEmpty)
             }),
         },
       })
@@ -274,9 +278,9 @@ export class FetcheService {
 
       // Write missing rates on Redis DB
       if (missingRates.length) {
-        const dbRates = missingRates.map(rate => buildDbRate(rate))
+        const dbRates = missingRates.map((rate) => buildDbRate(rate))
         await writeDB(dbRates)
-        dbRates.map(item => logCreate(item))
+        dbRates.map((item) => logCreate(item))
       }
 
       rates = [...rates, ...missingRates]

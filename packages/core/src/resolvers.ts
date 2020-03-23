@@ -113,22 +113,22 @@ const fetchHistoricalMarketDates = ({
     fetchDB: {
       single: (markets, date): Promise<NullableDbRate[]> =>
         ctx.db.fetchHistoricalRates({
-          marketDates: markets.map(market => ({
+          marketDates: markets.map((market) => ({
             market,
             date: date.toISOString(),
           })),
         }),
       timeframe: (markets, timeframe): Promise<NullableDbRate[]> =>
         ctx.db.fetchHistoricalRates({
-          marketDates: generateDateRange(timeframe).flatMap(date =>
-            markets.map(market => ({
+          marketDates: generateDateRange(timeframe).flatMap((date) =>
+            markets.map((market) => ({
               market,
               date: date.toISOString(),
             })),
           ),
         }),
     },
-    writeDB: rates => ctx.db.writeHistoricalRates({ rates }),
+    writeDB: (rates) => ctx.db.writeHistoricalRates({ rates }),
     fetchSource: {
       single: (markets, date): Promise<ParsedRate[]> =>
         ctx.rates.fetchHistorical(markets, date),
@@ -155,9 +155,9 @@ export const Query = queryType({
       resolve: (_root, { market, ttl }, ctx) =>
         ctx.fetch.fetchRate({
           marketInput: market,
-          fetchDB: market => ctx.db.fetchLiveRate({ market, ttl }),
-          writeDB: rate => ctx.db.writeLiveRate({ rate, ttl }),
-          fetchSource: market => ctx.rates.fetchLive([market]),
+          fetchDB: (market) => ctx.db.fetchLiveRate({ market, ttl }),
+          writeDB: (rate) => ctx.db.writeLiveRate({ rate, ttl }),
+          fetchSource: (market) => ctx.rates.fetchLive([market]),
         }),
     })
 
@@ -172,9 +172,9 @@ export const Query = queryType({
       resolve: (_root, { markets, ttl }, ctx) =>
         ctx.fetch.fetchRates({
           marketsInput: markets,
-          fetchDB: markets => ctx.db.fetchLiveRates({ markets, ttl }),
-          writeDB: rates => ctx.db.writeLiveRates({ rates, ttl }),
-          fetchSource: markets => ctx.rates.fetchLive(markets),
+          fetchDB: (markets) => ctx.db.fetchLiveRates({ markets, ttl }),
+          writeDB: (rates) => ctx.db.writeLiveRates({ rates, ttl }),
+          fetchSource: (markets) => ctx.rates.fetchLive(markets),
         }),
     })
 
@@ -188,10 +188,10 @@ export const Query = queryType({
       resolve: (_root, { market, date }, ctx) =>
         ctx.fetch.fetchRate({
           marketInput: market,
-          fetchDB: market =>
+          fetchDB: (market) =>
             ctx.db.fetchHistoricalRate({ market, date: date.toISOString() }),
-          writeDB: rate => ctx.db.writeHistoricalRate({ rate }),
-          fetchSource: market => ctx.rates.fetchHistorical([market], date),
+          writeDB: (rate) => ctx.db.writeHistoricalRate({ rate }),
+          fetchSource: (market) => ctx.rates.fetchHistorical([market], date),
         }),
     })
 
@@ -206,7 +206,7 @@ export const Query = queryType({
       resolve: (_root, { markets, date }, ctx) =>
         fetchHistoricalMarketDates({
           ctx,
-          marketDates: markets.map(market => ({ market, date })),
+          marketDates: markets.map((market) => ({ market, date })),
         }),
     })
 
@@ -221,8 +221,8 @@ export const Query = queryType({
       resolve: (_root, { markets, dates }, ctx) =>
         fetchHistoricalMarketDates({
           ctx,
-          marketDates: markets.flatMap(market =>
-            dates.map(date => ({ market, date })),
+          marketDates: markets.flatMap((market) =>
+            dates.map((date) => ({ market, date })),
           ),
         }),
     })
@@ -247,8 +247,8 @@ export const Query = queryType({
       resolve: (_root, { markets, timeframe }, ctx) =>
         fetchHistoricalMarketDates({
           ctx,
-          marketDates: generateDateRange(timeframe).flatMap(date =>
-            markets.map(market => ({ market, date })),
+          marketDates: generateDateRange(timeframe).flatMap((date) =>
+            markets.map((market) => ({ market, date })),
           ),
         }),
     })
@@ -264,7 +264,7 @@ export const Query = queryType({
         fetchHistoricalMarketDates({
           ctx,
           marketDates: marketTimeframes.flatMap(({ market, timeframe }) =>
-            generateDateRange(timeframe).map(date => ({ market, date })),
+            generateDateRange(timeframe).map((date) => ({ market, date })),
           ),
         }),
     })

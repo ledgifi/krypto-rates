@@ -19,12 +19,12 @@ export const createClient = (
   config: AxiosRequestConfig,
 ): AxiosInstance => {
   const client = axios.create(config)
-  client.interceptors.request.use(request => {
+  client.interceptors.request.use((request) => {
     console.log(`Fetching rate from ${name}`)
     return request
   })
   client.interceptors.response.use(
-    response => response,
+    (response) => response,
     ({ message, response }: AxiosError) => {
       const { data, status, statusText, config } = response || {}
       throw new RateSourceError(message, {

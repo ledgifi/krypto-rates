@@ -3,6 +3,6 @@ import { RatesDb } from '../types'
 
 export class RatesService extends RatesSource {
   constructor(db: RatesDb) {
-    super(market => db.fetchMarketSourceId({ market }))
+    super((market) => db.fetchMarketSourceId({ market }))
   }
 }

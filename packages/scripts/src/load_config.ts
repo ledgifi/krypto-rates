@@ -23,7 +23,7 @@ const mapSourceByMarket = (config: MarketsConfig): Map<string, string> =>
 const buildCurrencies = (config: MarketsConfig): string[] =>
   Array.from(
     new Set(
-      Object.keys(config).flatMap(market => {
+      Object.keys(config).flatMap((market) => {
         const [base, quote] = market.split('-')
         return [base, quote]
       }),
