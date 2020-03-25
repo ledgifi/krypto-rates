@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.9](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-utils@2.0.0-alpha.8...@raptorsystems/krypto-rates-utils@2.0.0-alpha.9) (2020-03-25)
+
+
+### Bug Fixes
+
+* **core:** sort dates before gen consecutive date groups ([4508264](https://github.com/raptorsystems/krypto-rates/commit/45082646266dc9e22dc9147f95684b11043c4921))
+
+
+
+
+
 # [2.0.0-alpha.8](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-utils@2.0.0-alpha.7...@raptorsystems/krypto-rates-utils@2.0.0-alpha.8) (2020-02-19)
 
 **Note:** Version bump only for package @raptorsystems/krypto-rates-utils
