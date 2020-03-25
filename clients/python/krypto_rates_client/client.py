@@ -1,8 +1,6 @@
-from importlib.metadata import version
 from typing import Any
 
 from requests import Session
-from requests_toolbelt import user_agent as ua
 
 from .types import (
     Currency,
@@ -43,14 +41,11 @@ RATES_FRAGMENT = """
 
 
 class Client(Session):
-    user_agent = ua("krypto-ledgers-python-client", version("krypto-rates-client"))
-
     def __init__(self, url: str, **options):
         super().__init__()
         # Instance attributes
         self.url: str = url
         self.options = options
-        self.headers.setdefault("User-Agent", self.user_agent)
 
     def request(self, query: str, variables: Any, **kwargs):
         # Send the request
