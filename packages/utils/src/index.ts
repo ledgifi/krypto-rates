@@ -8,11 +8,13 @@ import {
   Rate,
   Timeframe,
 } from '@raptorsystems/krypto-rates-common/src/types'
-import * as Moment from 'moment'
-import { extendMoment } from 'moment-range'
-
-const moment = Moment.default
-const momentRange = extendMoment(Moment)
+import {
+  addDays,
+  compareAsc,
+  differenceInDays,
+  isSameDay,
+  subDays,
+} from 'date-fns'
 
 export function parseMarket(
   market: string | Market,
@@ -110,37 +112,31 @@ export const buildDbRate = <TData>({
   }
 }
 
-export const sortDates = (iterable: Date[]): Date[] =>
-  iterable.sort((a, b) => moment(a).diff(b))
+export const sortDates = (iterable: Date[]): Date[] => iterable.sort(compareAsc)
 
-export function generateDateRange({ start, end }: Timeframe): Date[] {
-  return Array.from(
-    momentRange.range(moment.utc(start), moment.utc(end)).by('day'),
-    (el) => el.toDate(),
+export function generateDateRange({ start, end }: Timeframe<Date>): Date[] {
+  return [...Array(differenceInDays(end, start) + 1).keys()].map((i) =>
+    addDays(start, i),
   )
 }
 
 export function consecutiveDateGroups(iterable: Date[]): Date[][] {
-  return sortDates(iterable).reduce<Date[][]>(
-    (groups, date) => {
-      const lastGroup = groups[groups.length - 1]
-      if (
-        // difference in days is greater than 1
-        moment(date).diff(
-          moment(lastGroup[lastGroup.length - 1] || date),
-          'days',
-        ) > 1
-      ) {
-        // add new group
-        groups.push([date])
-      } else {
-        // add date to last group
-        lastGroup.push(date)
-      }
-      return groups
-    },
-    [[]],
-  )
+  return sortDates(iterable).reduce<Date[][]>((groups, date) => {
+    const lastGroup = groups[groups.length - 1]
+    const lastGroupDate = lastGroup?.[lastGroup.length - 1]
+    if (
+      // last date and current date are consecutive
+      isSameDay(lastGroupDate, subDays(date, 1)) ||
+      isSameDay(lastGroupDate, date)
+    ) {
+      // add date to last group
+      lastGroup.push(date)
+    } else {
+      // add date to new group
+      groups.push([date])
+    }
+    return groups
+  }, [])
 }
 
 export function consecutiveTimeframes(iterable: Date[]): Timeframe<Date>[] {
@@ -154,12 +150,6 @@ export function notEmpty<T>(value: T | null | undefined): value is T {
   return value !== null && value !== undefined
 }
 
-export function dailyFilter({ timestamp }: { timestamp: Date }): boolean {
-  const date = moment(timestamp)
-  const startOfDate = moment(timestamp).startOf('day')
-  return date.isSame(startOfDate)
-}
-
 // https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_chunk
 export const chunk = <T>(input: T[], size: number): T[][] =>
   input.reduce<T[][]>((arr, item, idx) => {
@@ -168,5 +158,7 @@ export const chunk = <T>(input: T[], size: number): T[][] =>
       : [...arr.slice(0, -1), [...arr.slice(-1)[0], item]]
   }, [])
 
-export const chunkDateRange = (timeframe: Timeframe, size: number): Date[][] =>
-  chunk(generateDateRange(timeframe), size)
+export const chunkDateRange = (
+  timeframe: Timeframe<Date>,
+  size: number,
+): Date[][] => chunk(generateDateRange(timeframe), size)

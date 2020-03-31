@@ -11,7 +11,7 @@ import {
   parseMarket,
 } from '@raptorsystems/krypto-rates-utils/src/index'
 import { AxiosInstance } from 'axios'
-import moment from 'moment'
+import { fromUnixTime, getUnixTime, parseISO } from 'date-fns'
 import { createClient, mapMarketsByBase, RateSourceError } from '../utils'
 import { RatesSource } from './types'
 
@@ -153,13 +153,14 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
   ): ParsedRate<CurrencylayerRates> {
     const { market, inverse } = parseMarket(marketCode, base)
     if (typeof date === 'number') {
-      date = moment.unix(date).toISOString()
+      date = fromUnixTime(date).toISOString()
     }
     if (typeof date === 'string') {
       date = date.slice(0, 10)
     }
     if (typeof timestamp === 'string') {
-      timestamp = moment.utc(timestamp).unix()
+      const parsedTimestamp = parseISO(`${timestamp}Z`) // add Z make it UTC eg. 2020-01-01Z
+      timestamp = getUnixTime(parsedTimestamp)
     }
     return {
       source: CurrencylayerSource.id,

@@ -4,11 +4,10 @@ const path = require('path')
 const slsw = require('serverless-webpack')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin
-const webpack = require('webpack')
 
 const isLocal = slsw.lib.webpack.isLocal
 
-const plugins = [new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)]
+const plugins = []
 
 if (slsw.lib.options.analyze) plugins.push(new BundleAnalyzerPlugin())
 
