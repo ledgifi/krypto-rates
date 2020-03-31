@@ -15,13 +15,13 @@
     "lint:fix": "eslint --fix --ext .ts src"
   },
   "dependencies": {
+    "@nexus/schema": "^0.13.1",
     "@raptorsystems/krypto-rates-common": "^2.0.0-alpha.8",
     "@raptorsystems/krypto-rates-sources": "^2.0.0-alpha.9",
     "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.9",
     "apollo-server-core": "^2.11.0",
     "graphql": "^14.6.0",
     "graphql-iso-date": "^3.6.1",
-    "ioredis": "^4.16.1",
-    "nexus": "^0.12.0"
+    "ioredis": "^4.16.1"
   }
 }

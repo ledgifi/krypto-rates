@@ -1,5 +1,5 @@
+import { makeSchema } from '@nexus/schema'
 import { workspaceRoot } from '@raptorsystems/krypto-rates-utils/src/paths'
-import { makeSchema } from 'nexus'
 import path from 'path'
 import * as types from './resolvers'
 

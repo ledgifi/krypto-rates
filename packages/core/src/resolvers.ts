@@ -1,4 +1,13 @@
 import {
+  arg,
+  core,
+  inputObjectType,
+  intArg,
+  objectType,
+  queryType,
+  scalarType,
+} from '@nexus/schema'
+import {
   MarketDate,
   MarketInput,
 } from '@raptorsystems/krypto-rates-common/src/types'
@@ -9,15 +18,6 @@ import {
 import { generateDateRange } from '@raptorsystems/krypto-rates-utils/src/index'
 import { GraphQLString } from 'graphql'
 import { GraphQLDate } from 'graphql-iso-date'
-import {
-  arg,
-  core,
-  inputObjectType,
-  intArg,
-  objectType,
-  queryType,
-  scalarType,
-} from 'nexus'
 import { Context } from './context'
 
 const TTL = parseInt(process.env.RATES_LIVE_TTL ?? '') || 300

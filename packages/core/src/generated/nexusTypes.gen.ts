@@ -6,7 +6,7 @@
 import * as Context from '../context'
 import * as commonTypes from '@raptorsystems/krypto-rates-common/src/types'
 import * as sourceTypes from '@raptorsystems/krypto-rates-sources/src/types'
-import { core } from 'nexus'
+import { core } from '@nexus/schema'
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {
     currency<FieldName extends string>(
