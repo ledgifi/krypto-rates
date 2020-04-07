@@ -4,6 +4,7 @@ const path = require('path')
 const slsw = require('serverless-webpack')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin
+const nodeExternals = require('webpack-node-externals')
 
 const isLocal = slsw.lib.webpack.isLocal
 
@@ -15,17 +16,22 @@ module.exports = {
   mode: isLocal ? 'development' : 'production',
   entry: slsw.lib.entries,
   target: 'node',
-  devtool: 'source-map',
+  devtool: isLocal ? 'cheap-module-source-map' : false,
   plugins,
-  externals: [
-    {
-      'aws-sdk': 'aws-sdk',
-      // https://github.com/prisma-labs/nexus/issues/283
-      prettier: 'prettier',
-      // https://github.com/apollographql/apollo-server/issues/2162
-      'apollo-engine-reporting-protobuf': 'apollo-engine-reporting-protobuf',
-    },
-  ],
+  externals: isLocal
+    ? [
+        nodeExternals({
+          modulesDir: path.resolve(__dirname, '../../node_modules'),
+          whitelist: [/^@raptorsystems/],
+        }),
+      ]
+    : {
+        'aws-sdk': 'aws-sdk',
+        // https://github.com/prisma-labs/nexus/issues/283
+        prettier: 'prettier',
+        // https://github.com/apollographql/apollo-server/issues/2162
+        'apollo-engine-reporting-protobuf': 'apollo-engine-reporting-protobuf',
+      },
   module: {
     rules: [
       {

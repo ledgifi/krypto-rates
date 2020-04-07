@@ -29,8 +29,13 @@ custom:
       - COINLAYER_ACCESS_KEY
       - COINLAYER_TIMEFRAME
   webpack:
-    includeModules: true
     packager: yarn
+    keepOutputDirectory: true
+    includeModules:
+      forceExclude:
+        - aws-sdk
+        - prettier
+        - apollo-engine-reporting-protobuf
   serverless-offline:
     port: ${env:PORT, '4000'}
 
@@ -38,11 +43,11 @@ functions:
   graphql:
     handler: handler.graphql
     events:
-    - http:
-        path: /
-        method: post
-        cors: true
-    - http:
-        path: /
-        method: get
-        cors: true
+      - http:
+          path: /
+          method: post
+          cors: true
+      - http:
+          path: /
+          method: get
+          cors: true
