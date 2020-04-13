@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.10](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-python@2.0.0-alpha.9...@raptorsystems/krypto-rates-python@2.0.0-alpha.10) (2020-04-13)
+
+
+### Bug Fixes
+
+* **clients:** fix market base and quote join ([d60d2fc](https://github.com/raptorsystems/krypto-rates/commit/d60d2fc43735a0a99db5a661fb7058c6c9e82700))
+
+
+
+
+
 # [2.0.0-alpha.9](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-python@2.0.0-alpha.8...@raptorsystems/krypto-rates-python@2.0.0-alpha.9) (2020-04-13)
 
 **Note:** Version bump only for package @raptorsystems/krypto-rates-python
