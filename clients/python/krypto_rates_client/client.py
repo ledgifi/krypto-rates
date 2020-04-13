@@ -311,7 +311,7 @@ class KryptoRates:
         rates = self.api.historical_rates_by_date(market_dates)
         return build_date_money_dict(
             rates,
-            lambda market: [market["base"], market["quote"]].join("-"),
+            lambda market: "-".join([market["base"], market["quote"]]),
             self._inverse,
         )
 
@@ -319,6 +319,6 @@ class KryptoRates:
         rates = self.api.historical_rates_by_timeframe(market_timeframes)
         return build_date_money_dict(
             rates,
-            lambda market: [market["base"], market["quote"]].join("-"),
+            lambda market: "-".join([market["base"], market["quote"]]),
             self._inverse,
         )
