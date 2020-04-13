@@ -6,9 +6,10 @@ import {
   MoneyDict,
 } from './types'
 
-export function parseMoney(rate: Rate, inverse?: boolean): Money {
+export function parseMoney(rate: Rate, inverse?: boolean): Money | null {
   const { base, quote } = rate.market
   let amount = rate.value
+  if (amount === null) return null
   let currency = quote
   if (inverse) {
     amount = 1 / amount

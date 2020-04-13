@@ -70,7 +70,7 @@ export class RatesSource implements BaseRateSource<RatesData> {
       const { market: parsedMarket, inverse } = parseMarket(rate.market, base)
       if (inverse) {
         rate.market = parsedMarket
-        rate.value **= -1
+        if (rate.value) rate.value **= -1
       }
       return rate
     })

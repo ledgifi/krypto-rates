@@ -28,7 +28,7 @@ export interface Rate<TData, TMarket = MarketInput> {
   market: TMarket
   source: string
   sourceData?: TData
-  value: number
+  value: number | null
   date: string
   timestamp: number
   inverse: boolean
@@ -45,7 +45,7 @@ export interface DbRate<TData> {
   market: string
   source: string
   sourceData?: TData
-  value: number
+  value: number | null
   date: string
   timestamp: number
 }

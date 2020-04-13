@@ -5,6 +5,7 @@ import {
 } from '@raptorsystems/krypto-rates-common/src/types'
 import { ApolloError } from 'apollo-server-core'
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios'
+import { getUnixTime } from 'date-fns'
 import { MarketsByKey } from './services/types'
 
 export class RateSourceError<T> extends ApolloError {
@@ -96,3 +97,5 @@ export async function mapMarketsByQuote<T, M extends MarketInput>(
 ): Promise<T[]> {
   return mapMarkets(markets, 'quote', callback)
 }
+
+export const unixTime = (): number => getUnixTime(new Date())

@@ -113,7 +113,7 @@ export interface NexusGenFieldTypes {
     market: NexusGenRootTypes['Market'] // Market!
     source: string // String!
     timestamp: number // Int!
-    value: number // Float!
+    value: number | null // Float
   }
 }
 

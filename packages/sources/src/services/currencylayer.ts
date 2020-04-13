@@ -12,7 +12,12 @@ import {
 } from '@raptorsystems/krypto-rates-utils/src/index'
 import { AxiosInstance } from 'axios'
 import { fromUnixTime, getUnixTime, parseISO } from 'date-fns'
-import { createClient, mapMarketsByBase, RateSourceError } from '../utils'
+import {
+  createClient,
+  mapMarketsByBase,
+  RateSourceError,
+  unixTime,
+} from '../utils'
 import { RatesSource } from './types'
 
 const fetchMarkets = async <T>(
@@ -44,8 +49,17 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
     return client
   }
 
-  private handleError(error?: CurrencylayerError): void {
-    if (error) throw new RateSourceError(error.info, error)
+  private validateData<T extends CurrencylayerResponseBase>(
+    data: CurrencylayerResponse<T>,
+    fallbackData: T,
+  ): T {
+    if ('error' in data) {
+      // code 106 `no_rates_available` The user's query did not return any results
+      if (data.error.code === 106) return fallbackData
+      throw new RateSourceError(data.error.info, data.error)
+    } else {
+      return data
+    }
   }
 
   public async fetchLive(
@@ -55,15 +69,16 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
       base: string,
       currencies: string[],
     ): Promise<ParsedRate<CurrencylayerRates>[]> => {
-      const {
-        data: { quotes = {}, timestamp, error },
-      } = await this.client.get<CurrencylayerLive>('live', {
-        params: {
-          source: base,
-          currencies: currencies.join(','),
-        },
+      const { data } = await this.client.get<CurrencylayerLiveResponse>(
+        'live',
+        { params: { source: base, currencies: currencies.join(',') } },
+      )
+      const { quotes, timestamp } = this.validateData(data, {
+        success: false,
+        source: base,
+        timestamp: unixTime(),
+        quotes: this.buildNullQuotes(base, currencies),
       })
-      this.handleError(error)
       return Object.entries(quotes).map(([market, value]) =>
         this.parseRate(market, base, timestamp, timestamp, value),
       )
@@ -79,16 +94,24 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
       base: string,
       currencies: string[],
     ): Promise<ParsedRate<CurrencylayerRates>[]> => {
-      const {
-        data: { quotes = {}, timestamp, error },
-      } = await this.client.get<CurrencylayerHistorical>('historical', {
-        params: {
-          source: base,
-          currencies: currencies.join(','),
-          date: date.toISOString().slice(0, 10),
+      const { data } = await this.client.get<CurrencylayerHistoricalResponse>(
+        'historical',
+        {
+          params: {
+            source: base,
+            currencies: currencies.join(','),
+            date: date.toISOString().slice(0, 10),
+          },
         },
+      )
+      const { quotes, timestamp } = this.validateData(data, {
+        success: false,
+        historical: true,
+        date: date.toISOString().slice(0, 10),
+        source: base,
+        timestamp: unixTime(),
+        quotes: this.buildNullQuotes(base, currencies),
       })
-      this.handleError(error)
       return Object.entries(quotes).map(([market, value]) =>
         this.parseRate(market, base, date.toISOString(), timestamp, value),
       )
@@ -106,18 +129,31 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
       start: Date,
       end: Date,
     ): Promise<ParsedRate<CurrencylayerRates>[]> => {
-      const {
-        data: { quotes = {}, error },
-      } = await this.client.get<CurrencylayerTimeframe>('timeframe', {
-        params: {
-          source: base,
-          currencies: currencies.join(','),
-          start_date: start.toISOString().slice(0, 10),
-          end_date: end.toISOString().slice(0, 10),
+      const { data } = await this.client.get<CurrencylayerTimeframeResponse>(
+        'timeframe',
+        {
+          params: {
+            source: base,
+            currencies: currencies.join(','),
+            start_date: start.toISOString().slice(0, 10),
+            end_date: end.toISOString().slice(0, 10),
+          },
         },
-      })
-      this.handleError(error)
-      const result = Object.entries(quotes).flatMap(([date, rates]) =>
+      )
+      if ('error' in data) {
+        // code 106 `no_rates_available` The user's query did not return any results
+        if (data.error.code === 106) {
+          // fallback to fetch timeframe as historical dates
+          const rates = await Promise.all(
+            generateDateRange({ start, end }).map((date) =>
+              this.fetchHistorical(markets, date),
+            ),
+          )
+          return rates.flat()
+        }
+        throw new RateSourceError(data.error.info, data.error)
+      }
+      const result = Object.entries(data.quotes).flatMap(([date, rates]) =>
         Object.entries(rates).map(([market, value]) =>
           this.parseRate(market, base, date, date, value),
         ),
@@ -149,7 +185,7 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
     base: Currency,
     date: number | string,
     timestamp: number | string,
-    value: number,
+    value: number | null,
   ): ParsedRate<CurrencylayerRates> {
     const { market, inverse } = parseMarket(marketCode, base)
     if (typeof date === 'number') {
@@ -172,9 +208,22 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
       inverse,
     }
   }
+
+  private buildNullQuotes = (
+    base: string,
+    quotes: string[],
+  ): CurrencylayerRates =>
+    quotes.reduce<CurrencylayerRates>(
+      (obj, quote) => ({ ...obj, [base + quote]: null }),
+      {},
+    )
 }
 
-export type CurrencylayerRates = { [market: string]: number }
+export type CurrencylayerRates = {
+  // Rates from coinlayer are not nullable
+  // use nullable rates to avoid 106 `no_rates_available` errors
+  [market: string]: number | null
+}
 
 interface CurrencylayerError {
   code: number
@@ -182,29 +231,47 @@ interface CurrencylayerError {
   info: string
 }
 
-interface CurrencylayerResponse {
+interface CurrencylayerResponseBase {
   success: boolean
-  terms: string
-  privacy: string
+  terms?: string // prop is not optional but it's not useful
+  privacy?: string // prop is not optional but it's not useful
   source: string
-  error?: CurrencylayerError
 }
 
-interface CurrencylayerLive extends CurrencylayerResponse {
+interface CurrencylayerErrorResponse {
+  success: boolean
+  error: CurrencylayerError
+}
+
+interface CurrencylayerLive extends CurrencylayerResponseBase {
   timestamp: number
   quotes: CurrencylayerRates
 }
 
-interface CurrencylayerHistorical extends CurrencylayerResponse {
+interface CurrencylayerHistorical extends CurrencylayerResponseBase {
   historical: boolean
   date: string
   timestamp: number
   quotes: CurrencylayerRates
 }
 
-interface CurrencylayerTimeframe extends CurrencylayerResponse {
+interface CurrencylayerTimeframe extends CurrencylayerResponseBase {
   timeframe: boolean
   start_date: string
   end_date: string
   quotes: { [date: string]: CurrencylayerRates }
 }
+
+type CurrencylayerResponse<T = CurrencylayerResponseBase> =
+  | T
+  | CurrencylayerErrorResponse
+
+type CurrencylayerLiveResponse = CurrencylayerResponse<CurrencylayerLive>
+
+type CurrencylayerHistoricalResponse = CurrencylayerResponse<
+  CurrencylayerHistorical
+>
+
+type CurrencylayerTimeframeResponse = CurrencylayerResponse<
+  CurrencylayerTimeframe
+>

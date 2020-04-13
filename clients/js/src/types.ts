@@ -17,12 +17,12 @@ export type Money = {
 export type Rate = {
   market: MarketInput
   source: string
-  value: number
+  value: number | null
   date: string
   timestamp: number
 }
 
-export type MoneyDict = Record<Currency, Money>
+export type MoneyDict = Record<Currency, Money | null>
 export type DateMoneyDict = Record<string, MoneyDict>
 export type Response = MoneyDict | DateMoneyDict
 

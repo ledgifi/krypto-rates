@@ -95,7 +95,7 @@ export const RateObject = objectType({
     t.string('source')
     t.date('date')
     t.int('timestamp')
-    t.float('value')
+    t.float('value', { nullable: true })
     t.field('market', { type: MarketObject })
   },
 })

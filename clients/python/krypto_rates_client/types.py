@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Callable, Dict, Iterable, Union
+from typing import Callable, Dict, Iterable, Optional, Union
 
 from typing_extensions import TypedDict
 
@@ -38,7 +38,7 @@ class Money(TypedDict):
     currency: Currency
 
 
-MoneyDict = Dict[Currency, Money]
+MoneyDict = Dict[Currency, Optional[Money]]
 DateMoneyDict = Dict[str, MoneyDict]
 Response = Union[MoneyDict, DateMoneyDict]
 

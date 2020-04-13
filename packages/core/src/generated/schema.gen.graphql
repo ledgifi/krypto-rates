@@ -57,7 +57,7 @@ type Rate {
   market: Market!
   source: String!
   timestamp: Int!
-  value: Float!
+  value: Float
 }
 
 input TimeframeInput {
