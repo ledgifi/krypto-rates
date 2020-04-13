@@ -310,11 +310,15 @@ class KryptoRates:
     def market_dates(self, *market_dates: MarketDate) -> DateMoneyDict:
         rates = self.api.historical_rates_by_date(market_dates)
         return build_date_money_dict(
-            rates, lambda market: market["base"] + market["quote"], self._inverse
+            rates,
+            lambda market: [market["base"], market["quote"]].join("-"),
+            self._inverse,
         )
 
     def market_timeframes(self, *market_timeframes: MarketTimeframe) -> DateMoneyDict:
         rates = self.api.historical_rates_by_timeframe(market_timeframes)
         return build_date_money_dict(
-            rates, lambda market: market["base"] + market["quote"], self._inverse
+            rates,
+            lambda market: [market["base"], market["quote"]].join("-"),
+            self._inverse,
         )

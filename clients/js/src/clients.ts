@@ -251,7 +251,7 @@ export class KryptoRates {
     const rates = await this.api.historicalRatesByDate({ marketDates })
     return buildDateMoneyDict(
       rates,
-      (market) => market.base + market.quote,
+      (market) => [market.base, market.quote].join('-'),
       this._inverse,
     )
   }
@@ -264,7 +264,7 @@ export class KryptoRates {
     })
     return buildDateMoneyDict(
       rates,
-      (market) => market.base + market.quote,
+      (market) => [market.base, market.quote].join('-'),
       this._inverse,
     )
   }

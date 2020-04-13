@@ -22,7 +22,7 @@ export type Rate = {
   timestamp: number
 }
 
-export type MoneyDict = Record<Currency, Money | null>
+export type MoneyDict = Record<string, Money | null>
 export type DateMoneyDict = Record<string, MoneyDict>
 export type Response = MoneyDict | DateMoneyDict
 

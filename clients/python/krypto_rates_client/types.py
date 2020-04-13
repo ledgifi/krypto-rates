@@ -38,7 +38,7 @@ class Money(TypedDict):
     currency: Currency
 
 
-MoneyDict = Dict[Currency, Optional[Money]]
+MoneyDict = Dict[str, Optional[Money]]
 DateMoneyDict = Dict[str, MoneyDict]
 Response = Union[MoneyDict, DateMoneyDict]
 
