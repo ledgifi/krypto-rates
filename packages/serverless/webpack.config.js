@@ -29,8 +29,6 @@ module.exports = {
         'aws-sdk': 'aws-sdk',
         // https://github.com/prisma-labs/nexus/issues/283
         prettier: 'prettier',
-        // https://github.com/apollographql/apollo-server/issues/2162
-        'apollo-engine-reporting-protobuf': 'apollo-engine-reporting-protobuf',
       },
   module: {
     rules: [
