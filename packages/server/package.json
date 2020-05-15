@@ -9,8 +9,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "ts-node --transpile-only main",
-    "dev": "ts-node-dev --inspect --no-notify --respawn --transpile-only main",
+    "start": "cross-env TZ=UTC ts-node --transpile-only main",
+    "dev": "cross-env TZ=UTC ts-node-dev --inspect --no-notify --respawn --transpile-only main",
     "lint": "eslint --ext .ts .",
     "lint:fix": "eslint --fix --ext .ts ."
   },
