@@ -228,16 +228,20 @@ export class FetchService {
       }),
     )
 
-    const fetchDBMarketDates = (
-      marketDates: MarketDate<Market, Date>[],
-    ): Promise<ParsedRate[]> =>
+    const fetchDBMarketDates = ({
+      marketDates,
+      inverse,
+    }: {
+      marketDates: MarketDate<Market, Date>[]
+      inverse?: boolean
+    }): Promise<ParsedRate[]> =>
       fetchMarketDates<ParsedRate>({
         marketDates,
         fetch: {
           single: (markets, date): Promise<ParsedRate[]> =>
             mapMarketsByBase(markets, async (base, markets) => {
               const rates = await fetchDB.single(
-                markets.map((m) => m.id),
+                markets.map((m) => (inverse ? m.inverse.id : m.id)),
                 date,
               )
               return rates
@@ -247,7 +251,7 @@ export class FetchService {
           timeframe: (markets, timeframe): Promise<ParsedRate[]> =>
             mapMarketsByBase(markets, async (base, markets) => {
               const rates = await fetchDB.timeframe(
-                markets.map((m) => m.id),
+                markets.map((m) => (inverse ? m.inverse.id : m.id)),
                 timeframe,
               )
               return rates
@@ -258,7 +262,7 @@ export class FetchService {
       })
 
     // Fetch rates from Redis DB and map them to Rate instances
-    let rates = await fetchDBMarketDates(marketDates)
+    let rates = await fetchDBMarketDates({ marketDates })
 
     // Filter missing market-dates in DB response
     let missingMarketDates = filterMissingMarketDates(rates, marketDates)
@@ -266,7 +270,10 @@ export class FetchService {
     // If there are missing market-dates, fetch the missing rates from
     // inverse markets on Redis DB
     if (missingMarketDates.length) {
-      const missingRates = await fetchDBMarketDates(missingMarketDates)
+      const missingRates = await fetchDBMarketDates({
+        marketDates,
+        inverse: true,
+      })
 
       // Merge missing rates
       rates = [...rates, ...missingRates]
