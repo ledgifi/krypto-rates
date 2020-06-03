@@ -61,7 +61,7 @@ export const parseRate = <TData>(
   rate: ParsedRate<TData>,
 ): ParsedRate<TData> => {
   if (rate.inverse) {
-    rate.value **= -1
+    if (rate.value) rate.value **= -1
     rate.inverse = false
   }
   return rate
