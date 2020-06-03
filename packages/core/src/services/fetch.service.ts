@@ -73,7 +73,6 @@ async function fetchMarketDates<T>({
   return rateGroups.flat()
 }
 
-// TODO: This takes a lot of time
 const filterMissingMarketDates = (
   rates: ParsedRate[],
   marketDates: MarketDate<Market, Date>[],
