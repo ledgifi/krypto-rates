@@ -85,7 +85,7 @@ const filterMissingMarketDates = (
   )
 }
 
-export class FetcheService {
+export class FetchService {
   public async fetchRate({
     marketInput: { base, quote },
     fetchDB,
