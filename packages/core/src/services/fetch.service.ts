@@ -17,6 +17,7 @@ import {
   notEmpty,
   parseDbRate,
   parseDbRates,
+  zip,
 } from '@raptorsystems/krypto-rates-utils/src/index'
 import { logCreate } from '../utils'
 
@@ -71,6 +72,14 @@ async function fetchMarketDates<T>({
     ),
   )
   return rateGroups.flat()
+}
+
+const filterMissingMarkets = (
+  rates: ParsedRate[],
+  markets: Market[],
+): Market[] => {
+  const reference = new Set(rates.map((r) => r.market.code))
+  return markets.filter((market) => !reference.has(market.code))
 }
 
 const filterMissingMarketDates = (
@@ -141,30 +150,28 @@ export class FetchService {
       ({ base, quote }) => new Market(base, quote),
     )
     // Fetch rates from Redis DB and map them to Rate instances
-    let rates = await mapMarketsByBase(markets, async (base, markets) => {
-      const rates = await fetchDB(markets.map((m) => m.id))
-      return parseDbRates(base, rates)
-    })
+    let rates = (
+      await mapMarketsByBase(markets, async (base, markets) => {
+        const rates = await fetchDB(markets.map((m) => m.id))
+        return parseDbRates(base, rates)
+      })
+    ).filter(notEmpty)
 
     // Filter for missing markets in DB response
-    let missingMarkets = markets.filter(
-      (market) => !rates.map((r) => r?.market.id).includes(market.id),
-    )
+    let missingMarkets = filterMissingMarkets(rates, markets)
 
     // If there are missing markets, fetch the missing rates from
     // inverse markets on Redis DB
     if (missingMarkets.length) {
-      const missingRates = await mapMarketsByBase(
-        markets,
-        async (base, markets) => {
+      const missingRates = (
+        await mapMarketsByBase(markets, async (base, markets) => {
           const rates = await fetchDB(markets.map((m) => m.inverse.id))
           return parseDbRates(base, rates)
-        },
-      )
+        })
+      ).filter(notEmpty)
+
       rates = [...rates, ...missingRates]
-      missingMarkets = markets.filter(
-        (market) => !rates.map((r) => r?.market.id).includes(market.id),
-      )
+      missingMarkets = filterMissingMarkets(rates, markets)
     }
 
     // If there are still missing markets left, fetch the missing

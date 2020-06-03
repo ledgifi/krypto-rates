@@ -162,3 +162,7 @@ export const chunkDateRange = (
   timeframe: Timeframe<Date>,
   size: number,
 ): Date[][] => chunk(generateDateRange(timeframe), size)
+
+// https://stackoverflow.com/a/10284006
+export const zip = <T>(rows: T[][]): T[][] =>
+  rows[0].map((_, c) => rows.map((row) => row[c]))
