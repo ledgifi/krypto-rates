@@ -13,10 +13,10 @@ import { mapMarketsByBase } from '@raptorsystems/krypto-rates-sources/src/utils'
 import {
   buildDbRate,
   consecutiveTimeframes,
+  normalizeRate,
   notEmpty,
   parseDbRate,
   parseDbRates,
-  parseRate,
 } from '@raptorsystems/krypto-rates-utils/src/index'
 import { logCreate } from '../utils'
 
@@ -123,7 +123,7 @@ export class FetchService {
     }
 
     // Return requested rate
-    return rate && parseRate(rate)
+    return rate && normalizeRate(rate)
   }
 
   public async fetchRates({
@@ -184,7 +184,7 @@ export class FetchService {
     }
 
     // Return all requested rates
-    return rates.filter(notEmpty).map(parseRate)
+    return rates.filter(notEmpty).map(normalizeRate)
   }
 
   public async fetchRatesDates({
@@ -287,6 +287,6 @@ export class FetchService {
     }
 
     // Return all requested rates
-    return rates.filter(notEmpty).map(parseRate)
+    return rates.filter(notEmpty).map(normalizeRate)
   }
 }

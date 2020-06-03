@@ -57,7 +57,7 @@ export function parseMarket(
   }
 }
 
-export const parseRate = <TData>(
+export const normalizeRate = <TData>(
   rate: ParsedRate<TData>,
 ): ParsedRate<TData> => {
   if (rate.inverse) {
