@@ -170,7 +170,10 @@ export class FetchService {
         })
       ).filter(notEmpty)
 
+      // Merge missing rates
       rates = [...rates, ...missingRates]
+
+      // Filter for missing markets in DB response
       missingMarkets = filterMissingMarkets(rates, markets)
     }
 
@@ -186,6 +189,7 @@ export class FetchService {
         dbRates.map((item) => logCreate(item))
       }
 
+      // Merge missing rates
       rates = [...rates, ...missingRates]
     }
 
@@ -264,8 +268,10 @@ export class FetchService {
     if (missingMarketDates.length) {
       const missingRates = await fetchDBMarketDates(missingMarketDates)
 
+      // Merge missing rates
       rates = [...rates, ...missingRates]
 
+      // Filter missing market-dates in DB response
       missingMarketDates = filterMissingMarketDates(rates, marketDates)
     }
 
@@ -289,6 +295,7 @@ export class FetchService {
         dbRates.map((item) => logCreate(item))
       }
 
+      // Merge missing rates
       rates = [...rates, ...missingRates]
     }
 
