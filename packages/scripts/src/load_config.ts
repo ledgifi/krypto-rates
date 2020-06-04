@@ -10,7 +10,9 @@ import path from 'path'
 type MarketsConfig = { [market: string]: string }
 
 const loadMarketsConfig = (configPath: string): MarketsConfig =>
-  yaml.safeLoad(fs.readFileSync(path.join(workspaceRoot, configPath), 'utf8'))
+  yaml.safeLoad(
+    fs.readFileSync(path.join(workspaceRoot, configPath), 'utf8'),
+  ) as MarketsConfig
 
 const mapSourceByMarket = (config: MarketsConfig): Map<string, string> =>
   new Map(
@@ -36,6 +38,8 @@ async function main(configPath = 'config/markets.yml'): Promise<void> {
   const sourceByMarket = mapSourceByMarket(config)
   const currencies = buildCurrencies(config)
   await Promise.all([
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     redis.mset(sourceByMarket),
     redis.set('config:currencies', JSON.stringify(currencies)),
   ])
@@ -45,7 +49,7 @@ async function main(configPath = 'config/markets.yml'): Promise<void> {
 const args = process.argv.slice(2)
 
 try {
-  main(args[0])
+  void main(args[0])
 } catch (error) {
   console.error(error)
 }

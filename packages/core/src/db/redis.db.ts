@@ -8,7 +8,8 @@ import { RatesDb } from '../types'
 
 const host = process.env.REDIS_URL
 
-const parse = (value: string | null): DbRate => value && JSON.parse(value)
+const parse = (value: string | null): DbRate | null =>
+  value ? (JSON.parse(value) as DbRate) : null
 
 const key = (...keys: string[]): string => keys.join(':').replace(/-/g, ':')
 
@@ -31,7 +32,7 @@ export class RedisRatesDb extends IORedis implements RatesDb {
 
   public async fetchCurrencies(): Promise<string[]> {
     const result = await this.get(configKey('currencies'))
-    return result && JSON.parse(result)
+    return result ? (JSON.parse(result) as string[]) : []
   }
 
   public async fetchLiveRate({
@@ -113,6 +114,8 @@ export class RedisRatesDb extends IORedis implements RatesDb {
     rates: DbRate[]
   }): Promise<void> {
     await this.mset(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       new Map(
         rates.map((rate) => [
           ratesKey(rate.market, rate.date),

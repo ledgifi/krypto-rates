@@ -12,7 +12,6 @@ module.exports = {
     'eslint:recommended',
     // ESLint typescript rules
     // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#usage
-    'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     // Prettier, provided by 'eslint-config-prettier'.
@@ -24,5 +23,8 @@ module.exports = {
     // Required to apply rules which need type information
     '@typescript-eslint'
   ],
-  rules: {},
+  rules: {
+    // @typescript-eslint
+    '@typescript-eslint/no-unsafe-assignment': 'off',
+  },
 }
