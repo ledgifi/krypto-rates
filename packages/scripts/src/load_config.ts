@@ -38,8 +38,6 @@ async function main(configPath = 'config/markets.yml'): Promise<void> {
   const sourceByMarket = mapSourceByMarket(config)
   const currencies = buildCurrencies(config)
   await Promise.all([
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     redis.mset(sourceByMarket),
     redis.set('config:currencies', JSON.stringify(currencies)),
   ])

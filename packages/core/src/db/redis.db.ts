@@ -114,8 +114,6 @@ export class RedisRatesDb extends IORedis implements RatesDb {
     rates: DbRate[]
   }): Promise<void> {
     await this.mset(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       new Map(
         rates.map((rate) => [
           ratesKey(rate.market, rate.date),
