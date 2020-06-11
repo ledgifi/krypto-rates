@@ -8,14 +8,14 @@ import { RatesDb } from '../types'
 
 const host = process.env.REDIS_URL
 
-const parse = (value: string | null): DbRate | null =>
-  value ? (JSON.parse(value) as DbRate) : null
-
 const key = (...keys: string[]): string => keys.join(':').replace(/-/g, ':')
 
 const configKey = (...keys: string[]): string => key('config', ...keys)
 
 const ratesKey = (...keys: string[]): string => key('rates', ...keys)
+
+export const parseDbRate = (value: string | null): DbRate | null =>
+  value ? (JSON.parse(value) as DbRate) : null
 
 export class RedisRatesDb extends IORedis implements RatesDb {
   public constructor() {
@@ -42,7 +42,7 @@ export class RedisRatesDb extends IORedis implements RatesDb {
     ttl: number
   }): Promise<NullableDbRate> {
     const result = await this.get(ratesKey(market, 'LIVE'))
-    return parse(result)
+    return parseDbRate(result)
   }
 
   public async writeLiveRate({
@@ -63,7 +63,7 @@ export class RedisRatesDb extends IORedis implements RatesDb {
     const results = await this.mget(
       ...markets.map((market) => ratesKey(market, 'LIVE')),
     )
-    return results.map((item) => parse(item))
+    return results.map(parseDbRate)
   }
 
   public async writeLiveRates({
@@ -88,7 +88,7 @@ export class RedisRatesDb extends IORedis implements RatesDb {
     date: string
   }): Promise<NullableDbRate> {
     const result = await this.get(ratesKey(market, date.slice(0, 10)))
-    return parse(result)
+    return parseDbRate(result)
   }
 
   public async writeHistoricalRate({ rate }: { rate: DbRate }): Promise<void> {
@@ -105,7 +105,7 @@ export class RedisRatesDb extends IORedis implements RatesDb {
         ratesKey(market, date.slice(0, 10)),
       ),
     )
-    return results.map((item) => parse(item))
+    return results.map(parseDbRate)
   }
 
   public async writeHistoricalRates({
