@@ -30,7 +30,7 @@ const fetchMarkets = async <T>(
     ),
   )
 
-export class CoinlayerSource implements RatesSource<CoinlayerRates> {
+export class CoinlayerSource implements RatesSource {
   public static id = 'coinlayer.com'
 
   public get client(): AxiosInstance {
@@ -61,13 +61,8 @@ export class CoinlayerSource implements RatesSource<CoinlayerRates> {
     }
   }
 
-  public async fetchLive(
-    markets: MarketInput[],
-  ): Promise<ParsedRate<CoinlayerRates>[]> {
-    const parse = (
-      data: CoinlayerLive,
-      quote: Currency,
-    ): ParsedRate<CoinlayerRates>[] =>
+  public async fetchLive(markets: MarketInput[]): Promise<ParsedRate[]> {
+    const parse = (data: CoinlayerLive, quote: Currency): ParsedRate[] =>
       Object.entries(data.rates).map(([symbol, value]) =>
         this.parseRate(
           symbol + quote,
@@ -81,7 +76,7 @@ export class CoinlayerSource implements RatesSource<CoinlayerRates> {
     const fetch = async (
       target: string,
       symbols: string[],
-    ): Promise<ParsedRate<CoinlayerRates>[]> => {
+    ): Promise<ParsedRate[]> => {
       const { data } = await this.client.get<CoinlayerLiveResponse>('live', {
         params: { target, symbols: symbols.join(',') },
       })
@@ -102,11 +97,8 @@ export class CoinlayerSource implements RatesSource<CoinlayerRates> {
   public async fetchHistorical(
     markets: MarketInput[],
     date: Date,
-  ): Promise<ParsedRate<CoinlayerRates>[]> {
-    const parse = (
-      data: CoinlayerHistorical,
-      quote: Currency,
-    ): ParsedRate<CoinlayerRates>[] =>
+  ): Promise<ParsedRate[]> {
+    const parse = (data: CoinlayerHistorical, quote: Currency): ParsedRate[] =>
       Object.entries(data.rates).map(([symbol, value]) =>
         this.parseRate(
           symbol + quote,
@@ -120,7 +112,7 @@ export class CoinlayerSource implements RatesSource<CoinlayerRates> {
     const fetch = async (
       target: string,
       symbols: string[],
-    ): Promise<ParsedRate<CoinlayerRates>[]> => {
+    ): Promise<ParsedRate[]> => {
       const { data } = await this.client.get<CoinlayerHistoricalResponse>(
         date.toISOString().slice(0, 10),
         { params: { target, symbols: symbols.join(',') } },
@@ -144,11 +136,8 @@ export class CoinlayerSource implements RatesSource<CoinlayerRates> {
   public async fetchTimeframe(
     markets: MarketInput[],
     timeframe: Timeframe<Date>,
-  ): Promise<ParsedRate<CoinlayerRates>[]> {
-    const parse = (
-      data: CoinlayerTimeframe,
-      quote: Currency,
-    ): ParsedRate<CoinlayerRates>[] =>
+  ): Promise<ParsedRate[]> {
+    const parse = (data: CoinlayerTimeframe, quote: Currency): ParsedRate[] =>
       Object.entries(data.rates).flatMap(([date, rates]) =>
         Object.entries(rates).map(([symbol, value]) =>
           this.parseRate(symbol + quote, symbol, date, date, value),
@@ -160,7 +149,7 @@ export class CoinlayerSource implements RatesSource<CoinlayerRates> {
       symbols: string[],
       start: Date,
       end: Date,
-    ): Promise<ParsedRate<CoinlayerRates>[]> => {
+    ): Promise<ParsedRate[]> => {
       const { data } = await this.client.get<CoinlayerTimeframeResponse>(
         'timeframe',
         {
@@ -214,7 +203,7 @@ export class CoinlayerSource implements RatesSource<CoinlayerRates> {
     date: number | string,
     timestamp: number | string,
     value: number | null,
-  ): ParsedRate<CoinlayerRates> {
+  ): ParsedRate {
     const { market, inverse } = parseMarket(marketCode, base)
     if (typeof date === 'number') {
       date = fromUnixTime(date).toISOString()

@@ -57,9 +57,7 @@ export function parseMarket(
   }
 }
 
-export const normalizeRate = <TData>(
-  rate: ParsedRate<TData>,
-): ParsedRate<TData> => {
+export const normalizeRate = (rate: ParsedRate): ParsedRate => {
   if (rate.inverse) {
     if (rate.value) rate.value **= -1
     rate.inverse = false
@@ -67,10 +65,10 @@ export const normalizeRate = <TData>(
   return rate
 }
 
-export function parseDbRate<TData>(
+export function parseDbRate(
   base: Currency,
-  rate: NullableDbRate<TData>,
-): Rate<TData, Market> | undefined {
+  rate: NullableDbRate,
+): Rate<Market> | undefined {
   if (!rate) return
   const { value, date, timestamp, source, sourceData, market } = rate
   const { market: parsedMarket, inverse } = parseMarket(market, base)
@@ -85,14 +83,14 @@ export function parseDbRate<TData>(
   }
 }
 
-export function parseDbRates<TData>(
+export function parseDbRates(
   base: Currency,
-  rates: NullableDbRate<TData>[],
-): (Rate<TData, Market> | undefined)[] {
+  rates: NullableDbRate[],
+): (Rate<Market> | undefined)[] {
   return rates.map((rate) => parseDbRate(base, rate))
 }
 
-export const buildDbRate = <TData>({
+export const buildDbRate = ({
   date,
   timestamp,
   value,

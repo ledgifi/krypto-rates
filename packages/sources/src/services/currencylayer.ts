@@ -30,7 +30,7 @@ const fetchMarkets = async <T>(
     ),
   )
 
-export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
+export class CurrencylayerSource implements RatesSource {
   public static id = 'currencylayer.com'
 
   public get client(): AxiosInstance {
@@ -61,13 +61,11 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
     }
   }
 
-  public async fetchLive(
-    markets: MarketInput[],
-  ): Promise<ParsedRate<CurrencylayerRates>[]> {
+  public async fetchLive(markets: MarketInput[]): Promise<ParsedRate[]> {
     const fetch = async (
       base: string,
       currencies: string[],
-    ): Promise<ParsedRate<CurrencylayerRates>[]> => {
+    ): Promise<ParsedRate[]> => {
       const { data } = await this.client.get<CurrencylayerLiveResponse>(
         'live',
         { params: { source: base, currencies: currencies.join(',') } },
@@ -88,11 +86,11 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
   public async fetchHistorical(
     markets: MarketInput[],
     date: Date,
-  ): Promise<ParsedRate<CurrencylayerRates>[]> {
+  ): Promise<ParsedRate[]> {
     const fetch = async (
       base: string,
       currencies: string[],
-    ): Promise<ParsedRate<CurrencylayerRates>[]> => {
+    ): Promise<ParsedRate[]> => {
       const { data } = await this.client.get<CurrencylayerHistoricalResponse>(
         'historical',
         {
@@ -121,13 +119,13 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
   public async fetchTimeframe(
     markets: MarketInput[],
     timeframe: Timeframe<Date>,
-  ): Promise<ParsedRate<CurrencylayerRates>[]> {
+  ): Promise<ParsedRate[]> {
     const fetch = async (
       base: Currency,
       currencies: Currency[],
       start: Date,
       end: Date,
-    ): Promise<ParsedRate<CurrencylayerRates>[]> => {
+    ): Promise<ParsedRate[]> => {
       const { data } = await this.client.get<CurrencylayerTimeframeResponse>(
         'timeframe',
         {
@@ -185,7 +183,7 @@ export class CurrencylayerSource implements RatesSource<CurrencylayerRates> {
     date: number | string,
     timestamp: number | string,
     value: number | null,
-  ): ParsedRate<CurrencylayerRates> {
+  ): ParsedRate {
     const { market, inverse } = parseMarket(marketCode, base)
     if (typeof date === 'number') {
       date = fromUnixTime(date).toISOString()

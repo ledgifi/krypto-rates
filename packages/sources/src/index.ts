@@ -9,7 +9,7 @@ import { parseMarket } from '@raptorsystems/krypto-rates-utils/src/index'
 import { CoinlayerSource } from './services/coinlayer'
 import { CurrencylayerSource } from './services/currencylayer'
 import { MarketsByKey, RatesSource as BaseRateSource } from './services/types'
-import { RatesData, RateSources } from './types'
+import { RateSources } from './types'
 import { buildMarketsByKey, mapMarketsByBase } from './utils'
 
 export const rateSourceById = {
@@ -17,14 +17,12 @@ export const rateSourceById = {
   [CurrencylayerSource.id]: CurrencylayerSource,
 }
 
-export class RatesSource implements BaseRateSource<RatesData> {
+export class RatesSource implements BaseRateSource {
   public constructor(
     public getSourceId: (market: string) => Promise<string | null | undefined>,
   ) {}
 
-  public async fetchLive(
-    markets: MarketInput[],
-  ): Promise<ParsedRate<RatesData>[]> {
+  public async fetchLive(markets: MarketInput[]): Promise<ParsedRate[]> {
     return this.fetchForMarkets(markets, (source, markets) =>
       source.fetchLive(markets),
     )
@@ -33,7 +31,7 @@ export class RatesSource implements BaseRateSource<RatesData> {
   public async fetchHistorical(
     markets: MarketInput[],
     date: Date,
-  ): Promise<ParsedRate<RatesData>[]> {
+  ): Promise<ParsedRate[]> {
     return this.fetchForMarkets(markets, (source, markets) =>
       source.fetchHistorical(markets, date),
     )
@@ -42,7 +40,7 @@ export class RatesSource implements BaseRateSource<RatesData> {
   public async fetchTimeframe(
     markets: MarketInput[],
     timeframe: Timeframe<Date>,
-  ): Promise<ParsedRate<RatesData>[]> {
+  ): Promise<ParsedRate[]> {
     return this.fetchForMarkets(markets, (source, markets) =>
       source.fetchTimeframe(markets, timeframe),
     )
@@ -62,10 +60,7 @@ export class RatesSource implements BaseRateSource<RatesData> {
     }
   }
 
-  private buildResponse<TData>(
-    base: Currency,
-    rates: ParsedRate<TData>[],
-  ): ParsedRate<TData>[] {
+  private buildResponse(base: Currency, rates: ParsedRate[]): ParsedRate[] {
     return rates.map((rate) => {
       const { market: parsedMarket, inverse } = parseMarket(rate.market, base)
       if (inverse) {
@@ -89,8 +84,8 @@ export class RatesSource implements BaseRateSource<RatesData> {
     fetch: (
       source: RateSources,
       markets: MarketInput[],
-    ) => Promise<ParsedRate<RatesData>[]>,
-  ): Promise<ParsedRate<RatesData>[]> {
+    ) => Promise<ParsedRate[]>,
+  ): Promise<ParsedRate[]> {
     return mapMarketsByBase(
       markets.map(({ base, quote }) => new Market(base, quote)),
       async (base, markets) => {

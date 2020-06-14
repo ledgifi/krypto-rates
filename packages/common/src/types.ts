@@ -1,4 +1,5 @@
 import { Market } from './market'
+import { JsonValue } from 'type-fest'
 
 export type Currency = string
 
@@ -24,10 +25,10 @@ export interface MarketTimeframe<TMarket = MarketInput, TDate = DateInput> {
   timeframe: Timeframe<TDate>
 }
 
-export interface Rate<TData, TMarket = MarketInput> {
+export interface Rate<TMarket = MarketInput> {
   market: TMarket
   source: string
-  sourceData?: TData
+  sourceData: JsonValue
   value: number | null
   date: string
   timestamp: number
@@ -39,15 +40,15 @@ export interface ParsedMarket {
   inverse: boolean
 }
 
-export type ParsedRate<TData> = Rate<TData, Market>
+export type ParsedRate = Rate<Market>
 
-export interface DbRate<TData> {
+export interface DbRate {
   market: string
   source: string
-  sourceData?: TData
+  sourceData: JsonValue
   value: number | null
   date: string
   timestamp: number
 }
 
-export type NullableDbRate<TData> = DbRate<TData> | null | undefined
+export type NullableDbRate = DbRate | null | undefined
