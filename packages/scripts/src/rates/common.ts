@@ -12,9 +12,11 @@ export async function* getRates(
     match: `${prefix}rates:*`,
     count: 100,
   })) {
-    const values = await redis.mget(keys)
-    yield new Map(
-      (keys as string[]).map((key, idx) => [key, parseDbRate(values[idx])]),
-    )
+    if ((keys as string[]).length) {
+      const values = await redis.mget(...keys)
+      yield new Map(
+        (keys as string[]).map((key, idx) => [key, parseDbRate(values[idx])]),
+      )
+    }
   }
 }
