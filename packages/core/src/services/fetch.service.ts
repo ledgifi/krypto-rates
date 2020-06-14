@@ -32,10 +32,11 @@ const bridgeMarkets = (market1: Market, market2: Market): Market => {
 const bridgeRates = (rate1: ParsedRate, rate2: ParsedRate): ParsedRate => ({
   market: bridgeMarkets(rate1.market, rate2.market),
   source: `${rate1.source},${rate2.source}`,
-  sourceData: { ...rate1.sourceData, ...rate2.sourceData },
+  sourceData: [rate1.sourceData, rate2.sourceData],
   date: rate1.date,
   timestamp: rate1.timestamp,
   inverse: false,
+  bridged: true,
   value: rate1.value && rate2.value ? rate1.value * rate2.value : null,
 })
 

@@ -79,6 +79,7 @@ class Rate(TypedDict):
     timestamp: int
     date: str
     inverse: bool
+    bridged: bool
 
 
 Rates = Iterable[Rate]

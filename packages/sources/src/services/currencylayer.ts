@@ -203,6 +203,7 @@ export class CurrencylayerSource implements RatesSource {
       timestamp,
       value,
       inverse,
+      bridged: false,
     }
   }
 

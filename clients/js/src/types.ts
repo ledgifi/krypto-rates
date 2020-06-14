@@ -20,6 +20,7 @@ export type Rate = {
   value: number | null
   date: string
   timestamp: number
+  bridged: boolean
 }
 
 export type MoneyDict = Record<string, Money | null>

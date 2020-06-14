@@ -70,7 +70,7 @@ export function parseDbRate(
   rate: NullableDbRate,
 ): Rate<Market> | undefined {
   if (!rate) return
-  const { value, date, timestamp, source, sourceData, market } = rate
+  const { value, date, timestamp, source, sourceData, market, bridged } = rate
   const { market: parsedMarket, inverse } = parseMarket(market, base)
   return {
     value,
@@ -80,6 +80,7 @@ export function parseDbRate(
     sourceData,
     market: parsedMarket,
     inverse,
+    bridged,
   }
 }
 
@@ -98,7 +99,8 @@ export const buildDbRate = ({
   sourceData,
   market,
   inverse,
-}: ParsedRate<TData>): DbRate<TData> => {
+  bridged,
+}: ParsedRate): DbRate => {
   if (inverse) market = market.inverse
   return {
     date,
@@ -107,6 +109,7 @@ export const buildDbRate = ({
     source,
     sourceData,
     market: market.id,
+    bridged,
   }
 }
 

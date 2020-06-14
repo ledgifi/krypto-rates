@@ -22,6 +22,7 @@ const RATE_FRAGMENT = /* GraphQL */ `
     date
     timestamp
     source
+    bridged
     market {
       base
       quote

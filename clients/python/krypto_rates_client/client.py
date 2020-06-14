@@ -32,6 +32,7 @@ RATES_FRAGMENT = """
     date
     timestamp
     source
+    bridged
     market {
       base
       quote

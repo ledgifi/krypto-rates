@@ -223,6 +223,7 @@ export class CoinlayerSource implements RatesSource {
       timestamp,
       value,
       inverse,
+      bridged: false,
     }
   }
 

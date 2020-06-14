@@ -97,6 +97,7 @@ export const RateObject = objectType({
     t.int('timestamp')
     t.float('value', { nullable: true })
     t.field('market', { type: MarketObject })
+    t.boolean('bridged')
   },
 })
 

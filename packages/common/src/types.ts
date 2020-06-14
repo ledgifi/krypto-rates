@@ -33,6 +33,7 @@ export interface Rate<TMarket = MarketInput> {
   date: string
   timestamp: number
   inverse: boolean
+  bridged: boolean
 }
 
 export interface ParsedMarket {
@@ -49,6 +50,7 @@ export interface DbRate {
   value: number | null
   date: string
   timestamp: number
+  bridged: boolean
 }
 
 export type NullableDbRate = DbRate | null | undefined
