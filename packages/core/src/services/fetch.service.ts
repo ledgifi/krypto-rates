@@ -37,6 +37,7 @@ const bridgeRates = (rate1: ParsedRate, rate2: ParsedRate): ParsedRate => ({
   timestamp: rate1.timestamp,
   inverse: false,
   bridged: true,
+  // TODO: Set precision value after multiplication
   value: rate1.value && rate2.value ? rate1.value * rate2.value : null,
 })
 
