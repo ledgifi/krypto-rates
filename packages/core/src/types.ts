@@ -11,6 +11,8 @@ export interface RatesDb {
 
   fetchCurrencies(): Promise<string[]>
 
+  hasCurrency(args: { currency: string }): Promise<boolean>
+
   fetchLiveRate(args: {
     market: string
     ttl?: number | null

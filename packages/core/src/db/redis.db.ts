@@ -35,6 +35,15 @@ export class RedisRatesDb extends IORedis implements RatesDb {
     return result.sort()
   }
 
+  public async hasCurrency({
+    currency,
+  }: {
+    currency: string
+  }): Promise<boolean> {
+    const result = await this.sismember(configKey('currencies'), currency)
+    return Boolean(result)
+  }
+
   public async fetchLiveRate({
     market,
   }: {
