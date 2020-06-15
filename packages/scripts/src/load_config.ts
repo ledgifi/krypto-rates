@@ -50,7 +50,7 @@ async function main(configPath: string): Promise<void> {
   const currencies = buildCurrencies(config)
   await Promise.all([
     redis.mset(sourceByMarket),
-    redis.set('config:currencies', JSON.stringify(currencies)),
+    redis.sadd('config:currencies', ...currencies),
   ])
   redis.disconnect()
 }

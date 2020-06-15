@@ -31,8 +31,8 @@ export class RedisRatesDb extends IORedis implements RatesDb {
   }
 
   public async fetchCurrencies(): Promise<string[]> {
-    const result = await this.get(configKey('currencies'))
-    return result ? (JSON.parse(result) as string[]) : []
+    const result = await this.smembers(configKey('currencies'))
+    return result.sort()
   }
 
   public async fetchLiveRate({
