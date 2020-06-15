@@ -48,12 +48,13 @@ export async function buildMarketsByKey<T>(
     let key = await getKey(market)
     if (!key) {
       key = await getKey(market.inverse)
-      if (!key) throw `Market ${market.id} is not supported`
-      market = market.inverse
+      if (key) market = market.inverse
     }
-    const markets: Market[] = marketsMap.get(key) || []
-    markets.push(market)
-    marketsMap.set(key, markets)
+    if (key) {
+      const markets: Market[] = marketsMap.get(key) || []
+      markets.push(market)
+      marketsMap.set(key, markets)
+    }
   }
   return marketsMap
 }
