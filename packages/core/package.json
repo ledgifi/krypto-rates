@@ -1,6 +1,6 @@
 {
   "name": "@raptorsystems/krypto-rates-core",
-  "version": "2.0.0-alpha.10",
+  "version": "2.0.0-alpha.11",
   "description": "Krypto Rates Core",
   "author": {
     "name": "Raptor Systems SpA",
@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "@nexus/schema": "^0.14.0",
-    "@raptorsystems/krypto-rates-common": "^2.0.0-alpha.9",
-    "@raptorsystems/krypto-rates-sources": "^2.0.0-alpha.10",
-    "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.10",
+    "@raptorsystems/krypto-rates-common": "^2.0.0-alpha.10",
+    "@raptorsystems/krypto-rates-sources": "^2.0.0-alpha.11",
+    "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.11",
     "apollo-server-core": "^2.14.4",
     "graphql": "^14.6.0",
     "graphql-iso-date": "^3.6.1",

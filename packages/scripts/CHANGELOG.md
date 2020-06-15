@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.0](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-scripts@1.0.3-alpha.10...@raptorsystems/krypto-rates-scripts@1.1.0-alpha.0) (2020-06-15)
+
+
+### Bug Fixes
+
+* **scripts:** fix getRates ([7fd29ab](https://github.com/raptorsystems/krypto-rates/commit/7fd29ab12c1797f318110b73cd36469091d47458))
+
+
+### Features
+
+* **scripts:** add scripts to handle rates redis db ([9562858](https://github.com/raptorsystems/krypto-rates/commit/956285864f40c62091e6e152816a36e45db15f06))
+
+
+
+
+
 ## [1.0.3-alpha.10](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-scripts@1.0.3-alpha.9...@raptorsystems/krypto-rates-scripts@1.0.3-alpha.10) (2020-04-13)
 
 **Note:** Version bump only for package @raptorsystems/krypto-rates-scripts

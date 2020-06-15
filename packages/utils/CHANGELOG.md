@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.11](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-utils@2.0.0-alpha.10...@raptorsystems/krypto-rates-utils@2.0.0-alpha.11) (2020-06-15)
+
+
+### Bug Fixes
+
+* **utils:** check rate.value before inversion ([dcced26](https://github.com/raptorsystems/krypto-rates/commit/dcced264ae1f9a77a56a9b32002f6f64297d2a5e))
+
+
+
+
+
 # [2.0.0-alpha.10](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-utils@2.0.0-alpha.9...@raptorsystems/krypto-rates-utils@2.0.0-alpha.10) (2020-04-13)
 
 **Note:** Version bump only for package @raptorsystems/krypto-rates-utils

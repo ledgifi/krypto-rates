@@ -1,6 +1,6 @@
 {
   "name": "@raptorsystems/krypto-rates-client",
-  "version": "2.0.0-alpha.11",
+  "version": "2.0.0-alpha.12",
   "description": "Krypto Rates JS Client",
   "author": {
     "name": "Raptor Systems SpA",
@@ -24,7 +24,7 @@
     "lint:fix": "eslint --fix --ext .ts src"
   },
   "dependencies": {
-    "@raptorsystems/krypto-rates-common": "^2.0.0-alpha.9",
+    "@raptorsystems/krypto-rates-common": "^2.0.0-alpha.10",
     "graphql": "^14.6.0",
     "graphql-request": "^1.8.2"
   }

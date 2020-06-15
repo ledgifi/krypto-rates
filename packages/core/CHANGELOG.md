@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.11](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-core@2.0.0-alpha.10...@raptorsystems/krypto-rates-core@2.0.0-alpha.11) (2020-06-15)
+
+
+### Bug Fixes
+
+* **core:** add inverse arg on fetchDBMarketDates ([66691f3](https://github.com/raptorsystems/krypto-rates/commit/66691f3acbba4f6edf5dea9b2fd5cd369bb10395))
+* **core:** fix FetchService typo ([804f74d](https://github.com/raptorsystems/krypto-rates/commit/804f74dac7ac205c80420e78b4632739d0576332))
+
+
+### Features
+
+* **core:** add hasCurrency on RatesDb interface ([a45b0e9](https://github.com/raptorsystems/krypto-rates/commit/a45b0e90fe59f18dd9c06f05d14d68a502eacdb8))
+* **core:** fallback to bridge rates when no rate or null val ([71868c1](https://github.com/raptorsystems/krypto-rates/commit/71868c1baae151c829cba6029b9323e1559d7ee3))
+
+
+
+
+
 # [2.0.0-alpha.10](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-core@2.0.0-alpha.9...@raptorsystems/krypto-rates-core@2.0.0-alpha.10) (2020-04-13)
 
 
