@@ -5,7 +5,18 @@ import { RedisRatesDb } from '@raptorsystems/krypto-rates-core/src/db/redis.db'
 import { workspaceRoot } from '@raptorsystems/krypto-rates-utils/src/paths'
 import fs from 'fs'
 import yaml from 'js-yaml'
+import meow from 'meow'
 import path from 'path'
+
+const cli = meow({
+  flags: {
+    config: {
+      type: 'string',
+      alias: 'c',
+      default: 'config/markets.yml',
+    },
+  },
+})
 
 type MarketsConfig = { [market: string]: string }
 
@@ -32,7 +43,7 @@ const buildCurrencies = (config: MarketsConfig): string[] =>
     ),
   )
 
-async function main(configPath = 'config/markets.yml'): Promise<void> {
+async function main(configPath: string): Promise<void> {
   const redis = new RedisRatesDb()
   const config = loadMarketsConfig(configPath)
   const sourceByMarket = mapSourceByMarket(config)
@@ -44,10 +55,8 @@ async function main(configPath = 'config/markets.yml'): Promise<void> {
   redis.disconnect()
 }
 
-const args = process.argv.slice(2)
-
 try {
-  void main(args[0])
+  void main(cli.flags.config)
 } catch (error) {
   console.error(error)
 }
