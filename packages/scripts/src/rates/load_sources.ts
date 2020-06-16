@@ -15,8 +15,8 @@ async function main(sources: string[]): Promise<void> {
   // Fetch Rates
   for (const source of sources) {
     const prefix = `${source}:`
-    for await (const rates of getRates(redis, prefix)) {
-      for (const [key, rate] of rates.entries()) {
+    for await (const dbRates of getRates(redis, prefix)) {
+      for (const [key, rate] of dbRates.entries()) {
         const keyWithoutPrefix = key.replace(prefix, '')
         if (rate) rates.set(keyWithoutPrefix, rate)
       }
