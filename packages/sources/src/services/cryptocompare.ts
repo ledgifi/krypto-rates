@@ -136,11 +136,11 @@ export class CryptoCompareSource implements RatesSource {
       toTs: Date,
       limit: number,
     ): Promise<ParsedRate[]> => {
-      // ? limit returns n + 1 rates
-      limit -= 1
-      const { data } = await this.client.get<HistoricalResponse>('histoday', {
-        params: { fsym, tsym, toTs: getUnixTime(toTs), limit },
-      })
+      const { data } = await this.client.get<HistoricalResponse>(
+        'v2/histoday',
+        // ? limit returns n + 1 rates
+        { params: { fsym, tsym, toTs: getUnixTime(toTs), limit: limit - 1 } },
+      )
       if ('Response' in data && data.Response === 'Error') {
         throw new RateSourceError(data.Message, data)
       }
