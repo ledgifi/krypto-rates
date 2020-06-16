@@ -17,7 +17,6 @@ import {
   notEmpty,
   parseDbRate,
   parseDbRates,
-  zip,
 } from '@raptorsystems/krypto-rates-utils/src/index'
 import { logCreate } from '../utils'
 
@@ -236,32 +235,31 @@ export class FetchService {
 
       // If there are still missing markets left, fetch via bridge currency
       if (!bridged && missingMarkets.length) {
-        const [rates1, rates2] = await Promise.all([
-          this.fetchRates({
-            marketsInput: missingMarkets.map((market) => ({
+        const bridgedRates = await this.fetchRates({
+          marketsInput: [
+            ...missingMarkets.map((market) => ({
               base: market.base,
               quote: BRIDGE_CURRENCY,
             })),
-            fetchDB,
-            writeDB,
-            fetchSource,
-            bridged: true,
-          }),
-          this.fetchRates({
-            marketsInput: missingMarkets.map((market) => ({
+            ...missingMarkets.map((market) => ({
               base: BRIDGE_CURRENCY,
               quote: market.quote,
             })),
-            fetchDB,
-            writeDB,
-            fetchSource,
-            bridged: true,
-          }),
-        ])
+          ],
+          fetchDB,
+          writeDB,
+          fetchSource,
+          bridged: true,
+        })
 
-        missingRates = zip([rates1, rates2]).map(([rate1, rate2]) =>
-          bridgeRates(rate1, rate2),
-        )
+        missingRates = missingMarkets
+          .map(({ base, quote }) => {
+            const rate1 = bridgedRates.find((r) => r.market.base === base)
+            const rate2 = bridgedRates.find((r) => r.market.quote === quote)
+            if (!rate1 || !rate2) return
+            return bridgeRates(rate1, rate2)
+          })
+          .filter(notEmpty)
       }
 
       // Write missing rates on Redis DB
@@ -387,32 +385,36 @@ export class FetchService {
 
       // If there are still missing market-dates left, fetch via bridge currency
       if (!bridged && missingMarketDates.length) {
-        const [rates1, rates2] = await Promise.all([
-          this.fetchRatesDates({
-            marketDatesInput: missingMarketDates.map(({ market, date }) => ({
+        const bridgedRates = await this.fetchRatesDates({
+          marketDatesInput: [
+            ...missingMarketDates.map(({ market, date }) => ({
               market: { base: market.base, quote: BRIDGE_CURRENCY },
               date,
             })),
-            fetchDB,
-            writeDB,
-            fetchSource,
-            bridged: true,
-          }),
-          this.fetchRatesDates({
-            marketDatesInput: missingMarketDates.map(({ market, date }) => ({
+            ...missingMarketDates.map(({ market, date }) => ({
               market: { base: BRIDGE_CURRENCY, quote: market.quote },
               date,
             })),
-            fetchDB,
-            writeDB,
-            fetchSource,
-            bridged: true,
-          }),
-        ])
+          ],
+          fetchDB,
+          writeDB,
+          fetchSource,
+          bridged: true,
+        })
 
-        missingRates = zip([rates1, rates2]).map(([rate1, rate2]) =>
-          bridgeRates(rate1, rate2),
-        )
+        missingRates = missingMarketDates
+          .map(({ market: { base, quote }, date }) => {
+            const dateStr = date.toISOString().slice(0, 10)
+            const rate1 = bridgedRates.find(
+              (r) => r.market.base === base && r.date === dateStr,
+            )
+            const rate2 = bridgedRates.find(
+              (r) => r.market.quote === quote && r.date === dateStr,
+            )
+            if (!rate1 || !rate2) return
+            return bridgeRates(rate1, rate2)
+          })
+          .filter(notEmpty)
       }
 
       // Write missing rates on Redis DB
