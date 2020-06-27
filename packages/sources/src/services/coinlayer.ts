@@ -52,7 +52,7 @@ export class CoinlayerSource implements RatesSource {
     }))
   }
 
-  private validateData<T extends CoinlayerResponseBase>(
+  protected validateData<T extends CoinlayerResponseBase>(
     data: CoinlayerResponse<T>,
     fallbackData: T,
   ): T {
@@ -201,7 +201,7 @@ export class CoinlayerSource implements RatesSource {
     return rates.flat()
   }
 
-  private parseRate(
+  protected parseRate(
     marketCode: string,
     base: Currency,
     date: number | string,
@@ -231,7 +231,7 @@ export class CoinlayerSource implements RatesSource {
     }
   }
 
-  private buildNullRates = (symbols: string[]): CoinlayerRates =>
+  protected buildNullRates = (symbols: string[]): CoinlayerRates =>
     symbols.reduce<CoinlayerRates>(
       (obj, symbol) => ({ ...obj, [symbol]: null }),
       {},

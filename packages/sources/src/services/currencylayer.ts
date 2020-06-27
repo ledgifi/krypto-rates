@@ -53,7 +53,7 @@ export class CurrencylayerSource implements RatesSource {
     }))
   }
 
-  private validateData<T extends CurrencylayerResponseBase>(
+  protected validateData<T extends CurrencylayerResponseBase>(
     data: CurrencylayerResponse<T>,
     fallbackData: T,
   ): T {
@@ -182,7 +182,7 @@ export class CurrencylayerSource implements RatesSource {
     return result.flat()
   }
 
-  private parseRate(
+  protected parseRate(
     marketCode: string,
     base: Currency,
     date: number | string,
@@ -212,7 +212,7 @@ export class CurrencylayerSource implements RatesSource {
     }
   }
 
-  private buildNullQuotes = (
+  protected buildNullQuotes = (
     base: string,
     quotes: string[],
   ): CurrencylayerRates =>

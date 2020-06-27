@@ -197,7 +197,7 @@ export class CryptoCompareSource implements RatesSource {
     return rates.flat()
   }
 
-  private parseRate(
+  protected parseRate(
     base: Currency,
     quote: Currency,
     date: Date | number | string,
