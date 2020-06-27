@@ -32,20 +32,25 @@ const fetchMarkets = async <T>(
 
 export class CurrencylayerSource implements RatesSource {
   public static id = 'currencylayer.com'
+  protected client: AxiosInstance
 
-  public get client(): AxiosInstance {
-    const client = createClient(CurrencylayerSource.id, {
+  public constructor() {
+    const ACCESS_KEY = process.env.CURRENCYLAYER_ACCESS_KEY
+    if (!ACCESS_KEY)
+      throw new RateSourceError('Missing CURRENCYLAYER_ACCESS_KEY')
+
+    // Init client
+    this.client = createClient(CurrencylayerSource.id, {
       baseURL: 'https://apilayer.net/api',
       timeout: 10000,
     })
-    client.interceptors.request.use((config) => ({
+    this.client.interceptors.request.use((config) => ({
       ...config,
       params: {
-        access_key: process.env.CURRENCYLAYER_ACCESS_KEY,
+        access_key: ACCESS_KEY,
         ...config.params,
       },
     }))
-    return client
   }
 
   private validateData<T extends CurrencylayerResponseBase>(

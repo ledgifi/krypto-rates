@@ -31,10 +31,31 @@ const fetchMarkets = async <T>(
 
 export class CryptoCompareSource implements RatesSource {
   public static id = 'cryptocompare.com'
+  protected client: AxiosInstance
   protected limiter: Bottleneck
 
   public constructor() {
-    /** Rate limit
+    const API_KEY = process.env.CRYPTOCOMPARE_API_KEY
+    if (!API_KEY) throw new RateSourceError('Missing CRYPTOCOMPARE_API_KEY')
+
+    // Init client
+    this.client = createClient(CryptoCompareSource.id, {
+      baseURL: 'https://min-api.cryptocompare.com/data',
+      timeout: 10000,
+    })
+    this.client.interceptors.request.use((config) => ({
+      ...config,
+      headers: {
+        Apikey: API_KEY,
+        ...config.headers,
+      },
+      params: {
+        extraParams: 'krypto-rates',
+        ...config.params,
+      },
+    }))
+
+    /** Init Bottleneck limiter
      * CryptoCompare rate limit on Free Plan:
      * second: 50 req -> 20ms
      * minute: 2500 req -> 24ms
@@ -52,26 +73,7 @@ export class CryptoCompareSource implements RatesSource {
       // Clustering options
       datastore: 'ioredis',
       clientOptions: process.env.REDIS_URL,
-    }).key(process.env.CRYPTOCOMPARE_API_KEY as string)
-  }
-
-  public get client(): AxiosInstance {
-    const client = createClient(CryptoCompareSource.id, {
-      baseURL: 'https://min-api.cryptocompare.com/data',
-      timeout: 10000,
-    })
-    client.interceptors.request.use((config) => ({
-      ...config,
-      headers: {
-        Apikey: process.env.CRYPTOCOMPARE_API_KEY,
-        ...config.headers,
-      },
-      params: {
-        extraParams: 'krypto-rates',
-        ...config.params,
-      },
-    }))
-    return client
+    }).key(API_KEY)
   }
 
   protected throttledGet<T>(

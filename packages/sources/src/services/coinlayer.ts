@@ -32,20 +32,24 @@ const fetchMarkets = async <T>(
 
 export class CoinlayerSource implements RatesSource {
   public static id = 'coinlayer.com'
+  protected client: AxiosInstance
 
-  public get client(): AxiosInstance {
-    const client = createClient(CoinlayerSource.id, {
+  public constructor() {
+    const ACCESS_KEY = process.env.COINLAYER_ACCESS_KEY
+    if (!ACCESS_KEY) throw new RateSourceError('Missing COINLAYER_ACCESS_KEY')
+
+    // Init client
+    this.client = createClient(CoinlayerSource.id, {
       baseURL: 'http://api.coinlayer.com/',
       timeout: 10000,
     })
-    client.interceptors.request.use((config) => ({
+    this.client.interceptors.request.use((config) => ({
       ...config,
       params: {
-        access_key: process.env.COINLAYER_ACCESS_KEY,
+        access_key: ACCESS_KEY,
         ...config.params,
       },
     }))
-    return client
   }
 
   private validateData<T extends CoinlayerResponseBase>(
