@@ -6,7 +6,8 @@ import {
   Timeframe,
 } from '@raptorsystems/krypto-rates-common/src/types'
 import { chunkDateRange } from '@raptorsystems/krypto-rates-utils/src/index'
-import { AxiosInstance } from 'axios'
+import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import Bottleneck from 'bottleneck'
 import { fromUnixTime, getUnixTime } from 'date-fns'
 import { JsonValue } from 'type-fest'
 import {
@@ -30,6 +31,29 @@ const fetchMarkets = async <T>(
 
 export class CryptoCompareSource implements RatesSource {
   public static id = 'cryptocompare.com'
+  protected limiter: Bottleneck
+
+  public constructor() {
+    /** Rate limit
+     * CryptoCompare rate limit on Free Plan:
+     * second: 50 req -> 20ms
+     * minute: 2500 req -> 24ms
+     * hour: 25k req -> 144ms
+     * day: 50k req -> 1.728ms
+     * month: 100k req -> 25.920ms
+     */
+    this.limiter = new Bottleneck.Group({
+      id: CryptoCompareSource.id,
+      minTime: 100,
+      maxConcurrent: 50,
+      reservoir: 50,
+      reservoirRefreshAmount: 50,
+      reservoirRefreshInterval: 5000, // value should be a multiple of 250 (5000 for Clustering)
+      // Clustering options
+      datastore: 'ioredis',
+      clientOptions: process.env.REDIS_URL,
+    }).key(process.env.CRYPTOCOMPARE_API_KEY as string)
+  }
 
   public get client(): AxiosInstance {
     const client = createClient(CryptoCompareSource.id, {
@@ -50,6 +74,15 @@ export class CryptoCompareSource implements RatesSource {
     return client
   }
 
+  protected throttledGet<T>(
+    url: string,
+    config?: AxiosRequestConfig,
+  ): Promise<AxiosResponse<T>> {
+    return this.limiter.schedule({ expiration: 10000 }, () =>
+      this.client.get<T>(url, config),
+    )
+  }
+
   public async fetchLive(markets: MarketInput[]): Promise<ParsedRate[]> {
     const timestamp = unixTime()
 
@@ -64,9 +97,10 @@ export class CryptoCompareSource implements RatesSource {
       fsyms: string[],
       tsyms: string[],
     ): Promise<ParsedRate[]> => {
-      const { data } = await this.client.get<PriceMultiResponse>('pricemulti', {
-        params: { fsyms: fsyms.join(','), tsyms: tsyms.join(',') },
-      })
+      const { data } = await this.throttledGet<PriceMultiResponse>(
+        'pricemulti',
+        { params: { fsyms: fsyms.join(','), tsyms: tsyms.join(',') } },
+      )
       if ('Response' in data) {
         throw new RateSourceError((data.Message as unknown) as string, data)
       }
@@ -93,7 +127,7 @@ export class CryptoCompareSource implements RatesSource {
       fsym: string,
       tsyms: string[],
     ): Promise<ParsedRate[]> => {
-      const { data } = await this.client.get<PriceHistoricalResponse>(
+      const { data } = await this.throttledGet<PriceHistoricalResponse>(
         'pricehistorical',
         { params: { fsym, tsyms: tsyms.join(','), ts: timestamp } },
       )
@@ -136,7 +170,7 @@ export class CryptoCompareSource implements RatesSource {
       toTs: Date,
       limit: number,
     ): Promise<ParsedRate[]> => {
-      const { data } = await this.client.get<HistoricalResponse>(
+      const { data } = await this.throttledGet<HistoricalResponse>(
         'v2/histoday',
         // ? limit returns n + 1 rates
         { params: { fsym, tsym, toTs: getUnixTime(toTs), limit: limit - 1 } },
