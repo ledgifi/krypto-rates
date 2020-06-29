@@ -9,6 +9,7 @@ import { chunkDateRange } from '@raptorsystems/krypto-rates-utils/src/index'
 import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import Bottleneck from 'bottleneck'
 import { fromUnixTime, getUnixTime } from 'date-fns'
+import Redis from 'ioredis'
 import { JsonValue } from 'type-fest'
 import {
   createClient,
@@ -73,6 +74,7 @@ export class CryptoCompareSource implements RatesSource {
       // Clustering options
       datastore: 'ioredis',
       clientOptions: process.env.REDIS_URL,
+      Redis,
     }).key(API_KEY)
   }
 
