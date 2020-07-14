@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@raptorsystems/krypto-rates-common": "^2.0.0-alpha.10",
-    "graphql": "^14.6.0",
+    "graphql": "^14.7.0",
     "graphql-request": "^1.8.2"
   }
 }
