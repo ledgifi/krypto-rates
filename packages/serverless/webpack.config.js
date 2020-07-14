@@ -22,7 +22,7 @@ module.exports = {
     ? [
         nodeExternals({
           modulesDir: path.resolve(__dirname, '../../node_modules'),
-          whitelist: [/^@raptorsystems/],
+          allowlist: [/^@raptorsystems/],
         }),
       ]
     : {
