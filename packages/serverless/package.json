@@ -21,7 +21,8 @@
   },
   "dependencies": {
     "@raptorsystems/krypto-rates-core": "^2.0.0-alpha.11",
+    "@raptorsystems/krypto-rates-server": "^1.2.2-alpha.11",
     "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.11",
-    "apollo-server-lambda": "^2.15.1"
+    "aws-lambda-fastify": "^1.4.4"
   }
 }
