@@ -1,19 +1,16 @@
 import { dotenv } from '@raptorsystems/krypto-rates-utils/src/dotenv'
 dotenv.config()
 
-import { ApolloServer } from 'apollo-server-lambda'
-import { APIGatewayProxyEvent, Handler } from 'aws-lambda'
 import { config } from '@raptorsystems/krypto-rates-core/src/apollo.config'
+import { ApolloServer } from 'apollo-server-lambda'
+import type { APIGatewayProxyHandler } from 'aws-lambda'
 
 const server = new ApolloServer(config)
 
 // Reference
 // https://github.com/apollographql/apollo-server/issues/2156#issuecomment-533623556
 
-export const graphql: Handler<APIGatewayProxyEvent> = async (
-  event,
-  context,
-) => {
+export const graphql: APIGatewayProxyHandler = async (event, context) => {
   const apollo = server.createHandler({
     cors: {
       origin: true,
@@ -32,7 +29,7 @@ export const graphql: Handler<APIGatewayProxyEvent> = async (
         ? { ...event, path: event.requestContext.path ?? event.path }
         : event,
       context,
-      (error, body) => (error ? reject(error) : resolve(body)),
+      (error, result) => (error ? reject(error) : resolve(result)),
     )
   })
 }
