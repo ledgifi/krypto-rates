@@ -26,6 +26,7 @@
     "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.59",
     "@types/crypto-js": "^3.1.47",
     "@types/graphql-iso-date": "^3.4.0",
     "@types/ioredis": "^4.17.2",
