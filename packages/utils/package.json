@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@raptorsystems/krypto-rates-common": "^2.0.0-alpha.10",
-    "date-fns": "^2.14.0",
+    "date-fns": "^2.15.0",
     "dotenv": "^8.2.0",
     "find-yarn-workspace-root": "^2.0.0"
   }
