@@ -22,6 +22,7 @@ export const rateSourceById = {
 export class RatesSource implements BaseRateSource {
   public constructor(
     public getSourceId: (market: string) => Promise<string | null | undefined>,
+    // TODO: hasCurrency is unused, maybe remove?
     public hasCurrency: (currency: string) => Promise<boolean>,
   ) {}
 
