@@ -22,6 +22,11 @@ import { logCreate } from '../utils'
 
 const BRIDGE_CURRENCY = 'USD'
 
+const shouldBridgeMarket = ({ base, quote }: Market) =>
+  ![base, quote].includes(BRIDGE_CURRENCY)
+
+const shouldBridgeRate = (rate: ParsedRate | undefined) => !rate?.value
+
 const bridgeMarkets = (market1: Market, market2: Market): Market => {
   if (market1.quote !== market2.base)
     throw Error(`Incompatible market bridge [${market1.id}, ${market2.id}]`)
@@ -143,7 +148,7 @@ export class FetchService {
         rate = fetchedRates[0]
 
         // If rate is still missing, fetch via bridge currency
-        if (!bridged && (!rate || !rate?.value)) {
+        if (!bridged && shouldBridgeMarket(market) && shouldBridgeRate(rate)) {
           const [rate1, rate2] = await Promise.all([
             this.fetchRate({
               marketInput: { base, quote: BRIDGE_CURRENCY },
@@ -161,7 +166,7 @@ export class FetchService {
             }),
           ])
 
-          rate = bridgeRates(rate1, rate2)
+          if (rate1 && rate2) rate = bridgeRates(rate1, rate2)
         }
 
         if (rate) {
@@ -227,11 +232,11 @@ export class FetchService {
     if (missingMarkets.length) {
       let missingRates = await fetchSource(missingMarkets)
 
-      // Filter for missing markets in RatesSource response
+      // Filter for missing markets that can be bridged in RatesSource response
       missingMarkets = filterMissingMarkets(
-        missingRates.filter((rate) => rate.value !== null),
+        missingRates.filter(shouldBridgeRate),
         missingMarkets,
-      )
+      ).filter(shouldBridgeMarket)
 
       // If there are still missing markets left, fetch via bridge currency
       if (!bridged && missingMarkets.length) {
@@ -377,11 +382,11 @@ export class FetchService {
         },
       })
 
-      // Filter missing market-dates in RatesSource response
+      // Filter missing market-dates that can be bridged in RatesSource response
       missingMarketDates = filterMissingMarketDates(
-        missingRates.filter((rate) => rate.value !== null),
+        missingRates.filter(shouldBridgeRate),
         missingMarketDates,
-      )
+      ).filter(({ market }) => shouldBridgeMarket(market))
 
       // If there are still missing market-dates left, fetch via bridge currency
       if (!bridged && missingMarketDates.length) {
