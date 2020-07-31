@@ -63,22 +63,6 @@ export class RatesSource implements BaseRateSource {
     }
   }
 
-  private async validateCurrency(currency: string): Promise<void> {
-    if (!(await this.hasCurrency(currency)))
-      throw `Currency '${currency}' is not supported`
-  }
-
-  private async validateMarkets(markets: MarketInput[]): Promise<void> {
-    await Promise.all(
-      markets.map(async ({ base, quote }) => {
-        await Promise.all([
-          this.validateCurrency(base),
-          this.validateCurrency(quote),
-        ])
-      }),
-    )
-  }
-
   private buildResponse(base: Currency, rates: ParsedRate[]): ParsedRate[] {
     return rates.map((rate) => {
       const { market: parsedMarket, inverse } = parseMarket(rate.market, base)
@@ -105,8 +89,6 @@ export class RatesSource implements BaseRateSource {
       markets: MarketInput[],
     ) => Promise<ParsedRate[]>,
   ): Promise<ParsedRate[]> {
-    // Validate markets
-    await this.validateMarkets(markets)
     // Map markets
     return mapMarketsByBase(
       markets.map(({ base, quote }) => new Market(base, quote)),
