@@ -130,7 +130,7 @@ export class FetchService {
     writeDB: (rate: DbRate) => Promise<void>
     fetchSource: (market: MarketInput) => Promise<ParsedRate[]>
     bridged?: boolean
-  }): Promise<ParsedRate> {
+  }): Promise<ParsedRate | null> {
     // Build requested market
     const market = new Market(base, quote)
 
@@ -179,7 +179,7 @@ export class FetchService {
     }
 
     // Return requested rate
-    return rate && normalizeRate(rate)
+    return rate ? normalizeRate(rate) : null
   }
 
   public async fetchRates({
