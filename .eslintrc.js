@@ -1,11 +1,19 @@
 module.exports = {
   root: true,
+  env: {
+    es6: true,
+    node: true,
+  },
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2019,
     sourceType: 'module',
     tsconfigRootDir: __dirname,
-    project: ['./packages/*/tsconfig.json', './clients/*/tsconfig.json'],
+    project: [
+      './tsconfig.eslint.json',
+      './packages/*/tsconfig.json',
+      './clients/*/tsconfig.json',
+    ],
   },
   extends: [
     // Base ESLint recommended rules
@@ -21,7 +29,7 @@ module.exports = {
   ],
   plugins: [
     // Required to apply rules which need type information
-    '@typescript-eslint'
+    '@typescript-eslint',
   ],
   rules: {
     // @typescript-eslint
