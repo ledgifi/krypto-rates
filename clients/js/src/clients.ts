@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request'
-import { Options as ClientOptions } from 'graphql-request/dist/src/types'
+import { RequestInit as ClientOptions } from 'graphql-request/dist/types.dom'
 import {
   DateInput,
   DateMoneyDict,
