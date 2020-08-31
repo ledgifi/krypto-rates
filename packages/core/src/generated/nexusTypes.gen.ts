@@ -43,13 +43,13 @@ declare global {
 export interface NexusGenInputs {
   MarketDateInput: {
     // input type
-    date: Date // Date!
+    date: NexusGenScalars['Date'] // Date!
     market: NexusGenInputs['MarketInput'] // MarketInput!
   }
   MarketInput: {
     // input type
-    base: string // Currency!
-    quote: string // Currency!
+    base: NexusGenScalars['Currency'] // Currency!
+    quote: NexusGenScalars['Currency'] // Currency!
   }
   MarketTimeframeInput: {
     // input type
@@ -58,21 +58,14 @@ export interface NexusGenInputs {
   }
   TimeframeInput: {
     // input type
-    end: Date // Date!
-    start: Date // Date!
+    end: NexusGenScalars['Date'] // Date!
+    start: NexusGenScalars['Date'] // Date!
   }
 }
 
 export interface NexusGenEnums {}
 
-export interface NexusGenRootTypes {
-  Market: {
-    // root type
-    base: string // Currency!
-    quote: string // Currency!
-  }
-  Query: {}
-  Rate: sourceTypes.Rate
+export interface NexusGenScalars {
   String: string
   Int: number
   Float: number
@@ -82,18 +75,35 @@ export interface NexusGenRootTypes {
   Date: Date
 }
 
+export interface NexusGenRootTypes {
+  Market: {
+    // root type
+    base: NexusGenScalars['Currency'] // Currency!
+    quote: NexusGenScalars['Currency'] // Currency!
+  }
+  Query: {}
+  Rate: sourceTypes.Rate
+}
+
 export interface NexusGenAllTypes extends NexusGenRootTypes {
   MarketDateInput: NexusGenInputs['MarketDateInput']
   MarketInput: NexusGenInputs['MarketInput']
   MarketTimeframeInput: NexusGenInputs['MarketTimeframeInput']
   TimeframeInput: NexusGenInputs['TimeframeInput']
+  String: NexusGenScalars['String']
+  Int: NexusGenScalars['Int']
+  Float: NexusGenScalars['Float']
+  Boolean: NexusGenScalars['Boolean']
+  ID: NexusGenScalars['ID']
+  Currency: NexusGenScalars['Currency']
+  Date: NexusGenScalars['Date']
 }
 
 export interface NexusGenFieldTypes {
   Market: {
     // field return type
-    base: string // Currency!
-    quote: string // Currency!
+    base: NexusGenScalars['Currency'] // Currency!
+    quote: NexusGenScalars['Currency'] // Currency!
   }
   Query: {
     // field return type
@@ -110,7 +120,7 @@ export interface NexusGenFieldTypes {
   Rate: {
     // field return type
     bridged: boolean // Boolean!
-    date: Date // Date!
+    date: NexusGenScalars['Date'] // Date!
     market: NexusGenRootTypes['Market'] // Market!
     source: string // String!
     timestamp: number // Int!
@@ -122,7 +132,7 @@ export interface NexusGenArgTypes {
   Query: {
     historicalRateForDate: {
       // args
-      date: Date // Date!
+      date: NexusGenScalars['Date'] // Date!
       market: NexusGenInputs['MarketInput'] // MarketInput!
     }
     historicalRatesByDate: {
@@ -135,12 +145,12 @@ export interface NexusGenArgTypes {
     }
     historicalRatesForDate: {
       // args
-      date: Date // Date!
+      date: NexusGenScalars['Date'] // Date!
       markets: NexusGenInputs['MarketInput'][] // [MarketInput!]!
     }
     historicalRatesForDates: {
       // args
-      dates: Date[] // [Date!]!
+      dates: NexusGenScalars['Date'][] // [Date!]!
       markets: NexusGenInputs['MarketInput'][] // [MarketInput!]!
     }
     historicalRatesForTimeframe: {
