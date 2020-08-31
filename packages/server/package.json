@@ -10,15 +10,15 @@
   "private": true,
   "scripts": {
     "start": "cross-env TZ=UTC ts-node --transpile-only main",
-    "dev": "cross-env TZ=UTC ts-node-dev --inspect --no-notify --respawn --transpile-only main",
+    "dev": "cross-env TZ=UTC NODE_ENV=development ts-node-dev --inspect --no-notify --respawn --transpile-only main",
     "lint": "eslint --ext .ts .",
     "lint:fix": "eslint --fix --ext .ts ."
   },
   "dependencies": {
     "@raptorsystems/krypto-rates-core": "^2.0.0-alpha.11",
     "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.11",
-    "apollo-server": "^2.16.1",
+    "apollo-server": "^2.17.0",
     "chalk": "^4.1.0",
-    "ts-node": "^8.10.2"
+    "ts-node": "^9.0.0"
   }
 }

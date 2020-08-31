@@ -15,11 +15,11 @@
   "dependencies": {
     "@raptorsystems/krypto-rates-common": "^2.0.0-alpha.10",
     "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.11",
-    "apollo-server-core": "^2.16.1",
-    "axios": "^0.19.2",
+    "apollo-server-core": "^2.17.0",
+    "axios": "^0.20.0",
     "bottleneck": "^2.19.5",
     "crypto-js": "^4.0.0",
-    "date-fns": "^2.15.0",
+    "date-fns": "^2.16.1",
     "ioredis": "^4.17.3"
   }
 }

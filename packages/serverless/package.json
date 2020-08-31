@@ -22,6 +22,6 @@
   "dependencies": {
     "@raptorsystems/krypto-rates-core": "^2.0.0-alpha.11",
     "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.11",
-    "apollo-server-lambda": "^2.16.1"
+    "apollo-server-lambda": "^2.17.0"
   }
 }
