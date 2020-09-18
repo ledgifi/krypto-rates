@@ -1,9 +1,8 @@
-/* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 const path = require('path')
 const slsw = require('serverless-webpack')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-  .BundleAnalyzerPlugin
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const nodeExternals = require('webpack-node-externals')
 
 const isLocal = slsw.lib.webpack.isLocal
