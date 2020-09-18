@@ -62,6 +62,6 @@
     "webpack-node-externals": "^2.5.2"
   },
   "resolutions": {
-    "@types/graphql-iso-date/graphql": "^14.7.0"
+    "**/graphql": "^14.7.0"
   }
 }
