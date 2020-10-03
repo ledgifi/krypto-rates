@@ -9,6 +9,7 @@ import { parseMarket } from '@raptorsystems/krypto-rates-utils/src/index'
 import { CoinlayerSource } from './services/coinlayer'
 import { CryptoCompareSource } from './services/cryptocompare'
 import { CurrencylayerSource } from './services/currencylayer'
+import { NomicsSource } from './services/nomics'
 import { MarketsByKey, RatesSource as BaseRateSource } from './services/types'
 import { RateSources } from './types'
 import { buildMarketsByKey, mapMarketsByBase } from './utils'
@@ -17,6 +18,7 @@ export const rateSourceById = {
   [CoinlayerSource.id]: CoinlayerSource,
   [CurrencylayerSource.id]: CurrencylayerSource,
   [CryptoCompareSource.id]: CryptoCompareSource,
+  [NomicsSource.id]: NomicsSource,
 }
 
 export class RatesSource implements BaseRateSource {
