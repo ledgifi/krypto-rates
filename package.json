@@ -32,6 +32,7 @@
     "@types/ioredis": "^4.17.4",
     "@types/jest": "^26.0.14",
     "@types/js-yaml": "^3.12.5",
+    "@types/meow": "^5.0.0",
     "@types/node": "^14.11.1",
     "@types/webpack": "^4.41.22",
     "@types/ws": "^7.2.6",
