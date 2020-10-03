@@ -29,6 +29,7 @@ custom:
       - COINLAYER_ACCESS_KEY
       - COINLAYER_TIMEFRAME
       - CRYPTOCOMPARE_API_KEY
+      - NOMICS_API_KEY
   webpack:
     packager: yarn
     keepOutputDirectory: true
