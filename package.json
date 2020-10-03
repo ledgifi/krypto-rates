@@ -27,7 +27,6 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.62",
-    "@types/crypto-js": "^3.1.47",
     "@types/graphql-iso-date": "^3.4.0",
     "@types/ioredis": "^4.17.4",
     "@types/jest": "^26.0.14",
