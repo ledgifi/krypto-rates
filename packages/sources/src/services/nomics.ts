@@ -121,6 +121,7 @@ export class NomicsSource implements RatesSource {
     const fetch = async (market: MarketInput): Promise<ParsedRate> => {
       if (market.quote !== 'USD') return parse(market)
       const dateStr = formatRFC3339(date)
+      // TODO: exchange-rates/history only supports BTC and ETH cryptos
       const { data } = await this.client.get<NomicsExchangeRatesHistory[]>(
         'exchange-rates/history',
         { params: { currency: market.base, start: dateStr, end: dateStr } },
@@ -160,6 +161,7 @@ export class NomicsSource implements RatesSource {
       if (market.quote !== 'USD') return parse(market, [])
       const start = formatRFC3339(timeframe.start)
       const end = formatRFC3339(timeframe.end)
+      // TODO: exchange-rates/history only supports BTC and ETH cryptos
       const { data } = await this.client.get<NomicsExchangeRatesHistory[]>(
         'exchange-rates/history',
         { params: { currency: market.base, start, end } },
