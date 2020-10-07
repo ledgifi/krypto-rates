@@ -142,7 +142,7 @@ const fetchHistoricalMarketDates = ({
 export const Query = queryType({
   definition(t) {
     t.string('currencies', {
-      list: true,
+      list: [true],
       resolve: (_root, _args, ctx) => ctx.db.fetchCurrencies(),
     })
 
@@ -165,9 +165,9 @@ export const Query = queryType({
     t.field('liveRates', {
       type: RateObject,
       nullable: true,
-      list: true,
+      list: [true],
       args: {
-        markets: arg({ type: 'MarketInput', list: true }),
+        markets: arg({ type: 'MarketInput', list: [true] }),
         ttl: intArg({ required: false, default: TTL }),
       },
       resolve: (_root, { markets, ttl }, ctx) =>
@@ -199,9 +199,9 @@ export const Query = queryType({
     t.field('historicalRatesForDate', {
       type: RateObject,
       nullable: true,
-      list: true,
+      list: [true],
       args: {
-        markets: arg({ type: 'MarketInput', list: true }),
+        markets: arg({ type: 'MarketInput', list: [true] }),
         date: dateArg(),
       },
       resolve: (_root, { markets, date }, ctx) =>
@@ -214,10 +214,10 @@ export const Query = queryType({
     t.field('historicalRatesForDates', {
       type: RateObject,
       nullable: true,
-      list: true,
+      list: [true],
       args: {
-        markets: arg({ type: 'MarketInput', list: true }),
-        dates: dateArg({ list: true }),
+        markets: arg({ type: 'MarketInput', list: [true] }),
+        dates: dateArg({ list: [true] }),
       },
       resolve: (_root, { markets, dates }, ctx) =>
         fetchHistoricalMarketDates({
@@ -231,8 +231,8 @@ export const Query = queryType({
     t.field('historicalRatesByDate', {
       type: RateObject,
       nullable: true,
-      list: true,
-      args: { marketDates: arg({ list: true, type: 'MarketDateInput' }) },
+      list: [true],
+      args: { marketDates: arg({ list: [true], type: 'MarketDateInput' }) },
       resolve: (_root, { marketDates }, ctx) =>
         fetchHistoricalMarketDates({ ctx, marketDates }),
     })
@@ -240,9 +240,9 @@ export const Query = queryType({
     t.field('historicalRatesForTimeframe', {
       type: RateObject,
       nullable: true,
-      list: true,
+      list: [true],
       args: {
-        markets: arg({ type: 'MarketInput', list: true }),
+        markets: arg({ type: 'MarketInput', list: [true] }),
         timeframe: arg({ type: TimeframeInput }),
       },
       resolve: (_root, { markets, timeframe }, ctx) =>
@@ -257,9 +257,9 @@ export const Query = queryType({
     t.field('historicalRatesByTimeframe', {
       type: RateObject,
       nullable: true,
-      list: true,
+      list: [true],
       args: {
-        marketTimeframes: arg({ list: true, type: 'MarketTimeframeInput' }),
+        marketTimeframes: arg({ list: [true], type: 'MarketTimeframeInput' }),
       },
       resolve: (_root, { marketTimeframes }, ctx) =>
         fetchHistoricalMarketDates({
