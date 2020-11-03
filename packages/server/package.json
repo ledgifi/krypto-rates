@@ -17,7 +17,7 @@
   "dependencies": {
     "@raptorsystems/krypto-rates-core": "^2.0.0-alpha.11",
     "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.11",
-    "apollo-server": "^2.18.1",
+    "apollo-server": "^2.19.0",
     "chalk": "^4.1.0",
     "ts-node": "^9.0.0"
   }

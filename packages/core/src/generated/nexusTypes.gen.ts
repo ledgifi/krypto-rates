@@ -128,6 +128,35 @@ export interface NexusGenFieldTypes {
   }
 }
 
+export interface NexusGenFieldTypeNames {
+  Market: {
+    // field return type name
+    base: 'Currency'
+    quote: 'Currency'
+  }
+  Query: {
+    // field return type name
+    currencies: 'String'
+    historicalRateForDate: 'Rate'
+    historicalRatesByDate: 'Rate'
+    historicalRatesByTimeframe: 'Rate'
+    historicalRatesForDate: 'Rate'
+    historicalRatesForDates: 'Rate'
+    historicalRatesForTimeframe: 'Rate'
+    liveRate: 'Rate'
+    liveRates: 'Rate'
+  }
+  Rate: {
+    // field return type name
+    bridged: 'Boolean'
+    date: 'Date'
+    market: 'Market'
+    source: 'String'
+    timestamp: 'Int'
+    value: 'Float'
+  }
+}
+
 export interface NexusGenArgTypes {
   Query: {
     historicalRateForDate: {
@@ -161,12 +190,12 @@ export interface NexusGenArgTypes {
     liveRate: {
       // args
       market: NexusGenInputs['MarketInput'] // MarketInput!
-      ttl?: number | null // Int
+      ttl: number | null // Int
     }
     liveRates: {
       // args
       markets: NexusGenInputs['MarketInput'][] // [MarketInput!]!
-      ttl?: number | null // Int
+      ttl: number | null // Int
     }
   }
 }
@@ -204,6 +233,7 @@ export interface NexusGenTypes {
   rootTypes: NexusGenRootTypes
   argTypes: NexusGenArgTypes
   fieldTypes: NexusGenFieldTypes
+  fieldTypeNames: NexusGenFieldTypeNames
   allTypes: NexusGenAllTypes
   inheritedFields: NexusGenInheritedFields
   objectNames: NexusGenObjectNames
