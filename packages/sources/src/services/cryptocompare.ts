@@ -63,13 +63,19 @@ export class CryptoCompareSource implements RatesSource {
      * hour: 25k req -> 144ms
      * day: 50k req -> 1.728ms
      * month: 100k req -> 25.920ms
+     * ? New limits?
+     * second: 20 req -> 50ms
+     * minute: 300 req -> 200ms
+     * hour: 3k req -> 1200ms
+     * day: 10k req -> 8640ms
+     * month: 75k req -> 34560ms
      */
     this.limiter = new Bottleneck.Group({
       id: CryptoCompareSource.id,
-      minTime: 100,
-      maxConcurrent: 50,
-      reservoir: 50,
-      reservoirRefreshAmount: 50,
+      minTime: 500,
+      maxConcurrent: 20,
+      reservoir: 20,
+      reservoirRefreshAmount: 20,
       reservoirRefreshInterval: 5000, // value should be a multiple of 250 (5000 for Clustering)
       // Clustering options
       datastore: 'ioredis',
