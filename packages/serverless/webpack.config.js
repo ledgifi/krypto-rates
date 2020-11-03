@@ -26,17 +26,24 @@ module.exports = {
       ]
     : {
         'aws-sdk': 'aws-sdk',
-        // https://github.com/prisma-labs/nexus/issues/283
+        // https://github.com/graphql-nexus/schema/issues/283
         prettier: 'prettier',
       },
   module: {
     rules: [
+      // https://webpack.js.org/configuration/module/#resolvefullyspecified
+      {
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false,
+        },
+      },
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
         loader: 'ts-loader',
         options: {
-          // Pevents https://github.com/prisma-labs/nexus/issues/342
+          // Pevents https://github.com/graphql-nexus/schema/issues/342
           transpileOnly: true,
         },
       },
@@ -52,6 +59,5 @@ module.exports = {
   output: {
     libraryTarget: 'commonjs2',
     path: path.join(__dirname, '.webpack'),
-    filename: '[name].js',
   },
 }

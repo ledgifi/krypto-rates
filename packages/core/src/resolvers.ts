@@ -6,7 +6,7 @@ import {
   objectType,
   queryType,
   scalarType,
-} from '@nexus/schema'
+} from '@nexus/schema/dist' // ? import from /dist to avoid error with webpack 5: The export "blocks" in "../../node_modules/@nexus/schema/dist-esm/index.js" has no internal name (existing names: none)
 import {
   MarketDate,
   MarketInput,

@@ -1,4 +1,4 @@
-import { makeSchema } from '@nexus/schema'
+import { makeSchema } from '@nexus/schema/dist' // ? import from /dist to avoid error with webpack 5: The export "blocks" in "../../node_modules/@nexus/schema/dist-esm/index.js" has no internal name (existing names: none)
 import { workspaceRoot } from '@raptorsystems/krypto-rates-utils/src/paths'
 import path from 'path'
 import * as types from './resolvers'
