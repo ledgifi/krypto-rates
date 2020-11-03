@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.12](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-core@2.0.0-alpha.11...@raptorsystems/krypto-rates-core@2.0.0-alpha.12) (2020-11-03)
+
+
+### Bug Fixes
+
+* **core:** fix bridge rates fetching and parsing ([372861d](https://github.com/raptorsystems/krypto-rates/commit/372861d38d04116177cccd784e4b00dcfb5615dc))
+* **core:** update resolvers for nexus schema v0.16.0 ([27cb2de](https://github.com/raptorsystems/krypto-rates/commit/27cb2de3991ab20d4c39262687e371417ce7e247))
+
+
+
+
+
 # [2.0.0-alpha.11](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-core@2.0.0-alpha.10...@raptorsystems/krypto-rates-core@2.0.0-alpha.11) (2020-06-15)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@raptorsystems/krypto-rates-serverless",
-  "version": "1.0.1-alpha.11",
+  "version": "1.0.1-alpha.12",
   "description": "Krypto Rates Serverless",
   "author": {
     "name": "Raptor Systems SpA",
@@ -20,8 +20,8 @@
     "lint:fix": "eslint --fix --ext .ts ."
   },
   "dependencies": {
-    "@raptorsystems/krypto-rates-core": "^2.0.0-alpha.11",
-    "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.11",
+    "@raptorsystems/krypto-rates-core": "^2.0.0-alpha.12",
+    "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.12",
     "apollo-server-lambda": "^2.19.0"
   }
 }

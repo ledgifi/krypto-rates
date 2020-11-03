@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.13](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-client@2.0.0-alpha.12...@raptorsystems/krypto-rates-client@2.0.0-alpha.13) (2020-11-03)
+
+
+### Bug Fixes
+
+* **types:** correct graphql-request client options type ([47be7a6](https://github.com/raptorsystems/krypto-rates/commit/47be7a6c33c0e154e6448e33e57d7a5021922e73))
+
+
+
+
+
 # [2.0.0-alpha.12](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-client@2.0.0-alpha.11...@raptorsystems/krypto-rates-client@2.0.0-alpha.12) (2020-06-15)
 
 **Note:** Version bump only for package @raptorsystems/krypto-rates-client

@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.12](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-sources@2.0.0-alpha.11...@raptorsystems/krypto-rates-sources@2.0.0-alpha.12) (2020-11-03)
+
+
+### Bug Fixes
+
+* **sources:** fix cryptocompare histoday endpoint ([2e9bb1c](https://github.com/raptorsystems/krypto-rates/commit/2e9bb1ced75a9ed16c510cbec89fe91a94faf1a8))
+* **sources:** pass Redis directly to bottleneck ([4651097](https://github.com/raptorsystems/krypto-rates/commit/4651097fbd9329ffe394abbf17fd8e208d48e383))
+
+
+### Features
+
+* **sources:** add Nomics source ([cc8107c](https://github.com/raptorsystems/krypto-rates/commit/cc8107cc017292627dcb7007722c5f21c1f4278d))
+* **sources:** allow fetch for unsupported currencies ([3cbfb33](https://github.com/raptorsystems/krypto-rates/commit/3cbfb338fcaa4d0e90db7e0f33947d3fd98e9fba))
+
+
+
+
+
 # [2.0.0-alpha.11](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-sources@2.0.0-alpha.10...@raptorsystems/krypto-rates-sources@2.0.0-alpha.11) (2020-06-15)
 
 

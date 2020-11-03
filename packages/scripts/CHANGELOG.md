@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.1](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-scripts@1.1.0-alpha.0...@raptorsystems/krypto-rates-scripts@1.1.0-alpha.1) (2020-11-03)
+
+
+### Bug Fixes
+
+* **scripts:** fix load_sources ([69e6097](https://github.com/raptorsystems/krypto-rates/commit/69e60970bb2886702523b75cb9378ba7a7bd8858))
+
+
+### Features
+
+* **scripts:** add load_nomics script ([2fc2b0a](https://github.com/raptorsystems/krypto-rates/commit/2fc2b0ab5096d37238bf62d9af775af848b5b543))
+
+
+
+
+
 # [1.1.0-alpha.0](https://github.com/raptorsystems/krypto-rates/compare/@raptorsystems/krypto-rates-scripts@1.0.3-alpha.10...@raptorsystems/krypto-rates-scripts@1.1.0-alpha.0) (2020-06-15)
 
 
