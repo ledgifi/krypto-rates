@@ -3,32 +3,40 @@
  * Do not make changes to this file directly
  */
 
-import * as Context from '../context'
 import * as commonTypes from '@raptorsystems/krypto-rates-common/src/types'
 import * as sourceTypes from '@raptorsystems/krypto-rates-sources/src/types'
-import { core } from '@nexus/schema'
+import { Context } from './../context'
+import { core } from 'nexus'
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {
+    /**
+     * The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
+     */
     currency<FieldName extends string>(
       fieldName: FieldName,
-      opts?: core.ScalarInputFieldConfig<
-        core.GetGen3<'inputTypes', TypeName, FieldName>
-      >,
+      opts?: core.CommonInputFieldConfig<TypeName, FieldName>,
     ): void // "Currency";
+    /**
+     * A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+     */
     date<FieldName extends string>(
       fieldName: FieldName,
-      opts?: core.ScalarInputFieldConfig<
-        core.GetGen3<'inputTypes', TypeName, FieldName>
-      >,
+      opts?: core.CommonInputFieldConfig<TypeName, FieldName>,
     ): void // "Date";
   }
 }
 declare global {
   interface NexusGenCustomOutputMethods<TypeName extends string> {
+    /**
+     * The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
+     */
     currency<FieldName extends string>(
       fieldName: FieldName,
       ...opts: core.ScalarOutSpread<TypeName, FieldName>
     ): void // "Currency";
+    /**
+     * A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+     */
     date<FieldName extends string>(
       fieldName: FieldName,
       ...opts: core.ScalarOutSpread<TypeName, FieldName>
@@ -75,7 +83,7 @@ export interface NexusGenScalars {
   Date: Date
 }
 
-export interface NexusGenRootTypes {
+export interface NexusGenObjects {
   Market: {
     // root type
     base: NexusGenScalars['Currency'] // Currency!
@@ -85,19 +93,13 @@ export interface NexusGenRootTypes {
   Rate: sourceTypes.Rate
 }
 
-export interface NexusGenAllTypes extends NexusGenRootTypes {
-  MarketDateInput: NexusGenInputs['MarketDateInput']
-  MarketInput: NexusGenInputs['MarketInput']
-  MarketTimeframeInput: NexusGenInputs['MarketTimeframeInput']
-  TimeframeInput: NexusGenInputs['TimeframeInput']
-  String: NexusGenScalars['String']
-  Int: NexusGenScalars['Int']
-  Float: NexusGenScalars['Float']
-  Boolean: NexusGenScalars['Boolean']
-  ID: NexusGenScalars['ID']
-  Currency: NexusGenScalars['Currency']
-  Date: NexusGenScalars['Date']
-}
+export interface NexusGenInterfaces {}
+
+export interface NexusGenUnions {}
+
+export type NexusGenRootTypes = NexusGenObjects
+
+export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
   Market: {
@@ -200,42 +202,44 @@ export interface NexusGenArgTypes {
   }
 }
 
-export interface NexusGenAbstractResolveReturnTypes {}
+export interface NexusGenAbstractTypeMembers {}
 
-export interface NexusGenInheritedFields {}
+export interface NexusGenTypeInterfaces {}
 
-export type NexusGenObjectNames = 'Market' | 'Query' | 'Rate'
+export type NexusGenObjectNames = keyof NexusGenObjects
 
-export type NexusGenInputNames =
-  | 'MarketDateInput'
-  | 'MarketInput'
-  | 'MarketTimeframeInput'
-  | 'TimeframeInput'
+export type NexusGenInputNames = keyof NexusGenInputs
 
 export type NexusGenEnumNames = never
 
 export type NexusGenInterfaceNames = never
 
-export type NexusGenScalarNames =
-  | 'Boolean'
-  | 'Currency'
-  | 'Date'
-  | 'Float'
-  | 'ID'
-  | 'Int'
-  | 'String'
+export type NexusGenScalarNames = keyof NexusGenScalars
 
 export type NexusGenUnionNames = never
 
+export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = never
+
+export type NexusGenAbstractsUsingStrategyResolveType = never
+
+export type NexusGenFeaturesConfig = {
+  abstractTypeStrategies: {
+    isTypeOf: false
+    resolveType: true
+    __typename: false
+  }
+}
+
 export interface NexusGenTypes {
-  context: Context.Context
+  context: Context
   inputTypes: NexusGenInputs
   rootTypes: NexusGenRootTypes
+  inputTypeShapes: NexusGenInputs & NexusGenEnums & NexusGenScalars
   argTypes: NexusGenArgTypes
   fieldTypes: NexusGenFieldTypes
   fieldTypeNames: NexusGenFieldTypeNames
   allTypes: NexusGenAllTypes
-  inheritedFields: NexusGenInheritedFields
+  typeInterfaces: NexusGenTypeInterfaces
   objectNames: NexusGenObjectNames
   inputNames: NexusGenInputNames
   enumNames: NexusGenEnumNames
@@ -256,7 +260,10 @@ export interface NexusGenTypes {
     | NexusGenTypes['allInputTypes']
     | NexusGenTypes['allOutputTypes']
   abstractTypes: NexusGenTypes['interfaceNames'] | NexusGenTypes['unionNames']
-  abstractResolveReturn: NexusGenAbstractResolveReturnTypes
+  abstractTypeMembers: NexusGenAbstractTypeMembers
+  objectsUsingAbstractStrategyIsTypeOf: NexusGenObjectsUsingAbstractStrategyIsTypeOf
+  abstractsUsingStrategyResolveType: NexusGenAbstractsUsingStrategyResolveType
+  features: NexusGenFeaturesConfig
 }
 
 declare global {
@@ -265,5 +272,10 @@ declare global {
     TypeName extends string,
     FieldName extends string
   > {}
+  interface NexusGenPluginInputFieldConfig<
+    TypeName extends string,
+    FieldName extends string
+  > {}
   interface NexusGenPluginSchemaConfig {}
+  interface NexusGenPluginArgConfig {}
 }

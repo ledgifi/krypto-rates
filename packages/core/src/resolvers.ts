@@ -1,13 +1,4 @@
 import {
-  arg,
-  core,
-  inputObjectType,
-  intArg,
-  objectType,
-  queryType,
-  scalarType,
-} from '@nexus/schema/dist' // ? import from /dist to avoid error with webpack 5: The export "blocks" in "../../node_modules/@nexus/schema/dist-esm/index.js" has no internal name (existing names: none)
-import {
   MarketDate,
   MarketInput,
 } from '@raptorsystems/krypto-rates-common/src/types'
@@ -18,6 +9,16 @@ import {
 import { generateDateRange } from '@raptorsystems/krypto-rates-utils/src/index'
 import { GraphQLString } from 'graphql'
 import { GraphQLDate } from 'graphql-iso-date'
+import {
+  arg,
+  inputObjectType,
+  intArg,
+  list,
+  nullable,
+  objectType,
+  queryType,
+  scalarType,
+} from 'nexus/dist' // ? import from /dist to avoid error with webpack 5: The export "blocks" in "../../node_modules/nexus/dist-esm/index.js" has no internal name (existing names: none)
 import { Context } from './context'
 
 const TTL = parseInt(process.env.RATES_LIVE_TTL ?? '') || 300
@@ -29,23 +30,11 @@ export const Currency = scalarType({
   asNexusMethod: 'currency',
 })
 
-export function currencyArg(
-  options?: core.ScalarArgConfig<string>,
-): core.NexusArgDef<'Currency'> {
-  return arg({ type: 'Currency', ...options })
-}
-
 export const Date = scalarType({
   ...GraphQLDate,
   name: 'Date',
   asNexusMethod: 'date',
 })
-
-export function dateArg(
-  options?: core.ScalarArgConfig<Date>,
-): core.NexusArgDef<'Date'> {
-  return arg({ type: 'Date', ...options })
-}
 
 // Inputs
 export const MarketInputType = inputObjectType({
@@ -95,7 +84,7 @@ export const RateObject = objectType({
     t.string('source')
     t.date('date')
     t.int('timestamp')
-    t.float('value', { nullable: true })
+    t.nullable.float('value')
     t.field('market', { type: MarketObject })
     t.boolean('bridged')
   },
@@ -141,17 +130,15 @@ const fetchHistoricalMarketDates = ({
 // Querys
 export const Query = queryType({
   definition(t) {
-    t.string('currencies', {
-      list: [true],
+    t.list.string('currencies', {
       resolve: (_root, _args, ctx) => ctx.db.fetchCurrencies(),
     })
 
-    t.field('liveRate', {
+    t.nullable.field('liveRate', {
       type: RateObject,
-      nullable: true,
       args: {
         market: arg({ type: 'MarketInput' }),
-        ttl: intArg({ required: false, default: TTL }),
+        ttl: nullable(intArg({ default: TTL })),
       },
       resolve: (_root, { market, ttl }, ctx) =>
         ctx.fetch.fetchRate({
@@ -162,13 +149,11 @@ export const Query = queryType({
         }),
     })
 
-    t.field('liveRates', {
+    t.nullable.list.field('liveRates', {
       type: RateObject,
-      nullable: true,
-      list: [true],
       args: {
-        markets: arg({ type: 'MarketInput', list: [true] }),
-        ttl: intArg({ required: false, default: TTL }),
+        markets: list(arg({ type: 'MarketInput' })),
+        ttl: nullable(intArg({ default: TTL })),
       },
       resolve: (_root, { markets, ttl }, ctx) =>
         ctx.fetch.fetchRates({
@@ -179,12 +164,11 @@ export const Query = queryType({
         }),
     })
 
-    t.field('historicalRateForDate', {
+    t.nullable.field('historicalRateForDate', {
       type: RateObject,
-      nullable: true,
       args: {
         market: arg({ type: 'MarketInput' }),
-        date: dateArg(),
+        date: arg({ type: 'Date' }),
       },
       resolve: (_root, { market, date }, ctx) =>
         ctx.fetch.fetchRate({
@@ -196,13 +180,11 @@ export const Query = queryType({
         }),
     })
 
-    t.field('historicalRatesForDate', {
+    t.nullable.list.field('historicalRatesForDate', {
       type: RateObject,
-      nullable: true,
-      list: [true],
       args: {
-        markets: arg({ type: 'MarketInput', list: [true] }),
-        date: dateArg(),
+        markets: list(arg({ type: 'MarketInput' })),
+        date: arg({ type: 'Date' }),
       },
       resolve: (_root, { markets, date }, ctx) =>
         fetchHistoricalMarketDates({
@@ -211,13 +193,11 @@ export const Query = queryType({
         }),
     })
 
-    t.field('historicalRatesForDates', {
+    t.nullable.list.field('historicalRatesForDates', {
       type: RateObject,
-      nullable: true,
-      list: [true],
       args: {
-        markets: arg({ type: 'MarketInput', list: [true] }),
-        dates: dateArg({ list: [true] }),
+        markets: list(arg({ type: 'MarketInput' })),
+        dates: list(arg({ type: 'Date' })),
       },
       resolve: (_root, { markets, dates }, ctx) =>
         fetchHistoricalMarketDates({
@@ -228,21 +208,19 @@ export const Query = queryType({
         }),
     })
 
-    t.field('historicalRatesByDate', {
+    t.nullable.list.field('historicalRatesByDate', {
       type: RateObject,
-      nullable: true,
-      list: [true],
-      args: { marketDates: arg({ list: [true], type: 'MarketDateInput' }) },
+      args: {
+        marketDates: list(arg({ type: 'MarketDateInput' })),
+      },
       resolve: (_root, { marketDates }, ctx) =>
         fetchHistoricalMarketDates({ ctx, marketDates }),
     })
 
-    t.field('historicalRatesForTimeframe', {
+    t.nullable.list.field('historicalRatesForTimeframe', {
       type: RateObject,
-      nullable: true,
-      list: [true],
       args: {
-        markets: arg({ type: 'MarketInput', list: [true] }),
+        markets: list(arg({ type: 'MarketInput' })),
         timeframe: arg({ type: TimeframeInput }),
       },
       resolve: (_root, { markets, timeframe }, ctx) =>
@@ -254,12 +232,10 @@ export const Query = queryType({
         }),
     })
 
-    t.field('historicalRatesByTimeframe', {
+    t.nullable.list.field('historicalRatesByTimeframe', {
       type: RateObject,
-      nullable: true,
-      list: [true],
       args: {
-        marketTimeframes: arg({ list: [true], type: 'MarketTimeframeInput' }),
+        marketTimeframes: list(arg({ type: 'MarketTimeframeInput' })),
       },
       resolve: (_root, { marketTimeframes }, ctx) =>
         fetchHistoricalMarketDates({

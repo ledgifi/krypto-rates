@@ -1928,18 +1928,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nexus/schema@npm:^0.20.1":
-  version: 0.20.1
-  resolution: "@nexus/schema@npm:0.20.1"
-  dependencies:
-    iterall: ^1.3.0
-    tslib: ^2.0.3
-  peerDependencies:
-    graphql: ^14.5.8 || 15.x
-  checksum: 0201c4336e4311f1c32a866f34673ce52e99c4a423be26edbb427db9fa855655a1fb40cd5cd088ed0a115c02e945b19888f0d053baa5e6bd3ce807dade8519f2
-  languageName: node
-  linkType: hard
-
 "@nodelib/fs.scandir@npm:2.1.3":
   version: 2.1.3
   resolution: "@nodelib/fs.scandir@npm:2.1.3"
@@ -2225,7 +2213,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@raptorsystems/krypto-rates-core@workspace:packages/core"
   dependencies:
-    "@nexus/schema": ^0.20.1
     "@raptorsystems/krypto-rates-common": ^2.0.0-alpha.10
     "@raptorsystems/krypto-rates-sources": ^2.0.0-alpha.12
     "@raptorsystems/krypto-rates-utils": ^2.0.0-alpha.12
@@ -2236,6 +2223,7 @@ __metadata:
     graphql: ^15.4.0
     graphql-iso-date: ^3.6.1
     ioredis: ^4.19.4
+    nexus: ^1.0.0
     ts-node-dev: ^1.1.1
     typescript: ~4.1.3
   languageName: unknown
@@ -12730,6 +12718,18 @@ fsevents@~2.1.2:
   version: 1.0.0
   resolution: "next-tick@npm:1.0.0"
   checksum: 18db63c447c6e65a23235b91da9ccdae53f74f9194cfbc71a1fd3170cdf81bd157d9676e47c2ea4ea5bd20e09fb019917b0a45d8e1a63e377175fc083f285234
+  languageName: node
+  linkType: hard
+
+"nexus@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "nexus@npm:1.0.0"
+  dependencies:
+    iterall: ^1.3.0
+    tslib: ^2.0.3
+  peerDependencies:
+    graphql: ^14.5.8 || 15.x
+  checksum: 73b83dfe572f62cc66a0efea745423db61f4a09cde70da9cce9ac4bee2f16351033cefae1daf98b94b69f734497f20b475987ae7ff5ab43ce7d9bfe6ce315272
   languageName: node
   linkType: hard
 

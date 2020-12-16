@@ -1,5 +1,5 @@
-import { makeSchema } from '@nexus/schema/dist' // ? import from /dist to avoid error with webpack 5: The export "blocks" in "../../node_modules/@nexus/schema/dist-esm/index.js" has no internal name (existing names: none)
 import { workspaceRoot } from '@raptorsystems/krypto-rates-utils/src/paths'
+import { makeSchema } from 'nexus/dist' // ? import from /dist to avoid error with webpack 5: The export "blocks" in "../../node_modules/nexus/dist-esm/index.js" has no internal name (existing names: none)
 import path from 'path'
 import * as types from './resolvers'
 
@@ -17,28 +17,27 @@ export const schema = makeSchema({
     input: true,
     output: true,
   },
-  typegenAutoConfig: {
-    contextType: 'Context.Context',
-    backingTypeMap: {
+  contextType: {
+    module: require.resolve('./context'),
+    export: 'Context',
+  },
+  sourceTypes: {
+    mapping: {
       Currency: 'string',
       Date: 'Date',
     },
-    sources: [
+    modules: [
       {
-        source: '@raptorsystems/krypto-rates-common/src/types',
+        module: '@raptorsystems/krypto-rates-common/src/types',
         alias: 'commonTypes',
       },
       {
-        source: '@raptorsystems/krypto-rates-sources/src/types',
+        module: '@raptorsystems/krypto-rates-sources/src/types',
         alias: 'sourceTypes',
       },
       {
-        source: require.resolve('./types'),
+        module: require.resolve('./types'),
         alias: 'types',
-      },
-      {
-        source: require.resolve('./context'),
-        alias: 'Context',
       },
     ],
   },
