@@ -18,7 +18,7 @@ import {
   objectType,
   queryType,
   scalarType,
-} from 'nexus/dist' // ? import from /dist to avoid error with webpack 5: The export "blocks" in "../../node_modules/nexus/dist-esm/index.js" has no internal name (existing names: none)
+} from 'nexus'
 import { Context } from './context'
 
 const TTL = parseInt(process.env.RATES_LIVE_TTL ?? '') || 300
