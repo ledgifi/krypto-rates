@@ -2216,12 +2216,11 @@ __metadata:
     "@raptorsystems/krypto-rates-common": ^2.0.0-alpha.10
     "@raptorsystems/krypto-rates-sources": ^2.0.0-alpha.12
     "@raptorsystems/krypto-rates-utils": ^2.0.0-alpha.12
-    "@types/graphql-iso-date": ^3.4.0
     "@types/ioredis": ^4.17.9
     apollo-server-core: ^2.19.0
     eslint: ^7.15.0
     graphql: ^15.4.0
-    graphql-iso-date: ^3.6.1
+    graphql-scalars: ^1.6.1
     ioredis: ^4.19.4
     nexus: ^1.0.0
     ts-node-dev: ^1.1.1
@@ -2859,15 +2858,6 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: acffaa4f4b11776f6894a906d3cd0498d45be2ad1315fe44c2ac8208339a2456967cd65835863bf40f8d522f6614f25e0f6a952375f03d428d5e35d5e7104068
-  languageName: node
-  linkType: hard
-
-"@types/graphql-iso-date@npm:^3.4.0":
-  version: 3.4.0
-  resolution: "@types/graphql-iso-date@npm:3.4.0"
-  dependencies:
-    graphql: ^15.1.0
-  checksum: eae94821787354e53f440c28565a221d2d78622c48996426d8761075c4d3f90e02c6c8b9f00139de22f9a551dc2cfb366c6c7c577035eb1dd5edf01530b7b4b5
   languageName: node
   linkType: hard
 
@@ -9290,15 +9280,6 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"graphql-iso-date@npm:^3.6.1":
-  version: 3.6.1
-  resolution: "graphql-iso-date@npm:3.6.1"
-  peerDependencies:
-    graphql: ^0.5.0 || ^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0
-  checksum: d33245ccaba87665589bf2907159de9e024bfd516ccc905631b68010ff69afbcbd09103d38481569862e4c168f6db0f9df614968295ca41c996c7d7fd2679817
-  languageName: node
-  linkType: hard
-
 "graphql-request@npm:^3.3.0":
   version: 3.3.0
   resolution: "graphql-request@npm:3.3.0"
@@ -9309,6 +9290,17 @@ fsevents@~2.1.2:
   peerDependencies:
     graphql: 14.x || 15.x
   checksum: a7a00b41035ae729cbe8f6d246e3a8e2c36087b787ebbecd9a3a45928fc749a1971d5cb5f98efe55cd2051397ab1c9c3993e10b2b755bbb0e8f9ca4a299c5f36
+  languageName: node
+  linkType: hard
+
+"graphql-scalars@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "graphql-scalars@npm:1.6.1"
+  dependencies:
+    tslib: ~2.0.3
+  peerDependencies:
+    graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
+  checksum: 0bf24899f7a4be5466801f23adf10275457151185cc5b2acffa2ab39be6eade8f83471840f078ad8772bb1798504c0cfa422aa37383726fdaa307fae42ab09d3
   languageName: node
   linkType: hard
 
@@ -9361,7 +9353,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"graphql@npm:^15.1.0, graphql@npm:^15.3.0, graphql@npm:^15.4.0":
+"graphql@npm:^15.3.0, graphql@npm:^15.4.0":
   version: 15.4.0
   resolution: "graphql@npm:15.4.0"
   checksum: 1a307dcfe2646e1e8323d03e8cd24554ba9f7369863bf0b020f2e4b39bff3504dc7d6dcad19cb96899f0825eda4c688819911f0c270e84f1bb0954fe3ac16a31
@@ -16850,7 +16842,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.3":
+"tslib@npm:^2.0.3, tslib@npm:~2.0.3":
   version: 2.0.3
   resolution: "tslib@npm:2.0.3"
   checksum: 447bfca5deaa157806c3f77eaba74d05dd0b38b014e47ce79d98b5c77ce7d91b00a687ba13ca1b5a74d35ca1098ac7a072c0a97fad06f0266612f2a03a6c8e8f

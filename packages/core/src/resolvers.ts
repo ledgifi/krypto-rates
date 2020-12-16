@@ -8,7 +8,7 @@ import {
 } from '@raptorsystems/krypto-rates-sources/src/types'
 import { generateDateRange } from '@raptorsystems/krypto-rates-utils/src/index'
 import { GraphQLString } from 'graphql'
-import { GraphQLDate } from 'graphql-iso-date'
+import { GraphQLDate } from 'graphql-scalars'
 import {
   arg,
   inputObjectType,

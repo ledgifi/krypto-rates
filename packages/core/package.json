@@ -20,12 +20,11 @@
     "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.12",
     "apollo-server-core": "^2.19.0",
     "graphql": "^15.4.0",
-    "graphql-iso-date": "^3.6.1",
+    "graphql-scalars": "^1.6.1",
     "ioredis": "^4.19.4",
     "nexus": "^1.0.0"
   },
   "devDependencies": {
-    "@types/graphql-iso-date": "^3.4.0",
     "@types/ioredis": "^4.17.9",
     "eslint": "^7.15.0",
     "ts-node-dev": "^1.1.1",
