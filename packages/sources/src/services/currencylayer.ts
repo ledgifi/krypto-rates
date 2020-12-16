@@ -271,10 +271,6 @@ type CurrencylayerResponse<T = CurrencylayerResponseBase> =
 
 type CurrencylayerLiveResponse = CurrencylayerResponse<CurrencylayerLive>
 
-type CurrencylayerHistoricalResponse = CurrencylayerResponse<
-  CurrencylayerHistorical
->
+type CurrencylayerHistoricalResponse = CurrencylayerResponse<CurrencylayerHistorical>
 
-type CurrencylayerTimeframeResponse = CurrencylayerResponse<
-  CurrencylayerTimeframe
->
+type CurrencylayerTimeframeResponse = CurrencylayerResponse<CurrencylayerTimeframe>
