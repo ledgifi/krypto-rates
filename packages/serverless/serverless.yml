@@ -41,7 +41,6 @@ custom:
       forceExclude:
         - aws-sdk
         - prettier
-        - apollo-engine-reporting-protobuf
   serverless-offline:
     port: ${env:PORT, '4000'}
 

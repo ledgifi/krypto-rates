@@ -1,35 +1,49 @@
 import { dotenv } from '@raptorsystems/krypto-rates-utils/src/dotenv'
 dotenv.config()
 
-import { config } from '@raptorsystems/krypto-rates-core/src/apollo.config'
-import { ApolloServer } from 'apollo-server-lambda'
+import { processRequest } from '@raptorsystems/krypto-rates-core/src/graphql-helix'
 import type { APIGatewayProxyHandler } from 'aws-lambda'
+import { getGraphQLParameters, shouldRenderGraphiQL } from 'graphql-helix'
+import { Request } from 'graphql-helix/dist/types'
+import { renderPlaygroundPage } from 'graphql-playground-html'
 
-const server = new ApolloServer(config)
+export const graphql: APIGatewayProxyHandler = async (event) => {
+  const request: Request = {
+    body: event.body,
+    headers: event.headers,
+    method: event.httpMethod,
+    query: event.queryStringParameters,
+  }
 
-// Reference
-// https://github.com/apollographql/apollo-server/issues/2156#issuecomment-533623556
+  if (shouldRenderGraphiQL(request)) {
+    return {
+      statusCode: 200,
+      body: renderPlaygroundPage({}),
+      headers: {
+        'Content-Type': 'text/html',
+      },
+    }
+  }
 
-export const graphql: APIGatewayProxyHandler = async (event, context) => {
-  const apollo = server.createHandler({
-    cors: {
-      origin: true,
-      credentials: true,
-      methods: 'GET, POST',
-      allowedHeaders:
-        'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-    },
+  const { operationName, query, variables } = getGraphQLParameters(request)
+
+  const result = await processRequest({
+    operationName,
+    query,
+    variables,
+    request,
   })
 
-  return await new Promise((resolve, reject) => {
-    apollo(
-      // Handle Playground path
-      // https://github.com/apollographql/apollo-server/pull/2241#issuecomment-460889307
-      event.httpMethod === 'GET'
-        ? { ...event, path: event.requestContext.path ?? event.path }
-        : event,
-      context,
-      (error, result) => (error ? reject(error) : resolve(result)),
-    )
-  })
+  if (result.type === 'RESPONSE') {
+    return {
+      statusCode: result.status,
+      body: JSON.stringify(result.payload),
+      headers: result.headers.reduce(
+        (obj, { name, value }) => ({ ...obj, [name]: value }),
+        {},
+      ),
+    }
+  } else {
+    throw new Error(`Unsupported graphql-helix result type: ${result.type}}`)
+  }
 }

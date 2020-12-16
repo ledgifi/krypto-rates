@@ -22,8 +22,9 @@
   "dependencies": {
     "@raptorsystems/krypto-rates-core": "^2.0.0-alpha.12",
     "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.12",
-    "apollo-server-lambda": "^2.19.0",
-    "graphql": "^15.4.0"
+    "graphql": "^15.4.0",
+    "graphql-helix": "^1.2.0",
+    "graphql-playground-html": "^1.6.29"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.66",

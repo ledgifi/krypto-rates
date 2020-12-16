@@ -3,7 +3,7 @@ import {
   Currency,
   MarketInput,
 } from '@raptorsystems/krypto-rates-common/src/types'
-import { ApolloError } from 'apollo-server-core'
+import { ApolloError } from 'apollo-server-errors'
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios'
 import { getUnixTime } from 'date-fns'
 import { MarketsByKey } from './services/types'
