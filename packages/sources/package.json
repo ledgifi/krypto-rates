@@ -19,6 +19,11 @@
     "axios": "^0.21.0",
     "bottleneck": "^2.19.5",
     "date-fns": "^2.16.1",
+    "graphql": "^15.4.0",
     "ioredis": "^4.19.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.12.1",
+    "type-fest": "^0.18.0"
   }
 }

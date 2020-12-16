@@ -15,11 +15,14 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc --build",
-    "prebuild": "yarn clean",
-    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "build": "yarn clean && tsc --build",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "prepublishOnly": "yarn build",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --fix --ext .ts src"
+  },
+  "devDependencies": {
+    "eslint": "^7.12.1",
+    "type-fest": "^0.18.0"
   }
 }

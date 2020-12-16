@@ -304,3 +304,11 @@ dmypy.json
 
 # Webpack
 .webpack
+
+# Yarn 2 non Zero-Installs
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*

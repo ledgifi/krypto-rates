@@ -11,8 +11,8 @@
   "scripts": {
     "dev:sls": "serverless offline",
     "build:sls": "serverless package",
-    "clean": "rimraf dist .serverless .webpack",
-    "deploy": "cross-env NODE_ENV=production serverless deploy",
+    "clean": "rm -rf dist .serverless .webpack",
+    "deploy": "NODE_ENV=production serverless deploy",
     "deploy:function": "yarn deploy function --function graphql",
     "analyze": "yarn build:sls --analyze",
     "logs": "serverless logs --function graphql --tail",
@@ -22,6 +22,19 @@
   "dependencies": {
     "@raptorsystems/krypto-rates-core": "^2.0.0-alpha.12",
     "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.12",
-    "apollo-server-lambda": "^2.19.0"
+    "apollo-server-lambda": "^2.19.0",
+    "graphql": "^15.4.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.64",
+    "eslint": "^7.12.1",
+    "serverless": "^2.10.0",
+    "serverless-dotenv-plugin": "^3.1.0",
+    "serverless-offline": "^6.8.0",
+    "serverless-webpack": "^5.3.5",
+    "ts-loader": "^8.0.7",
+    "webpack": "^5.4.0",
+    "webpack-bundle-analyzer": "^3.9.0",
+    "webpack-node-externals": "^2.5.2"
   }
 }

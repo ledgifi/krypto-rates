@@ -17,5 +17,8 @@
     "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
     "find-yarn-workspace-root": "^2.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.12.1"
   }
 }

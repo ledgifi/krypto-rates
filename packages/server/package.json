@@ -9,8 +9,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "cross-env TZ=UTC ts-node --transpile-only main",
-    "dev": "cross-env TZ=UTC NODE_ENV=development ts-node-dev --inspect --no-notify --respawn --transpile-only main",
+    "start": "TZ=UTC ts-node --transpile-only main",
+    "dev": "TZ=UTC NODE_ENV=development ts-node-dev --inspect --no-notify --respawn --transpile-only main",
     "lint": "eslint --ext .ts .",
     "lint:fix": "eslint --fix --ext .ts ."
   },
@@ -19,6 +19,12 @@
     "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.12",
     "apollo-server": "^2.19.0",
     "chalk": "^4.1.0",
-    "ts-node": "^9.0.0"
+    "graphql": "^15.4.0",
+    "ts-node": "^9.0.0",
+    "typescript": "~4.0.5"
+  },
+  "devDependencies": {
+    "eslint": "^7.12.1",
+    "ts-node-dev": "^1.0.0"
   }
 }

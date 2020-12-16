@@ -16,6 +16,17 @@
   "dependencies": {
     "@raptorsystems/krypto-rates-common": "^2.0.0-alpha.10",
     "@raptorsystems/krypto-rates-core": "^2.0.0-alpha.12",
-    "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.12"
+    "@raptorsystems/krypto-rates-sources": "^2.0.0-alpha.12",
+    "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.12",
+    "axios": "^0.21.0",
+    "js-yaml": "^3.14.0",
+    "meow": "^8.0.0",
+    "ts-node": "^9.0.0",
+    "typescript": "~4.0.5"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^3.12.5",
+    "@types/meow": "^5.0.0",
+    "eslint": "^7.12.1"
   }
 }

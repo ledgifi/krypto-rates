@@ -15,9 +15,8 @@
     "access": "public"
   },
   "scripts": {
-    "build:clients": "tsc --build",
-    "prebuild:clients": "yarn clean",
-    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "build:clients": "yarn clean && tsc --build",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "prepublishOnly": "yarn build:clients",
     "test": "jest",
     "lint": "eslint --ext .ts src",
@@ -27,5 +26,12 @@
     "@raptorsystems/krypto-rates-common": "^2.0.0-alpha.10",
     "graphql": "^15.4.0",
     "graphql-request": "^3.3.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.15",
+    "eslint": "^7.12.1",
+    "jest": "^26.6.2",
+    "ts-jest": "^26.4.3",
+    "typescript": "~4.0.5"
   }
 }
