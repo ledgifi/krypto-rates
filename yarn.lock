@@ -2175,6 +2175,7 @@ __metadata:
     "@raptorsystems/krypto-rates-sources": ^2.0.0-alpha.12
     "@raptorsystems/krypto-rates-utils": ^2.0.0-alpha.12
     "@types/ioredis": ^4.17.9
+    apollo-server-errors: ^2.4.2
     eslint: ^7.15.0
     graphql: ^15.4.0
     graphql-scalars: ^1.6.1

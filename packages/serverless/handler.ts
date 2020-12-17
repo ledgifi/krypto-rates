@@ -1,7 +1,10 @@
 import { dotenv } from '@raptorsystems/krypto-rates-utils/src/dotenv'
 dotenv.config()
 
-import { processRequest } from '@raptorsystems/krypto-rates-core/src/graphql-helix'
+import {
+  formatResult,
+  processRequest,
+} from '@raptorsystems/krypto-rates-core/src/graphql-helix'
 import type { APIGatewayProxyHandler } from 'aws-lambda'
 import { getGraphQLParameters } from 'graphql-helix'
 import { Request } from 'graphql-helix/dist/types'
@@ -37,7 +40,7 @@ export const graphql: APIGatewayProxyHandler = async (event) => {
   if (result.type === 'RESPONSE') {
     return {
       statusCode: result.status,
-      body: JSON.stringify(result.payload),
+      body: JSON.stringify(formatResult(result.payload)),
       headers: result.headers.reduce(
         (obj, { name, value }) => ({ ...obj, [name]: value }),
         {},

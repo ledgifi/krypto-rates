@@ -1,3 +1,5 @@
+import { formatApolloErrors, fromGraphQLError } from 'apollo-server-errors'
+import { ExecutionResult } from 'graphql'
 import { processRequest as _processRequest } from 'graphql-helix'
 import {
   ProcessRequestOptions,
@@ -17,3 +19,18 @@ export const processRequest = <TRootValue = unknown>(
     schema,
     contextFactory: createContext,
   })
+
+export const formatResult = ({
+  errors,
+  ...result
+}: ExecutionResult): ExecutionResult => ({
+  ...result,
+  errors:
+    errors &&
+    formatApolloErrors(
+      errors?.map((error) => {
+        console.error(error)
+        return fromGraphQLError(error)
+      }),
+    ),
+})

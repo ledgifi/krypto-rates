@@ -1,7 +1,10 @@
 import { dotenv } from '@raptorsystems/krypto-rates-utils/src/dotenv'
 dotenv.config()
 
-import { processRequest } from '@raptorsystems/krypto-rates-core/src/graphql-helix'
+import {
+  formatResult,
+  processRequest,
+} from '@raptorsystems/krypto-rates-core/src/graphql-helix'
 import chalk from 'chalk'
 import fastify from 'fastify'
 import { getGraphQLParameters } from 'graphql-helix'
@@ -43,7 +46,7 @@ app.route({
           void res.header(name, value)
         })
         void res.status(result.status)
-        void res.send(result.payload)
+        void res.send(formatResult(result.payload))
       } else {
         throw new Error(
           `Unsupported graphql-helix result type: ${result.type}}`,

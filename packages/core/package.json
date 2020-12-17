@@ -18,6 +18,7 @@
     "@raptorsystems/krypto-rates-common": "^2.0.0-alpha.10",
     "@raptorsystems/krypto-rates-sources": "^2.0.0-alpha.12",
     "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.12",
+    "apollo-server-errors": "^2.4.2",
     "graphql": "^15.4.0",
     "graphql-scalars": "^1.6.1",
     "ioredis": "^4.19.4",
