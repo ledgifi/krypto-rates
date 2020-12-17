@@ -27,7 +27,7 @@ app.route({
 
     if (request.method === 'GET') {
       void res.type('text/html')
-      void res.send(renderPlaygroundPage({}))
+      void res.send(renderPlaygroundPage({ endpoint: '/' }))
     } else {
       const { operationName, query, variables } = getGraphQLParameters(request)
 

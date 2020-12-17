@@ -18,7 +18,7 @@ export const graphql: APIGatewayProxyHandler = async (event) => {
   if (request.method === 'GET') {
     return {
       statusCode: 200,
-      body: renderPlaygroundPage({}),
+      body: renderPlaygroundPage({ endpoint: event.requestContext.path }),
       headers: {
         'Content-Type': 'text/html',
       },
