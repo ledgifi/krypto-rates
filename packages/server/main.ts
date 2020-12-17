@@ -4,7 +4,7 @@ dotenv.config()
 import { processRequest } from '@raptorsystems/krypto-rates-core/src/graphql-helix'
 import chalk from 'chalk'
 import fastify from 'fastify'
-import { getGraphQLParameters, shouldRenderGraphiQL } from 'graphql-helix'
+import { getGraphQLParameters } from 'graphql-helix'
 import { Request } from 'graphql-helix/dist/types'
 import { renderPlaygroundPage } from 'graphql-playground-html'
 
@@ -25,11 +25,12 @@ app.route({
       query: req.query,
     }
 
-    if (shouldRenderGraphiQL(request)) {
+    if (request.method === 'GET') {
       void res.type('text/html')
       void res.send(renderPlaygroundPage({}))
     } else {
       const { operationName, query, variables } = getGraphQLParameters(request)
+
       const result = await processRequest({
         operationName,
         query,

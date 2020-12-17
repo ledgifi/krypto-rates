@@ -3,7 +3,7 @@ dotenv.config()
 
 import { processRequest } from '@raptorsystems/krypto-rates-core/src/graphql-helix'
 import type { APIGatewayProxyHandler } from 'aws-lambda'
-import { getGraphQLParameters, shouldRenderGraphiQL } from 'graphql-helix'
+import { getGraphQLParameters } from 'graphql-helix'
 import { Request } from 'graphql-helix/dist/types'
 import { renderPlaygroundPage } from 'graphql-playground-html'
 
@@ -15,7 +15,7 @@ export const graphql: APIGatewayProxyHandler = async (event) => {
     query: event.queryStringParameters,
   }
 
-  if (shouldRenderGraphiQL(request)) {
+  if (request.method === 'GET') {
     return {
       statusCode: 200,
       body: renderPlaygroundPage({}),
