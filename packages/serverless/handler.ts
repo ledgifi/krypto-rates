@@ -9,7 +9,7 @@ import { renderPlaygroundPage } from 'graphql-playground-html'
 
 export const graphql: APIGatewayProxyHandler = async (event) => {
   const request: Request = {
-    body: event.body,
+    body: event.body && JSON.parse(event.body),
     headers: event.headers,
     method: event.httpMethod,
     query: event.queryStringParameters,
