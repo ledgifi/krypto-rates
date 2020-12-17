@@ -42,9 +42,7 @@ app.route({
       })
 
       if (result.type === 'RESPONSE') {
-        result.headers.forEach(({ name, value }) => {
-          void res.header(name, value)
-        })
+        void res.headers(result.headers)
         void res.status(result.status)
         void res.send(formatResult(result.payload))
       } else {
