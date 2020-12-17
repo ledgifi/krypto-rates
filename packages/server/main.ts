@@ -46,9 +46,7 @@ app.route({
         void res.status(result.status)
         void res.send(formatResult(result.payload))
       } else {
-        throw new Error(
-          `Unsupported graphql-helix result type: ${result.type}}`,
-        )
+        throw new Error(`Unsupported graphql-helix result type: ${result.type}`)
       }
     }
   },
