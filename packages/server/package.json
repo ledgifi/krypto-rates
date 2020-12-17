@@ -9,7 +9,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "TZ=UTC ts-node --transpile-only main",
+    "start": "TZ=UTC NODE_ENV=production ts-node --transpile-only main",
     "dev": "TZ=UTC NODE_ENV=development ts-node-dev --inspect --no-notify --respawn --transpile-only main",
     "lint": "eslint --ext .ts .",
     "lint:fix": "eslint --fix --ext .ts ."

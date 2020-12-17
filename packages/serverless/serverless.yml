@@ -13,6 +13,9 @@ provider:
   memorySize: 256
   timeout: 10
   versionFunctions: false
+  environment:
+    TZ: UTC
+    NODE_ENV: production
   apiGateway:
     # Starting with v3.0.0, API Gateway naming will be changed to ${service}-${stage}
     # https://www.serverless.com/framework/docs/deprecations/#AWS_API_GATEWAY_NAME_STARTING_WITH_SERVICE
