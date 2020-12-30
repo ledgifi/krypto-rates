@@ -16,14 +16,14 @@
     "@raptorsystems/krypto-rates-common": "^2.0.0-alpha.10",
     "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.12",
     "apollo-server-errors": "^2.4.2",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "bottleneck": "^2.19.5",
     "date-fns": "^2.16.1",
     "graphql": "^15.4.0",
     "ioredis": "^4.19.4"
   },
   "devDependencies": {
-    "eslint": "^7.15.0",
+    "eslint": "^7.16.0",
     "type-fest": "^0.20.2"
   }
 }

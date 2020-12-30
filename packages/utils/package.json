@@ -19,6 +19,6 @@
     "find-yarn-workspace-root": "^2.0.0"
   },
   "devDependencies": {
-    "eslint": "^7.15.0"
+    "eslint": "^7.16.0"
   }
 }
