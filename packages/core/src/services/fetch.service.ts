@@ -147,6 +147,13 @@ export class FetchService {
 
         rate = fetchedRates[0]
 
+        if (rate) {
+          // Write missing rate on DB
+          const dbRate = buildDbRate(rate)
+          await writeDB(dbRate)
+          logCreate(dbRate)
+        }
+
         // If rate is still missing, fetch via bridge currency
         if (!bridged && shouldBridgeMarket(market) && shouldBridgeRate(rate)) {
           const [rate1, rate2] = await Promise.all([
@@ -167,13 +174,6 @@ export class FetchService {
           ])
 
           if (rate1 && rate2) rate = bridgeRates(rate1, rate2)
-        }
-
-        if (rate) {
-          // Write missing rate on DB
-          const dbRate = buildDbRate(rate)
-          await writeDB(dbRate)
-          logCreate(dbRate)
         }
       }
     }
@@ -232,6 +232,13 @@ export class FetchService {
     if (missingMarkets.length) {
       let missingRates = await fetchSource(missingMarkets)
 
+      // Write missing rates on Redis DB
+      if (missingRates.length) {
+        const dbRates = missingRates.map((rate) => buildDbRate(rate))
+        await writeDB(dbRates)
+        dbRates.map((item) => logCreate(item))
+      }
+
       // Filter for missing markets that can be bridged in RatesSource response
       missingMarkets = filterMissingMarkets(
         missingRates.filter(shouldBridgeRate),
@@ -265,13 +272,6 @@ export class FetchService {
             return bridgeRates(rate1, rate2)
           })
           .filter(notEmpty)
-      }
-
-      // Write missing rates on Redis DB
-      if (missingRates.length) {
-        const dbRates = missingRates.map((rate) => buildDbRate(rate))
-        await writeDB(dbRates)
-        dbRates.map((item) => logCreate(item))
       }
 
       // Merge missing rates
@@ -382,6 +382,13 @@ export class FetchService {
         },
       })
 
+      // Write missing rates on Redis DB
+      if (missingRates.length) {
+        const dbRates = missingRates.map((rate) => buildDbRate(rate))
+        await writeDB(dbRates)
+        dbRates.map((item) => logCreate(item))
+      }
+
       // Filter missing market-dates that can be bridged in RatesSource response
       missingMarketDates = filterMissingMarketDates(
         missingRates.filter(shouldBridgeRate),
@@ -420,13 +427,6 @@ export class FetchService {
             return bridgeRates(rate1, rate2)
           })
           .filter(notEmpty)
-      }
-
-      // Write missing rates on Redis DB
-      if (missingRates.length) {
-        const dbRates = missingRates.map((rate) => buildDbRate(rate))
-        await writeDB(dbRates)
-        dbRates.map((item) => logCreate(item))
       }
 
       // Merge missing rates
