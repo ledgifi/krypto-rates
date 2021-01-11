@@ -21,7 +21,7 @@ const cli = meow({
 type MarketsConfig = { [market: string]: string }
 
 const loadMarketsConfig = (configPath: string): MarketsConfig =>
-  yaml.safeLoad(
+  yaml.load(
     fs.readFileSync(path.join(workspaceRoot, configPath), 'utf8'),
   ) as MarketsConfig
 
