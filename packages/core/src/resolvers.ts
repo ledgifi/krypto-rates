@@ -127,7 +127,7 @@ const fetchHistoricalMarketDates = ({
     },
   })
 
-// Querys
+// Queries
 export const Query = queryType({
   definition(t) {
     t.list.string('currencies', {
