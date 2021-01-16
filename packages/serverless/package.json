@@ -28,13 +28,13 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.70",
-    "eslint": "^7.17.0",
-    "serverless": "^2.18.0",
+    "eslint": "^7.18.0",
+    "serverless": "^2.19.0",
     "serverless-dotenv-plugin": "^3.1.0",
     "serverless-offline": "^6.8.0",
     "serverless-webpack": "^5.3.5",
     "ts-loader": "^8.0.14",
-    "webpack": "^5.12.3",
+    "webpack": "^5.15.0",
     "webpack-bundle-analyzer": "^4.3.0",
     "webpack-node-externals": "^2.5.2"
   }
