@@ -22,20 +22,20 @@
   "dependencies": {
     "@raptorsystems/krypto-rates-core": "^2.0.0-alpha.12",
     "@raptorsystems/krypto-rates-utils": "^2.0.0-alpha.12",
-    "graphql": "^15.4.0",
+    "graphql": "^15.5.0",
     "graphql-helix": "^1.2.3",
     "graphql-playground-html": "^1.6.29"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.70",
-    "eslint": "^7.18.0",
-    "serverless": "^2.19.0",
-    "serverless-dotenv-plugin": "^3.1.0",
+    "@types/aws-lambda": "^8.10.72",
+    "eslint": "^7.20.0",
+    "serverless": "^2.25.2",
+    "serverless-dotenv-plugin": "^3.5.1",
     "serverless-offline": "^6.8.0",
     "serverless-webpack": "^5.3.5",
-    "ts-loader": "^8.0.14",
-    "webpack": "^5.15.0",
-    "webpack-bundle-analyzer": "^4.3.0",
+    "ts-loader": "^8.0.17",
+    "webpack": "^5.23.0",
+    "webpack-bundle-analyzer": "^4.4.0",
     "webpack-node-externals": "^2.5.2"
   }
 }
