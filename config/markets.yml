@@ -1,3 +1,4 @@
+USD-CLP: sbif.cl
 # FIAT
 AED-USD: 'currencylayer.com'
 AFN-USD: 'currencylayer.com'
@@ -28,7 +29,7 @@ CAD-USD: 'currencylayer.com'
 CDF-USD: 'currencylayer.com'
 CHF-USD: 'currencylayer.com'
 CLF-USD: 'currencylayer.com'
-CLP-USD: 'currencylayer.com'
+# CLP-USD: 'currencylayer.com'
 CNY-USD: 'currencylayer.com'
 COP-USD: 'currencylayer.com'
 CRC-USD: 'currencylayer.com'

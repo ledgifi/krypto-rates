@@ -37,6 +37,7 @@ custom:
       - COINLAYER_TIMEFRAME
       - CRYPTOCOMPARE_API_KEY
       - NOMICS_API_KEY
+      - SBIF_API_KEY
   webpack:
     packager: yarn
     keepOutputDirectory: true

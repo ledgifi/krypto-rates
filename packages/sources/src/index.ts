@@ -10,6 +10,7 @@ import { CoinlayerSource } from './services/coinlayer'
 import { CryptoCompareSource } from './services/cryptocompare'
 import { CurrencylayerSource } from './services/currencylayer'
 import { NomicsSource } from './services/nomics'
+import { SBIFSource } from './services/sbif'
 import { MarketsByKey, RatesSource as BaseRateSource } from './services/types'
 import { RateSources } from './types'
 import {
@@ -25,6 +26,7 @@ export const rateSourceById = {
   [CurrencylayerSource.id]: CurrencylayerSource,
   [CryptoCompareSource.id]: CryptoCompareSource,
   [NomicsSource.id]: NomicsSource,
+  [SBIFSource.id]: SBIFSource,
 }
 
 export class RatesSource implements BaseRateSource {
