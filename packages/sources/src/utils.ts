@@ -2,10 +2,11 @@ import { Market } from '@raptorsystems/krypto-rates-common/src/market'
 import {
   Currency,
   MarketInput,
+  Timeframe,
 } from '@raptorsystems/krypto-rates-common/src/types'
 import { ApolloError } from 'apollo-server-errors'
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios'
-import { getUnixTime } from 'date-fns'
+import { getUnixTime, isAfter, isBefore, isEqual, startOfDay } from 'date-fns'
 import { MarketsByKey } from './services/types'
 
 export class RateSourceError<T> extends ApolloError {
@@ -100,3 +101,33 @@ export async function mapMarketsByQuote<T, M extends MarketInput>(
 }
 
 export const unixTime = (): number => getUnixTime(new Date())
+
+const START_LIMIT = new Date(2009, 0, 3) // Bitcoin genesis block
+
+export const dateIsValid = (date: Date): boolean =>
+  isAfter(date, START_LIMIT) && isBefore(date, new Date())
+
+export const restrictTimeframe = ({
+  start,
+  end,
+}: Timeframe<Date>): Timeframe<Date> => {
+  const END_LIMIT = startOfDay(new Date()) // start of today
+
+  const rStart = isBefore(start, START_LIMIT)
+    ? START_LIMIT
+    : isBefore(start, END_LIMIT) || isEqual(start, END_LIMIT)
+    ? start
+    : null
+  const rEnd = isAfter(end, END_LIMIT)
+    ? END_LIMIT
+    : isAfter(end, START_LIMIT) || isEqual(end, START_LIMIT)
+    ? end
+    : null
+
+  if (!rStart || !rEnd)
+    throw new RateSourceError(
+      `Timeframe outside of limits: ${start.toISOString()}–${end.toISOString()}`,
+    )
+
+  return { start: rStart, end: rEnd }
+}

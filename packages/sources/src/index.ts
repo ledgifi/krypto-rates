@@ -12,7 +12,13 @@ import { CurrencylayerSource } from './services/currencylayer'
 import { NomicsSource } from './services/nomics'
 import { MarketsByKey, RatesSource as BaseRateSource } from './services/types'
 import { RateSources } from './types'
-import { buildMarketsByKey, mapMarketsByBase } from './utils'
+import {
+  buildMarketsByKey,
+  dateIsValid,
+  mapMarketsByBase,
+  RateSourceError,
+  restrictTimeframe,
+} from './utils'
 
 export const rateSourceById = {
   [CoinlayerSource.id]: CoinlayerSource,
@@ -38,6 +44,7 @@ export class RatesSource implements BaseRateSource {
     markets: MarketInput[],
     date: Date,
   ): Promise<ParsedRate[]> {
+    if (!dateIsValid(date)) return []
     return this.fetchForMarkets(markets, (source, markets) =>
       source.fetchHistorical(markets, date),
     )
@@ -47,6 +54,12 @@ export class RatesSource implements BaseRateSource {
     markets: MarketInput[],
     timeframe: Timeframe<Date>,
   ): Promise<ParsedRate[]> {
+    try {
+      timeframe = restrictTimeframe(timeframe)
+    } catch (error) {
+      if (error instanceof RateSourceError) return []
+      throw error
+    }
     return this.fetchForMarkets(markets, (source, markets) =>
       source.fetchTimeframe(markets, timeframe),
     )
