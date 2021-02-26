@@ -219,10 +219,10 @@ export type SBIFDolar = {
   Fecha: string
 }
 
-interface SBIFDolarError {
+export interface SBIFDolarError {
   CodigoHTTP: number
   CodigoError: number
   Mensaje: string
 }
 
-type SBIFDolarResponse = { Dolares: SBIFDolar[] }
+export type SBIFDolarResponse = { Dolares: SBIFDolar[] }

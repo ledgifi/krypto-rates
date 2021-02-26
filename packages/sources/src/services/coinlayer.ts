@@ -244,44 +244,46 @@ export type CoinlayerRates = {
   [symbol: string]: number | null
 }
 
-interface CoinlayerError {
+export interface CoinlayerError {
   code: number
   type: string
   info: string
 }
 
-interface CoinlayerResponseBase {
+export interface CoinlayerResponseBase {
   success: boolean
   terms?: string // prop is not optional but it's not useful
   privacy?: string // prop is not optional but it's not useful
   target: string
 }
 
-interface CoinlayerErrorResponse {
+export interface CoinlayerErrorResponse {
   success: boolean
   error: CoinlayerError
 }
 
-interface CoinlayerLive extends CoinlayerResponseBase {
+export interface CoinlayerLive extends CoinlayerResponseBase {
   timestamp: number
   rates: CoinlayerRates
 }
 
-interface CoinlayerHistorical extends CoinlayerResponseBase {
+export interface CoinlayerHistorical extends CoinlayerResponseBase {
   historical: boolean
   date: string
   timestamp: number
   rates: CoinlayerRates
 }
 
-interface CoinlayerTimeframe extends CoinlayerResponseBase {
+export interface CoinlayerTimeframe extends CoinlayerResponseBase {
   timeframe: boolean
   start_date: string
   end_date: string
   rates: { [date: string]: CoinlayerRates }
 }
 
-type CoinlayerResponse<T = CoinlayerResponseBase> = T | CoinlayerErrorResponse
-type CoinlayerLiveResponse = CoinlayerResponse<CoinlayerLive>
-type CoinlayerHistoricalResponse = CoinlayerResponse<CoinlayerHistorical>
-type CoinlayerTimeframeResponse = CoinlayerResponse<CoinlayerTimeframe>
+export type CoinlayerResponse<T = CoinlayerResponseBase> =
+  | T
+  | CoinlayerErrorResponse
+export type CoinlayerLiveResponse = CoinlayerResponse<CoinlayerLive>
+export type CoinlayerHistoricalResponse = CoinlayerResponse<CoinlayerHistorical>
+export type CoinlayerTimeframeResponse = CoinlayerResponse<CoinlayerTimeframe>

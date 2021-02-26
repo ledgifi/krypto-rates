@@ -200,7 +200,7 @@ export class NomicsSource implements RatesSource {
   }
 }
 
-enum NomicsIntervalEnum {
+export enum NomicsIntervalEnum {
   Minute = '1m',
   Hour = '1h',
   Day = '1d',
@@ -211,7 +211,7 @@ enum NomicsIntervalEnum {
   All = 'all',
 }
 
-type NomicsCurrencyTickerInterval = {
+export type NomicsCurrencyTickerInterval = {
   volume: string
   price_change: string
   price_change_pct: string

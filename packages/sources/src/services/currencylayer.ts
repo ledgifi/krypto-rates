@@ -228,7 +228,7 @@ export type CurrencylayerRates = {
   [market: string]: number | null
 }
 
-interface CurrencylayerError {
+export interface CurrencylayerError {
   code: number
   type: string
   info: string
@@ -241,36 +241,36 @@ interface CurrencylayerResponseBase {
   source: string
 }
 
-interface CurrencylayerErrorResponse {
+export interface CurrencylayerErrorResponse {
   success: boolean
   error: CurrencylayerError
 }
 
-interface CurrencylayerLive extends CurrencylayerResponseBase {
+export interface CurrencylayerLive extends CurrencylayerResponseBase {
   timestamp: number
   quotes: CurrencylayerRates
 }
 
-interface CurrencylayerHistorical extends CurrencylayerResponseBase {
+export interface CurrencylayerHistorical extends CurrencylayerResponseBase {
   historical: boolean
   date: string
   timestamp: number
   quotes: CurrencylayerRates
 }
 
-interface CurrencylayerTimeframe extends CurrencylayerResponseBase {
+export interface CurrencylayerTimeframe extends CurrencylayerResponseBase {
   timeframe: boolean
   start_date: string
   end_date: string
   quotes: { [date: string]: CurrencylayerRates }
 }
 
-type CurrencylayerResponse<T = CurrencylayerResponseBase> =
+export type CurrencylayerResponse<T = CurrencylayerResponseBase> =
   | T
   | CurrencylayerErrorResponse
 
-type CurrencylayerLiveResponse = CurrencylayerResponse<CurrencylayerLive>
+export type CurrencylayerLiveResponse = CurrencylayerResponse<CurrencylayerLive>
 
-type CurrencylayerHistoricalResponse = CurrencylayerResponse<CurrencylayerHistorical>
+export type CurrencylayerHistoricalResponse = CurrencylayerResponse<CurrencylayerHistorical>
 
-type CurrencylayerTimeframeResponse = CurrencylayerResponse<CurrencylayerTimeframe>
+export type CurrencylayerTimeframeResponse = CurrencylayerResponse<CurrencylayerTimeframe>

@@ -229,7 +229,7 @@ export class CryptoCompareSource implements RatesSource {
   }
 }
 
-interface ErrorResponse {
+export interface ErrorResponse {
   Response: 'Error'
   Message: string
   HasWarning: boolean
@@ -239,7 +239,7 @@ interface ErrorResponse {
   ParamWithError?: string
 }
 
-interface SuccessResponse<TData> {
+export interface SuccessResponse<TData> {
   Response: 'Success'
   Message: string
   HasWarning: boolean
@@ -247,17 +247,17 @@ interface SuccessResponse<TData> {
   Data: TData
 }
 
-interface PriceResponse {
+export interface PriceResponse {
   [tsymb: string]: number
 }
 
-interface PriceMultiResponse {
+export interface PriceMultiResponse {
   [fsymb: string]: PriceResponse
 }
 
-type PriceHistoricalResponse = PriceMultiResponse
+export type PriceHistoricalResponse = PriceMultiResponse
 
-interface HistoricalMetrics {
+export interface HistoricalMetrics {
   time: number
   open: number
   high: number
@@ -267,7 +267,7 @@ interface HistoricalMetrics {
   volumeto: number
 }
 
-interface HistoricalResponseData {
+export interface HistoricalResponseData {
   Aggregated: boolean
   TimeFrom: number
   TimeTo: number
@@ -276,8 +276,8 @@ interface HistoricalResponseData {
 
 type Response<R> = R | ErrorResponse
 
-type HistoricalSuccessResponse = SuccessResponse<HistoricalResponseData>
+export type HistoricalSuccessResponse = SuccessResponse<HistoricalResponseData>
 
-type HistoricalResponse = Response<HistoricalSuccessResponse>
+export type HistoricalResponse = Response<HistoricalSuccessResponse>
 
 export type CryptoCompareRates = PriceMultiResponse | HistoricalMetrics
