@@ -22,7 +22,7 @@ const checkMarket = ({ base, quote }: MarketInput) => {
 
 export class SBIFSource implements RatesSource {
   public static id = 'sbif.cl'
-  protected client: AxiosInstance
+  public client: AxiosInstance
 
   public constructor() {
     const API_KEY = process.env.SBIF_API_KEY

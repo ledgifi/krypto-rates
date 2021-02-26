@@ -32,7 +32,7 @@ const fetchMarkets = async <T>(
 
 export class CurrencylayerSource implements RatesSource {
   public static id = 'currencylayer.com'
-  protected client: AxiosInstance
+  public client: AxiosInstance
 
   public constructor() {
     const ACCESS_KEY = process.env.CURRENCYLAYER_ACCESS_KEY

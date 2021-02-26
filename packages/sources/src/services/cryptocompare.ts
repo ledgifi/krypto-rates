@@ -32,8 +32,8 @@ const fetchMarkets = async <T>(
 
 export class CryptoCompareSource implements RatesSource {
   public static id = 'cryptocompare.com'
-  protected client: AxiosInstance
-  protected limiter: Bottleneck
+  public client: AxiosInstance
+  public limiter: Bottleneck
 
   public constructor() {
     const API_KEY = process.env.CRYPTOCOMPARE_API_KEY

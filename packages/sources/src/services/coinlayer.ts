@@ -32,7 +32,7 @@ const fetchMarkets = async <T>(
 
 export class CoinlayerSource implements RatesSource {
   public static id = 'coinlayer.com'
-  protected client: AxiosInstance
+  public client: AxiosInstance
 
   public constructor() {
     const ACCESS_KEY = process.env.COINLAYER_ACCESS_KEY

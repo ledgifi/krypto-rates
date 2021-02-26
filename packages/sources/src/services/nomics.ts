@@ -28,7 +28,7 @@ const fetchMarkets = async <T>(
 
 export class NomicsSource implements RatesSource {
   public static id = 'nomics.com'
-  protected client: AxiosInstance
+  public client: AxiosInstance
 
   public constructor() {
     const API_KEY = process.env.NOMICS_API_KEY
