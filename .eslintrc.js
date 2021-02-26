@@ -22,9 +22,7 @@ module.exports = {
     // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#usage
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
-    // Prettier, provided by 'eslint-config-prettier'.
-    // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#usage-with-prettier
-    'prettier/@typescript-eslint',
+    // Prettier
     'plugin:prettier/recommended',
   ],
   plugins: [
