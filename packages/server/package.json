@@ -27,6 +27,6 @@
   },
   "devDependencies": {
     "eslint": "^7.20.0",
-    "ts-node-dev": "^1.1.1"
+    "ts-node-dev": "^1.1.6"
   }
 }

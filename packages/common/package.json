@@ -23,6 +23,6 @@
   },
   "devDependencies": {
     "eslint": "^7.20.0",
-    "type-fest": "^0.21.1"
+    "type-fest": "^0.21.2"
   }
 }
