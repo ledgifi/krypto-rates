@@ -8,6 +8,7 @@ import { ApolloError } from 'apollo-server-errors'
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios'
 import { getUnixTime, isAfter, isBefore, isEqual, startOfDay } from 'date-fns'
 import { MarketsByKey } from './services/types'
+import { CommonCurrency } from './types'
 
 export class RateSourceError<T> extends ApolloError {
   public constructor(message: string, properties?: T) {
@@ -130,4 +131,40 @@ export const restrictTimeframe = ({
     )
 
   return { start: rStart, end: rEnd }
+}
+
+type Get<T> = (value: T) => T
+
+const getCurrency = (
+  items: CommonCurrency[],
+  map: (e: CommonCurrency) => [Currency, Currency],
+): Get<Currency> => {
+  const obj = Object.fromEntries(items.map(map))
+  return (value: string) => (value in obj ? obj[value] : value)
+}
+
+const getMarket = (getCurrency: Get<Currency>) => ({
+  base,
+  quote,
+}: MarketInput): MarketInput => ({
+  base: getCurrency(base),
+  quote: getCurrency(quote),
+})
+
+export const commonCurrencies = (
+  items: CommonCurrency[],
+): {
+  toSource: Get<Currency>
+  fromSource: Get<Currency>
+  marketToSource: Get<MarketInput>
+  marketFromSource: Get<MarketInput>
+} => {
+  const toSource = getCurrency(items, (e) => [e.common, e.source])
+  const fromSource = getCurrency(items, (e) => [e.source, e.common])
+  return {
+    toSource,
+    fromSource,
+    marketToSource: getMarket(toSource),
+    marketFromSource: getMarket(fromSource),
+  }
 }

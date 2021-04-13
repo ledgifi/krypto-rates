@@ -16,3 +16,8 @@ export type Rate = types.Rate
 export type DbRate = types.DbRate
 export type ParsedRate = types.ParsedRate
 export type NullableDbRate = types.NullableDbRate
+
+export interface CommonCurrency {
+  common: types.Currency
+  source: types.Currency
+}
