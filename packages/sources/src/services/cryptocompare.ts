@@ -12,12 +12,18 @@ import { fromUnixTime, getUnixTime } from 'date-fns'
 import Redis from 'ioredis'
 import { JsonValue } from 'type-fest'
 import {
+  commonCurrencies,
   createClient,
   mapMarketsByBase,
   RateSourceError,
   unixTime,
 } from '../utils'
 import { RatesSource } from './types'
+
+const { fromSource, marketToSource } = commonCurrencies([
+  { common: 'IOT', source: 'MIOTA' },
+  { common: 'ONTGAS', source: 'ONGAS' },
+])
 
 const fetchMarkets = async <T>(
   markets: MarketInput[],
@@ -96,6 +102,8 @@ export class CryptoCompareSource implements RatesSource {
   public async fetchLive(markets: MarketInput[]): Promise<ParsedRate[]> {
     const timestamp = unixTime()
 
+    markets = markets.map(marketToSource)
+
     const parse = (data: PriceMultiResponse): ParsedRate[] =>
       markets.map(({ base, quote }) => {
         const value = data[base]?.[quote] ?? null
@@ -125,6 +133,8 @@ export class CryptoCompareSource implements RatesSource {
     date: Date,
   ): Promise<ParsedRate[]> {
     const timestamp = getUnixTime(date)
+
+    markets = markets.map(marketToSource)
 
     const parse = (data: PriceHistoricalResponse): ParsedRate[] =>
       markets.map(({ base, quote }) => {
@@ -156,6 +166,8 @@ export class CryptoCompareSource implements RatesSource {
   ): Promise<ParsedRate[]> {
     // cryptocompare maximum number of data points is 2000
     const MAX_LIMIT = 2000
+
+    markets = markets.map(marketToSource)
 
     const parse = (
       data: HistoricalResponseData,
@@ -219,7 +231,7 @@ export class CryptoCompareSource implements RatesSource {
     return {
       source: CryptoCompareSource.id,
       sourceData,
-      market: new Market(base, quote),
+      market: new Market(fromSource(base), fromSource(quote)),
       date,
       timestamp,
       value,

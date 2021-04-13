@@ -1791,6 +1791,7 @@ ION-USD: cryptocompare.com
 IONC-USD: cryptocompare.com
 IOP-USD: cryptocompare.com
 IOST-USD: cryptocompare.com
+IOT-USD: cryptocompare.com  # IOT is MIOTA on cryptocompare.com
 IOTW-USD: cryptocompare.com
 IOTX-USD: cryptocompare.com
 IOU-USD: cryptocompare.com
@@ -2423,6 +2424,7 @@ ONION-USD: cryptocompare.com
 ONL-USD: cryptocompare.com
 ONOT-USD: cryptocompare.com
 ONT-USD: cryptocompare.com
+ONTGAS-USD: cryptocompare.com # ONTGAS is ONGAS on cryptocompare.com
 OOT-USD: cryptocompare.com
 OPAL-USD: cryptocompare.com
 OPC-USD: cryptocompare.com
