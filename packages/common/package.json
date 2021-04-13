@@ -22,7 +22,7 @@
     "lint:fix": "eslint --fix --ext .ts src"
   },
   "devDependencies": {
-    "eslint": "^7.20.0",
-    "type-fest": "^0.21.2"
+    "eslint": "^7.24.0",
+    "type-fest": "^1.0.1"
   }
 }

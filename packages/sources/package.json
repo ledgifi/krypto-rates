@@ -18,12 +18,12 @@
     "apollo-server-errors": "^2.4.2",
     "axios": "^0.21.1",
     "bottleneck": "^2.19.5",
-    "date-fns": "^2.17.0",
+    "date-fns": "^2.20.2",
     "graphql": "^15.5.0",
-    "ioredis": "^4.23.0"
+    "ioredis": "^4.26.0"
   },
   "devDependencies": {
-    "eslint": "^7.20.0",
-    "type-fest": "^0.21.2"
+    "eslint": "^7.24.0",
+    "type-fest": "^1.0.1"
   }
 }
