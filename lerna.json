@@ -10,5 +10,6 @@
   "packages": [
     "apps/rates/*",
     "libs/rates/*",
-    "tools/"]
+    "tools/"
+  ]
 }
