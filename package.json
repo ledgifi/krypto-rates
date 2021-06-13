@@ -7,8 +7,9 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "packages/*",
-    "clients/*"
+    "apps/rates/*",
+    "libs/rates/*",
+    "tools/"
   ],
   "scripts": {
     "dev": "lerna run dev --parallel",

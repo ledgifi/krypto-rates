@@ -7,5 +7,8 @@
       "message": "chore(release): bump version"
     }
   },
-  "packages": ["packages/*", "clients/*"]
+  "packages": [
+    "apps/rates/*",
+    "libs/rates/*",
+    "tools/"]
 }
